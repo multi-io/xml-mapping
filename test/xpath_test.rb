@@ -62,12 +62,9 @@ class XPathTest < Test::Unit::TestCase
   end
 
   def test_read_first_exception
-    begin
-      assert_equal nil, XML::XPath.new("foo[2]/notthere").first(@d.root)
-      fail "XML::XPathError expected"
-    rescue XML::XPathError => err
-      # print "ok, received: #{err.message}\n"
-    end
+    assert_raises(XML::XPathError) {
+      XML::XPath.new("foo[2]/notthere").first(@d.root)
+    }
   end
 
 
