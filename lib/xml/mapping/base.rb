@@ -14,7 +14,7 @@ module XML
 
     def fill_from_rexml(xml)
       pre_load(xml)
-      self.class.nodes.each do |node|
+      self.class.xml_mapping_nodes.each do |node|
         node.xml_to_obj self, xml
       end
       post_load
@@ -28,7 +28,7 @@ module XML
 
 
     def fill_into_rexml(xml)
-      self.class.nodes.each do |node|
+      self.class.xml_mapping_nodes.each do |node|
         node.obj_to_xml self,xml
       end
     end
@@ -58,10 +58,41 @@ module XML
 
     class Node
       def initialize(owner)
-        owner.nodes << self
+        @owner = owner
+        owner.xml_mapping_nodes << self
+      end
+      def xml_to_obj(obj,xml)
+        raise "abstract method called"
+      end
+      def obj_to_xml(obj,xml)
+        raise "abstract method called"
       end
     end
 
+
+    class SingleAttributeNode < Node
+      def initialize(owner,attrname,*args)
+        super(owner)
+        @attrname = attrname
+        owner.add_accessor attrname
+        initialize_impl(*args)
+      end
+      def initialize_impl(*args)
+        raise "abstract method called"
+      end
+      def xml_to_obj(obj,xml)
+        obj.send :"#{@attrname}=", extract_attr_value(xml)
+      end
+      def extract_attr_value(xml)
+        raise "abstract method called"
+      end
+      def obj_to_xml(obj,xml)
+        set_attr_value(xml, obj.send(:"#{@attrname}"))
+      end
+      def set_attr_value(xml, value)
+        raise "abstract method called"
+      end
+    end
 
 
     def self.add_node_class(c)
@@ -69,7 +100,6 @@ module XML
       ClassMethods.module_eval <<-EOS
         def #{meth_name}(attrname,*args)
           #{c.name}.new(self,attrname,*args)
-          add_accessor attrname
         end
       EOS
     end
@@ -95,10 +125,10 @@ module XML
         obj
       end
 
-      attr_accessor :nodes
+      attr_accessor :xml_mapping_nodes
 
       def xmlmapping_init
-        @nodes = []
+        @xml_mapping_nodes = []
       end
 
     end
