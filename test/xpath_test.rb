@@ -1,4 +1,6 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.dirname(__FILE__)+"/tests_init"
+
+require 'test/unit'
 
 require "rexml/document"
 require "xml/xpath"
