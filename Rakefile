@@ -104,8 +104,8 @@ end
 
 # have to add additional prerequisites manually because it appears
 # that rules can only define a single prerequisite :-\
-for f in %{examples/company_usage examples/order_usage} do
-  file "#{f}.intout" => ['#{f}.intin.rb', 'examples/company.xml']
+for f in %w{examples/company_usage examples/order_usage} do
+  file "#{f}.intout" => ["#{f}.intin.rb", 'examples/company.xml']
   file "#{f}.intout" => FileList.new("lib/**/*.rb")
   file "#{f}.intout" => FileList.new("examples/**/*.rb")
 end
