@@ -69,22 +69,29 @@ module XML
   #       </company>=> #<IO:0x402f4078>
   #   irb(main)>
   #
-  # So, in addition to the class and instance methods described below,
-  # you'll get "node factory methods" like 'text_node', 'array_node'
-  # and so on; more precisely, there is one class method for each
-  # registered <em>node type</em>. Node types are classes derived from
-  # XML::Mapping::Node; they're registered via #add_node_class.  The
-  # node types TextNode, BooleanNode, IntNode, ObjectNode, ArrayNode,
-  # and HashNode are automatically registered by xml/mapping.rb; you
-  # can easily write your own ones. The name of a node factory method
-  # is inferred by 'underscoring' the name of the corresponding node
-  # type; e.g. 'TextNode' becomes 'text_node'. The arguments to a node
-  # factory method are automatically turned into arguments to the
-  # corresponding node type's initializer. So, in order to learn more
-  # about the meaning of a node factory method's parameters, you read
-  # the documentation of the corresponding node type. All predefined
-  # node types expect as their first argument a symbol that names an
-  # r/w attribute which will be added to the mapping class.
+  # So, you have to include XML::Mapping into your class to turn it
+  # into a mapping class, that is, to add XML mappings to it. In
+  # addition to the class and instance methods defined in
+  # XML::Mapping, your mapping class will get class methods like
+  # 'text_node', 'array_node' and so on; I call them "node factory
+  # methods". More precisely, there is one node factory method for
+  # each registered <em>node type</em>. Node types are classes derived
+  # from XML::Mapping::Node; they're registered via
+  # #add_node_class.  The node types TextNode, BooleanNode, IntNode,
+  # ObjectNode, ArrayNode, and HashNode are automatically registered
+  # by xml/mapping.rb; you can easily write your own ones. The name of
+  # a node factory method is inferred by 'underscoring' the name of
+  # the corresponding node type; e.g. 'TextNode' becomes
+  # 'text_node'. The arguments to a node factory method are
+  # automatically turned into arguments to the corresponding node
+  # type's initializer. So, in order to learn more about the meaning
+  # of a node factory method's parameters, you read the documentation
+  # of the corresponding node type. All predefined node types expect
+  # as their first argument a symbol that names an r/w attribute which
+  # will be added to the mapping class. The mapping class is a normal
+  # Ruby class; you can add constructors, methods and attributes to
+  # it, derive from it, derive it from another class, include
+  # additional modules etc.
   #
   # Including XML::Mapping also adds all methods of
   # XML::Mapping::ClassMethods to your class (as class methods).
