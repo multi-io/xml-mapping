@@ -119,6 +119,21 @@ module XML
     end
 
 
+    def initialize_xml_mapping  #:nodoc:
+      self.class.xml_mapping_nodes.each do |node|
+        node.obj_initializing(self)
+      end
+    end
+
+    # private :initialize_xml_mapping
+
+    # Initializer. Calls obj_initializing(self) on all nodes. You
+    # should call this using +super+ in your mapping classes to
+    # inherit this behaviour.
+    def initialize(*args)
+      initialize_xml_mapping
+    end
+
     # "fill" the contents of _xml_ into _self_. _xml_ is a
     # REXML::Element.
     #
@@ -142,9 +157,12 @@ module XML
     end
 
     
-    # This method is called immediately after _self_ has been
-    # filled from an xml source. You may set up additional field
-    # values here, for example.
+    # This method is called immediately after _self_ has been filled
+    # from an xml source. If you have things to do after the object
+    # has been succefully loaded from the xml (reorganising the loaded
+    # data in some way, setting up additional views on the data etc.),
+    # this is the place where you put them. You can also raise an
+    # exception to abandon the whole loading process.
     #
     # The default implementation of this method is empty.
     def post_load
@@ -258,6 +276,12 @@ module XML
       def obj_to_xml(obj,xml)
         raise "abstract method called"
       end
+      # Called when a new instance is being initialized. _obj_ is the
+      # instance. You may set up initial values for the attributes
+      # this node is responsible for here. Default implementation is
+      # empty.
+      def obj_initializing(obj)
+      end
     end
 
 
@@ -358,6 +382,11 @@ module XML
       def set_attr_value(xml, value)
         raise "abstract method called"
       end
+      def obj_initializing(obj)
+        if @options[:optional]
+          obj.send :"#{@attrname}=", @options[:default_value]
+        end
+      end
     end
 
 
@@ -423,6 +452,7 @@ module XML
       # it.
       def load_from_rexml(xml)
         obj = self.allocate
+        obj.initialize_xml_mapping
         obj.fill_from_rexml(xml)
         obj
       end
