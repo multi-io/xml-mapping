@@ -66,7 +66,7 @@ module XML
     class TextNode < Node
       def initialize(owner,attrname,path)
         super(owner)
-        @attrname = attrname; @path = path
+        @attrname = attrname; @path = XML::XPath.new(path)
       end
       def xml_to_obj(obj,xml)
         obj.send "#{@attrname}=".intern, @path.first(xml).text
@@ -79,7 +79,7 @@ module XML
     class IntNode < Node
       def initialize(owner,attrname,path,opts)
         super(owner)
-        @attrname = attrname; @path = path; @opts = opts
+        @attrname = attrname; @path = XML::XPath.new(path); @opts = opts
       end
       def xml_to_obj(obj,xml)
         begin
@@ -102,7 +102,7 @@ module XML
     class ObjectNode < Node
       def initialize(owner,attrname,klass,path)
         super(owner)
-        @attrname = attrname; @klass = klass; @path = path
+        @attrname = attrname; @klass = klass; @path = XML::XPath.new(path)
       end
       def xml_to_obj(obj,xml)
         obj.send "#{@attrname}=".intern, @klass.load_from_rexml(@path.first(xml))
@@ -115,7 +115,7 @@ module XML
     class BooleanNode < Node
       def initialize(owner,attrname,path,true_value,false_value)
         super(owner)
-        @attrname = attrname; @path = path
+        @attrname = attrname; @path = XML::XPath.new(path)
         @true_value = true_value; @false_value = false_value
       end
       def xml_to_obj(obj,xml)
@@ -127,25 +127,41 @@ module XML
     end
 
     class ArrayNode < Node
-      def initialize(owner,attrname,klass,path)
-        super(owner)
-        @attrname = attrname; @klass = klass; @path = path
+      def initialize(owner,attrname,klass,path,path2=nil)
+	super(owner)
+	if path2
+	  do_initialize(owner,attrname,klass,path,path2)
+	else
+	  do_initialize(owner,attrname,klass,"",path)
+	end
+      end
+      def do_initialize(owner,attrname,klass,base_path,per_arrelement_path)
+        @attrname = attrname; @klass = klass;
+	per_arrelement_path=per_arrelement_path[1..-1] if per_arrelement_path[0]==?/
+	@base_path = XML::XPath.new(base_path)
+	@per_arrelement_path = XML::XPath.new(per_arrelement_path)
+	@reader_path = XML::XPath.new(base_path+"/"+per_arrelement_path)
       end
       def xml_to_obj(obj,xml)
         arr = obj.send "#{@attrname}=".intern, []
-        @path.all(xml).each do |elt|
+        @reader_path.all(xml).each do |elt|
           arr << @klass.load_from_rexml(elt)
         end
       end
       def obj_to_xml(obj,xml)
-        # TODO
+	base_elt = @base_path.first(xml,true)
+	obj.send(:"#{@attrname}").each do |arr_elt|
+	  arr_elt.fill_into_rexml(@per_arrelement_path.create_new(base_elt))
+	end
       end
     end
 
     class HashNode < Node
       def initialize(owner,attrname,klass,path,key_path)
         super(owner)
-        @attrname = attrname; @klass = klass; @path = path; @key_path = key_path
+        @attrname = attrname; @klass = klass;
+	@path = XML::XPath.new(path)
+	@key_path = XML::XPath.new(key_path)
       end
       def xml_to_obj(obj,xml)
         hash = obj.send "#{@attrname}=".intern, {}
@@ -189,32 +205,32 @@ module XML
 
 
       def text_node(attrname,path)
-        TextNode.new(self,attrname,XML::XPath.new(path))
+        TextNode.new(self,attrname,path)
         add_accessor attrname
       end
 
-      def array_node(attrname,klass,path)
-        ArrayNode.new(self,attrname,klass,XML::XPath.new(path))
+      def array_node(attrname,klass,path,path2=nil)
+        ArrayNode.new(self,attrname,klass,path,path2)
         add_accessor attrname
       end
 
       def hash_node(attrname,klass,path,key_path)
-        HashNode.new(self,attrname,klass,XML::XPath.new(path),XML::XPath.new(key_path))
+        HashNode.new(self,attrname,klass,path,key_path)
         add_accessor attrname
       end
 
       def object_node(attrname,klass,path)
-        ObjectNode.new(self,attrname,klass,XML::XPath.new(path))
+        ObjectNode.new(self,attrname,klass,path)
         add_accessor attrname
       end
 
       def int_node(attrname,path,opts={})
-        IntNode.new(self,attrname,XML::XPath.new(path),opts)
+        IntNode.new(self,attrname,path,opts)
         add_accessor attrname
       end
 
       def boolean_node(attrname,path,true_value,false_value)
-        BooleanNode.new(self,attrname,XML::XPath.new(path),true_value,false_value)
+        BooleanNode.new(self,attrname,path,true_value,false_value)
         add_accessor attrname
       end
 
