@@ -22,14 +22,19 @@ Rake::TestTask.new(:test) { |t|
 }
 
 
-Rake::RDocTask.new(:rdoc) { |rdoc|
+Rake::RDocTask.new { |rdoc|
   rdoc.rdoc_dir = 'doc'
   rdoc.title    = "XML::Mapping -- Simple, extensible Ruby-to-XML (and back) mapper"
-  rdoc.options << '--line-numbers --inline-source --accessor cattr_accessor=object'
+  rdoc.options << '--line-numbers --inline-source --accessor cattr_accessor=object --include examples'
   rdoc.rdoc_files.include('README')
   rdoc.rdoc_files.include('lib/**/*.rb')
-}
 
+  # additional file dependencies for the rdoc task
+  #   this somewhat of a black art because RDocTask doesn't document the
+  #   prerequisite of its rdoc task (<rdoc_dir>/index.html)
+  #file rdoc.rdoc_target => ['examples/company.xml','examples/company.rb'] # private method
+  file "#{rdoc.rdoc_dir}/index.html" => ['examples/company.xml','examples/company.rb']
+}
 
 
 
