@@ -19,6 +19,8 @@ class Company
   text_node :ent1, "arrtest/entry[1]"
   text_node :ent2, "arrtest/entry[2]"
   text_node :ent3, "arrtest/entry[3]"
+
+  array_node :stuff, "stuff", "*"
 end
 
 

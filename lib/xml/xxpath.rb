@@ -1,3 +1,4 @@
+require 'rexml/document'
 
 module XML
 
@@ -139,6 +140,48 @@ module XML
 
     module Accessors
 
+      # we need a boolean "unspecified" attribute for XML nodes --
+      # paths like "*" oder (somewhen) "foo|bar" create "unspecified"
+      # nodes that the user must then "specify" by setting their text
+      # etc. (or manually setting unspecified=false)
+      module UnspecifiednessSupport
+
+        def unspecified?
+          @xml_xpath_unspecified ||= false
+        end
+
+        def unspecified=(x)
+          @xml_xpath_unspecified = x
+        end
+
+        def self.included(mod)
+          mod.module_eval <<-EOS
+            alias_method :_text_orig, :text
+            alias_method :_textis_orig, :text=
+            def text
+              # we're suffering from the "fragile base class"
+              # phenomenon here -- we don't know whether the
+              # implementation of the class we get mixed into always
+              # calls text (instead of just accessing @text or so)
+              if unspecified?
+                "<UNDEFINED>"
+              else
+                _text_orig
+              end
+            end
+            def text=(x)
+              _textis_orig(x)
+              unspecified=false
+            end
+          EOS
+        end
+
+      end
+
+      class REXML::Element
+        include UnspecifiednessSupport
+      end
+
       # attribute node, half-way compatible
       #  with REXML's Element.
       # REXML doesn't provide one...
@@ -173,6 +216,8 @@ module XML
         def ==(other)
           other.kind_of?(Attribute) and other.parent==parent and other.name==name
         end
+
+        include UnspecifiednessSupport
       end
 
       # read accessors
@@ -248,10 +293,9 @@ module XML
       end
 
       def self.create_subnode_by_all(node,create_new)
-        # TODO: better strategy here?
-        #   if this was an array node, for example,
-        #    we should just create nothing and return []
-        raise XPathError, "don't know how to create '*'" # if node.elements.empty?
+        node = node.elements.add
+        node.unspecified = true
+        node
       end
     end
   end

@@ -148,4 +148,19 @@ class XmlMappingTest < Test::Unit::TestCase
     assert_nil hamburg_street_path.first(xml2,:allow_nil=>true)
   end
 
+
+  def test_polymorphic_node
+    assert_equal 3, @c.stuff.size
+    assert_equal 'Saddam Hussein', @c.stuff[0].name
+    assert_equal 'Berlin', @c.stuff[1].city
+    assert_equal 'weapons of mass destruction', @c.stuff[2].speciality
+
+    @c.stuff[1].city = 'Munich'
+    @c.stuff[2].classified = false
+
+    xml2=@c.save_to_xml
+    assert_equal 'Munich', xml2.root.elements[5].elements[2].elements[1].text
+    assert_equal 'no',     xml2.root.elements[5].elements[3].elements[1].text
+  end
+
 end

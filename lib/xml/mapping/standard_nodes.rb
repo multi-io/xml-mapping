@@ -43,18 +43,19 @@ module XML
       end
     end
 
-    # (does somebody have a better name for this class?) base class
-    # for nodes that map some sub-nodes of their XML tree to
-    # (Ruby-)sub-objects of their attribute. For this purpose, the
-    # initializer introduces additional optional keyword arguments
-    # :class :marshaller and :unmarshaller.
+    # (does somebody have a better name for this class?) base node
+    # class that provides an initializer which lets the user specify a
+    # means to marshal/unmarshal a Ruby object to/from XML. Used as
+    # the base class for nodes that map some sub-nodes of their XML
+    # tree to (Ruby-)sub-objects of their attribute.
     class SubObjectBaseNode < SingleAttributeNode
       # processes the keyword arguments :class, :marshaller, and
       # :unmarshaller (_args_ is ignored). When this initiaizer
       # returns, @options[:marshaller] and @options[:unmarshaller] are
-      # set to procs that marshal/unmarshal Ruby objects to/from XML
-      # trees according to the keyword arguments that were passed to
-      # the initializer. See documentation of ObjectNode for details.
+      # set to procs that marshal/unmarshal a Ruby object to/from an
+      # XML tree according to the keyword arguments that were passed
+      # to the initializer. See documentation of ObjectNode for
+      # details.
       def initialize_impl(*args)
         if @options[:class]
           unless @options[:marshaller]
@@ -68,8 +69,20 @@ module XML
             }
           end
         end
-        unless @options[:marshaller] && @options[:unmarshaller]
-          raise "#{@attrname}: option :class or options :marshaller & :unmarshaller required"
+
+        unless @options[:marshaller]
+          @options[:marshaller] = proc {|xml,value|
+            value.fill_into_xml(xml)
+            if xml.unspecified?
+              xml.name = value.class.root_element_name
+              xml.unspecified = false
+            end
+          }
+        end
+        unless @options[:unmarshaller]
+          @options[:unmarshaller] = proc {|xml|
+            XML::Mapping.load_object_from_xml(xml)
+          }
         end
       end
     end

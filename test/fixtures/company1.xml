@@ -61,4 +61,25 @@
       <entry>baz</entry>
     </arrtest>
 
+
+    <stuff>
+      <customer id="sad">
+        <name>Saddam Hussein</name>
+        <payment_method>independent arms broker</payment_method>
+      </customer>
+      <address>
+        <city>Berlin</city>
+        <zip>10176</zip>
+        <street>Unter den Linden</street>
+        <number>12</number>
+      </address>
+      <office speciality="weapons of mass destruction">
+        <classified>yes</classified>
+        <address>
+          <city>Baghdad</city>
+          <street>Airport</street>
+          <number>18</number>
+        </address>
+      </office>
+    </stuff>
 </company>
