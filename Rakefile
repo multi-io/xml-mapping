@@ -42,6 +42,7 @@ Rake::RDocTask.new { |rdoc|
 
 #rule '.intout' => ['.intin.rb', *FileList.new("lib/**/*.rb")] do |task|  # doesn't work -- see below
 rule '.intout' => ['.intin.rb'] do |task|
+  this_file_re = Regexp.compile(Regexp.quote(__FILE__))
   b = binding
   visible=true; visible_retval=true; handle_exceptions=false
   old_stdout = $stdout
@@ -81,6 +82,7 @@ rule '.intout' => ['.intin.rb'] do |task|
                     if visible
                       print "#{$!.class}: #{$!}\n"
                       for m in $@
+                        break if m=~this_file_re
                         print "\tfrom #{m}\n"
                       end
                     end
