@@ -1,5 +1,7 @@
-require File.dirname(__FILE__) + '/mapping/base'
-require File.dirname(__FILE__) + '/mapping/standard_nodes'
+$:.unshift(File.dirname(__FILE__)+"/..")
+
+require 'xml/mapping/base'
+require 'xml/mapping/standard_nodes'
 
 XML::Mapping.add_node_class XML::Mapping::TextNode
 XML::Mapping.add_node_class XML::Mapping::IntNode
