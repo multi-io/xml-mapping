@@ -26,8 +26,8 @@ class Address
   include XML::Mapping
 
   text_node :city, "city"
-  int_node :zip, "zip"
-  text_node :street, "street"
+  int_node :zip, "zip", :optional=>true, :default_value=>12576
+  text_node :street, "street", :optional=>true
   int_node :number, "number"
 end
 
