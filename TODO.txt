@@ -16,5 +16,14 @@
   - add to ObjectNode, ArrayNode, HashNode corresponding initializers
     which don't require a _klass_ argument
 
+- XML::Mapping: Move @options hash functionality from
+  SingleAttributeNode to Node.
+
+- XML::Mapping: Additional node type "ProcNode" which is initialized
+  with a "marshaller" and an "unmarshaller" procedure; they do the
+  actual job. One could also think of optional :marshaller,
+  :unmarshaller options for ObjectNode, ArrayNode, HashNode, (maybe
+  others) which would, if given, replace the klass argument.
+
 - Rakefile/rdoc task: generate irb session log files & :include: them
   in the rdoc text(s). Pay attention to Windoze compatibility.
