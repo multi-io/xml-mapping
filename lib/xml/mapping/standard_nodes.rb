@@ -22,17 +22,23 @@ module XML
       end
     end
 
-    # Like TextNode, but interprets the XML node's text as an integer
-    # and maps it to an integer attribute.
-    class IntNode < SingleAttributeNode
+    # Like TextNode, but interprets the XML node's text as a number
+    # (Integer or Float, depending on the nodes's text) and maps it to
+    # an Integer or Float attribute.
+    class NumericNode < SingleAttributeNode
       def initialize_impl(path)
         @path = XML::XPath.new(path)
       end
       def extract_attr_value(xml) # :nodoc:
-        default_when_xpath_err{ @path.first(xml).text.to_i }
+        txt = default_when_xpath_err{ @path.first(xml).text }
+        begin
+          Integer(txt)
+        rescue ArgumentError
+          Float(txt)
+        end
       end
       def set_attr_value(xml, value) # :nodoc:
-        raise RuntimeError, "Not an integer: #{value}" unless Integer===value
+        raise RuntimeError, "Not an integer: #{value}" unless Numeric===value
         @path.first(xml,:ensure_created=>true).text = value.to_s
       end
     end

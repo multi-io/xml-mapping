@@ -37,22 +37,22 @@ module XML
   # factory method for each registered <em>node type</em>. Node types
   # are classes derived from XML::Mapping::Node; they're registered
   # with the xml-mapping library via XML::Mapping.add_node_class.  The
-  # node types TextNode, BooleanNode, IntNode, ObjectNode, ArrayNode,
-  # and HashNode are automatically registered by xml/mapping.rb; you
-  # can easily write your own ones. The name of a node factory method
-  # is inferred by 'underscoring' the name of the corresponding node
-  # type; e.g. 'TextNode' becomes 'text_node'. Each node factory
-  # method creates an instance of the corresponding node type and adds
-  # it to the mapping class (not its instances). The arguments to a
-  # node factory method are automatically turned into arguments to the
-  # corresponding node type's initializer. So, in order to learn more
-  # about the meaning of a node factory method's parameters, you read
-  # the documentation of the corresponding node type. All predefined
-  # node types expect as their first argument a symbol that names an
-  # r/w attribute which will be added to the mapping class. The
-  # mapping class is a normal Ruby class; you can add constructors,
-  # methods and attributes to it, derive from it, derive it from
-  # another class, include additional modules etc.
+  # node types TextNode, BooleanNode, NumericNode, ObjectNode,
+  # ArrayNode, and HashNode are automatically registered by
+  # xml/mapping.rb; you can easily write your own ones. The name of a
+  # node factory method is inferred by 'underscoring' the name of the
+  # corresponding node type; e.g. 'TextNode' becomes 'text_node'. Each
+  # node factory method creates an instance of the corresponding node
+  # type and adds it to the mapping class (not its instances). The
+  # arguments to a node factory method are automatically turned into
+  # arguments to the corresponding node type's initializer. So, in
+  # order to learn more about the meaning of a node factory method's
+  # parameters, you read the documentation of the corresponding node
+  # type. All predefined node types expect as their first argument a
+  # symbol that names an r/w attribute which will be added to the
+  # mapping class. The mapping class is a normal Ruby class; you can
+  # add constructors, methods and attributes to it, derive from it,
+  # derive it from another class, include additional modules etc.
   #
   # Including XML::Mapping also adds all methods of
   # XML::Mapping::ClassMethods to your class (as class methods).

@@ -100,7 +100,7 @@ end
 
 # have to add additional prerequisites manually because it appears
 # that rules can only define a single prerequisite :-\
-file "examples/company_usage.intout" => "examples/company_usage.intin.rb"
+file "examples/company_usage.intout" => ['examples/company_usage.intin.rb', 'examples/company.xml']
 file "examples/company_usage.intout" => FileList.new("lib/**/*.rb")
 
 
