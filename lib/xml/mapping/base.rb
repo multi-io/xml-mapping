@@ -51,7 +51,7 @@ module XML
     def save_to_file(filename)
       xml = save_to_rexml
       File.open(filename,"w") do |f|
-        self.xml.write(f)
+        xml.write(f,2)
       end
     end
 
