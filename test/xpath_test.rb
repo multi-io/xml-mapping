@@ -137,6 +137,15 @@ class XPathTest < Test::Unit::TestCase
   end
 
 
+  def test_write_byname_and_attr
+    node1 = XML::XPath.new("hiho[@blubb='bla']").first(@d.root,:ensure_created=>true)
+    node2 = XML::XPath.new("hiho[@blubb='bla']").first(@d.root,:ensure_created=>true)
+    assert_equal node1, node2
+    assert_equal "hiho", node1.name
+    assert_equal @d.root.elements[4], node1
+  end
+
+
   def test_create_new_byname
     s1 = @d.elements[1].elements.size
     s2 = @d.elements[1].elements[1].elements.size
@@ -221,6 +230,16 @@ class XPathTest < Test::Unit::TestCase
     assert node2.kind_of?(XML::XPath::Accessors::Attribute)
     node2.text = "val2"
     assert_equal "val2", @d.elements[1].elements[3].attributes["bar"]
+  end
+
+
+  def test_create_new_byname_and_attr
+    node1 = XML::XPath.new("hiho[@blubb='bla']").create_new(@d.root)
+    node2 = XML::XPath.new("hiho[@blubb='bla']").create_new(@d.root)
+    assert_equal "hiho", node1.name
+    assert_equal "hiho", node2.name
+    assert_equal @d.root.elements[4], node1
+    assert_equal @d.root.elements[5], node2
   end
 
 end

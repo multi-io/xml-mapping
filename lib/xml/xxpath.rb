@@ -223,7 +223,7 @@ module XML
       end
 
       def self.create_subnode_by_name_and_attr(node,create_new,name,attr_name,attr_value)
-        newnode = (not(create_new) and subnodes_by_name_singlesrc(node,name)[0]) or node.elements.add(name)
+        newnode = ((not(create_new) and subnodes_by_name_singlesrc(node,name)[0]) or node.elements.add(name))
         newnode.attributes[attr_name]=attr_value
         newnode
       end
