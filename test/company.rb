@@ -11,10 +11,10 @@ class Company
 
   text_node :name, "@name"
 
-  object_node :address, Address, "address"
+  object_node :address, "address", :class=>Address
 
-  array_node :offices, Office, "offices", "office"
-  hash_node :customers, Customer, "customers", "customer", "@id"
+  array_node :offices, "offices", "office", :class=>Office
+  hash_node :customers, "customers", "customer", "@id", :class=>Customer
 
   text_node :ent1, "arrtest/entry[1]"
   text_node :ent2, "arrtest/entry[2]"
@@ -37,7 +37,7 @@ class Office
 
   text_node :speciality, "@speciality"
   boolean_node :classified, "classified", "yes", "no"
-  object_node :address, Address, "address"
+  object_node :address, "address", :class=>Address
 end
 
 

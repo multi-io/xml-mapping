@@ -9,8 +9,8 @@ class Company
   include XML::Mapping
 
   text_node :name, "@name"
-  object_node :address, Address, "address"
-  array_node :customers, Customer, "customers", "customer"
+  object_node :address, "address", :class=>Address
+  array_node :customers, "customers", "customer", :class=>Customer
 end
 
 

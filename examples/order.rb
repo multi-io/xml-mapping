@@ -11,9 +11,9 @@ class Order
   include XML::Mapping
 
   text_node :reference, "@reference"
-  object_node :client, Client, "Client"
-  hash_node :items, Item, "Item", "@reference"
-  array_node :signatures, Signature, "Signed-By", "Signature", :default_value=>[]
+  object_node :client, "Client", :class=>Client
+  hash_node :items, "Item", "@reference", :class=>Item
+  array_node :signatures, "Signed-By", "Signature", :class=>Signature, :default_value=>[]
 
   def total_price
     items.values.map{|i| i.total_price}.inject(0){|x,y|x+y}
@@ -25,7 +25,7 @@ class Client
   include XML::Mapping
 
   text_node :name, "Name"
-  object_node :address, Address, "Address"
+  object_node :address, "Address", :class=>Address
 end
 
 
