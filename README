@@ -251,6 +251,39 @@ XML.
 
 == XPath interpreter
 
+XML::XPath is an XPath parser. It is primarily intended to be used in
+xml-mapping node type definitions (all node types that come with
+xml-mapping use it). It is very incomplete and probably will always be
+(it only supports path elements of types _elt_name_, @_attr_name_,
+_elt_name_[@_attr_name_=_attr_value_], _elt_name_[_index_], and *),
+but it should be reasonably efficient (XPath expressions are
+precompiled), and, most importantly, it supports write access. For
+example, if you create the path "bar[3]/baz[@key='hiho']" in the XML
+document
+
+  <foo>
+    <bar>
+      <baz key="ab">hello</baz>
+      <baz key="xy">goodbye</baz>
+    </bar>
+  </foo>
+
+, you'll get:
+
+  <foo>
+    <bar>
+      <baz key='ab'>hello</baz>
+      <baz key='xy'>goodbye</baz>
+    </bar>
+    <bar/>
+    <bar>
+      <baz key='hiho'/>
+    </bar>
+  </foo>
+
+(note that the path is relative to the root element, so it doesn't
+contain the name "foo") XML::XPath is explained in detail in the
+reference documentation.
 
 
 == License
