@@ -119,7 +119,7 @@ module XML
         @true_value = true_value; @false_value = false_value
       end
       def xml_to_obj(obj,xml)
-        obj.send :"#{@attrname}=", @path.first(xml)==@true_value
+        obj.send :"#{@attrname}=", @path.first(xml).text==@true_value
       end
       def obj_to_xml(obj,xml)
         @path.first(xml,true).text = obj.send(:"#{@attrname}")? @true_value : @false_value
