@@ -11,104 +11,89 @@ module XML
 
       xpathstr=xpathstr[1..-1] if xpathstr[0]==?/
 
-      parts = xpathstr.split('/').reverse
-
       # TODO: avoid code duplications
       #    maybe: build & create the procs using eval
 
-      # create creators
       @creator_procs = [ proc{|node,create_new| node} ]
-      parts.each do |part|
-        p_prev=@creator_procs[-1]
-        @creator_procs <<
-          case part
-          when /^(.*?)\[@(.*?)='(.*?)'\]$/
-            name,attr_name,attr_value = [$1,$2,$3]
-            proc {|node,create_new|
-              p_prev.call(Accessors.create_subnode_by_name_and_attr(node,create_new,
-                                                                    name,attr_name,attr_value),
-                          create_new)
-            }
-          when /^(.*?)\[(.*?)\]$/
-            name,index = [$1,$2.to_i]
-            proc {|node,create_new|
-              p_prev.call(Accessors.create_subnode_by_name_and_index(node,create_new,
-                                                                     name,index),
-                          create_new)
-            }
-          when /^@(.*)$/
-            name = $1
-            proc {|node,create_new|
-              p_prev.call(Accessors.create_subnode_by_attr_name(node,create_new,name), create_new)
-            }
-          when '*'
-            proc {|node,create_new|
-              p_prev.call(Accessors.create_subnode_by_all(node,create_new), create_new)
-            }
-          else
-            proc {|node,create_new|
-              p_prev.call(Accessors.create_subnode_by_name(node,create_new,part), create_new)
-            }
-          end
-      end
-
-      # create reader
       @reader_proc = proc {|nodes| nodes}
-      parts.zip(@creator_procs[1..-1]).each do |part,rest_creator|
-        p_prev=@reader_proc
-        @reader_proc =
-          case part
-          when /^(.*?)\[@(.*?)='(.*?)'\]$/
-            name,attr_name,attr_value = [$1,$2,$3]
-            proc {|nodes|
-              next_nodes = Accessors.subnodes_by_name_and_attr(nodes,
-                                                               name,attr_name,attr_value)
-              if (next_nodes == [])
-                throw :not_found, [nodes,rest_creator]
-              else
-                p_prev.call(next_nodes)
-              end
-            }
-          when /^(.*?)\[(.*?)\]$/
-            name,index = [$1,$2.to_i]
-            proc {|nodes|
-              next_nodes = Accessors.subnodes_by_name_and_index(nodes,
-                                                                name,index)
-              if (next_nodes == [])
-                throw :not_found, [nodes,rest_creator]
-              else
-                p_prev.call(next_nodes)
-              end
-            }
-          when /^@(.*)$/
-            name=$1
-            proc {|nodes|
-              next_nodes = Accessors.subnodes_by_attr_name(nodes,name)
-              if (next_nodes == [])
-                throw :not_found, [nodes,rest_creator]
-              else
-                p_prev.call(next_nodes)
-              end
-            }
-          when '*'
-            proc {|nodes|
-              next_nodes = Accessors.subnodes_by_all(nodes)
-              if (next_nodes == [])
-                throw :not_found, [nodes,rest_creator]
-              else
-                p_prev.call(next_nodes)
-              end
-            }
-          else
-            proc {|nodes|
-              next_nodes = Accessors.subnodes_by_name(nodes,part)
-              if (next_nodes == [])
-                throw :not_found, [nodes,rest_creator]
-              else
-                p_prev.call(next_nodes)
-              end
-            }
-          end
+      xpathstr.split('/').reverse.each do |part|
+        prev_creator = @creator_procs[-1]
+        prev_reader = @reader_proc
+        case part
+        when /^(.*?)\[@(.*?)='(.*?)'\]$/
+          name,attr_name,attr_value = [$1,$2,$3]
+          @creator_procs << curr_creator = proc {|node,create_new|
+            prev_creator.call(Accessors.create_subnode_by_name_and_attr(node,create_new,
+                                                                        name,attr_name,attr_value),
+                              create_new)
+          }
+          @reader_proc = proc {|nodes|
+            next_nodes = Accessors.subnodes_by_name_and_attr(nodes,
+                                                             name,attr_name,attr_value)
+            if (next_nodes == [])
+              throw :not_found, [nodes,curr_creator]
+            else
+              prev_reader.call(next_nodes)
+            end
+          }
+        when /^(.*?)\[(.*?)\]$/
+          name,index = [$1,$2.to_i]
+          @creator_procs << curr_creator = proc {|node,create_new|
+            prev_creator.call(Accessors.create_subnode_by_name_and_index(node,create_new,
+                                                                         name,index),
+                              create_new)
+          }
+          @reader_proc = proc {|nodes|
+            next_nodes = Accessors.subnodes_by_name_and_index(nodes,
+                                                              name,index)
+            if (next_nodes == [])
+              throw :not_found, [nodes,curr_creator]
+            else
+              prev_reader.call(next_nodes)
+            end
+          }
+        when /^@(.*)$/
+          name = $1
+          @creator_procs << curr_creator = proc {|node,create_new|
+            prev_creator.call(Accessors.create_subnode_by_attr_name(node,create_new,name),
+                              create_new)
+          }
+          @reader_proc = proc {|nodes|
+            next_nodes = Accessors.subnodes_by_attr_name(nodes,name)
+            if (next_nodes == [])
+              throw :not_found, [nodes,curr_creator]
+            else
+              prev_reader.call(next_nodes)
+            end
+          }
+        when '*'
+          @creator_procs << curr_creator = proc {|node,create_new|
+            prev_creator.call(Accessors.create_subnode_by_all(node,create_new),
+                              create_new)
+          }
+          @reader_proc = proc {|nodes|
+            next_nodes = Accessors.subnodes_by_all(nodes)
+            if (next_nodes == [])
+              throw :not_found, [nodes,curr_creator]
+            else
+              prev_reader.call(next_nodes)
+            end
+          }
+        else
+          name = part
+          @creator_procs << curr_creator = proc {|node,create_new|
+            prev_creator.call(Accessors.create_subnode_by_name(node,create_new,name),
+                              create_new)
+          }
+          @reader_proc = proc {|nodes|
+            next_nodes = Accessors.subnodes_by_name(nodes,name)
+            if (next_nodes == [])
+              throw :not_found, [nodes,curr_creator]
+            else
+              prev_reader.call(next_nodes)
+            end
+          }
+        end
       end
     end
 
