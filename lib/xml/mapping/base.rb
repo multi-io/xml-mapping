@@ -33,6 +33,14 @@ module XML
           arr << klass.load_from_rexml(elt)
         end
       end
+      self.class.hash_nodes.each_pair do |attrname,(klass,path,key_path)|
+        hash = self.send "#{attrname}=".intern, {}
+        path.all(xml).each do |elt|
+          key = key_path.first(elt).text
+          value = klass.load_from_rexml(elt)
+          hash[key] = value
+        end
+      end
       post_load
     end
 
@@ -89,13 +97,14 @@ module XML
       end
 
 
-      attr_accessor :text_nodes, :int_nodes, :object_nodes, :array_nodes
+      attr_accessor :text_nodes, :int_nodes, :object_nodes, :array_nodes, :hash_nodes
 
       def xmlmapping_init
         @text_nodes = {}
         @int_nodes = {}
         @object_nodes = {}
         @array_nodes = {}
+        @hash_nodes = {}
       end
 
 
@@ -106,6 +115,11 @@ module XML
 
       def array_node(attrname,klass,path)
         array_nodes[attrname] = [klass,XML::XPath.new(path)]
+        add_accessor attrname
+      end
+
+      def hash_node(attrname,klass,path,key_path)
+        hash_nodes[attrname] = [klass,XML::XPath.new(path),XML::XPath.new(key_path)]
         add_accessor attrname
       end
 
