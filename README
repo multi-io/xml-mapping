@@ -1,2 +1,60 @@
-TODO: license (LGPL)
+= XML-MAPPING: XML-to-object (and back) mapper for Ruby
+
+Xml-mapping is an easy to use, extensible library that allows you to
+semi-automatically map Ruby objects to XML trees and vice versa. It is
+easy to use and has a modular design that allows you to easily extend
+its functionality.
+
+== Example
+
+
+
+
+
+=== semantics of attributes with/without default values:
+
+- when initializing:
+
+  - attributes with default values are set to their default values
+
+  - attributes without default values are left unset
+
+
+- when loading:
+
+  - attributes without default values that are not represented in the
+    XML raise an error
+
+  - attributes with default values that are not represented in the XML
+    are set to their default values
+
+  - all other attributes are set to their respective values as present
+    in the XML
+
+
+- when saving:
+
+  - unset attributes without default values raise an error
+
+  - attributes with default values that are set to their default
+    values are not saved
+
+  - all other attributes are saved
+
+
+This implies that:
+
+- attributes that are set to their respective default values are not
+  represented in the XML
+
+- attributes without default values must be set explicitly before
+  saving
+
+
+
+== License
+
+xml-mapping is released under the GNU Lesser General Public License
+(LGPL). See the LICENSE file for details.
+
 TODO: refer reader to docs/
