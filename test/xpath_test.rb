@@ -88,4 +88,14 @@ class XPathTest < Test::Unit::TestCase
     assert_equal s2+1, @d.elements[1].elements[1].elements.size
   end
 
+
+  def test_write_byidx
+    XML::XPath.new("foo[2]").first(@d.root,true)
+    # TODO: deep-compare of REXML documents?
+    assert_equal 2, @d.root.elements.select{|elt| elt.name=="foo"}.size
+    node = XML::XPath.new("foo[10]").first(@d.root,true)
+    assert_equal 10, @d.root.elements.select{|elt| elt.name=="foo"}.size
+    assert_equal "foo", node.name
+  end
+
 end
