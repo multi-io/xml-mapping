@@ -9,12 +9,43 @@ module XML
     def initialize(xpathstr)
       xpathstr=xpathstr[1..-1] if xpathstr[0]==?/
 
-      # create creators
-      @creator_procs = []
+      parts = xpathstr.split('/').reverse
 
-      # create readers
+      # TODO: avoid code duplications
+      #    maybe: build & create the procs using eval
+
+      # create creators
+      @creator_procs = [ proc{|node| node} ]
+      parts.each do |part|
+        p_prev=@creator_procs[-1]
+        @creator_procs <<
+          case part
+          when /^(.*?)\[@(.*?)='(.*?)'\]$/
+            name,attr_name,attr_value = [$1,$2,$3]
+            proc {|node|
+              p_prev.call(Accessors.create_subnode_by_name_and_attr(node,
+                                                                    name,attr_name,attr_value))
+            }
+          when /^(.*?)\[(.*?)\]$/
+            name,index = [$1,$2.to_i]
+            proc {|node|
+              p_prev.call(Accessors.create_subnode_by_name_and_index(node,
+                                                                     name,index))
+            }
+          when '*'
+            proc {|node|
+              p_prev.call(Accessors.create_subnode_by_all(node))
+            }
+          else
+            proc {|node|
+              p_prev.call(Accessors.create_subnode_by_name(node,part))
+            }
+          end
+      end
+
+      # create reader
       @reader_proc = proc {|nodes| nodes}
-      xpathstr.split('/').reverse.each do |part|
+      parts.zip(@creator_procs[1..-1]).each do |part,rest_creator|
         p_prev=@reader_proc
         @reader_proc =
           case part
@@ -24,7 +55,7 @@ module XML
               next_nodes = Accessors.subnodes_by_name_and_attr(nodes,
                                                                name,attr_name,attr_value)
               if (next_nodes == [])
-                throw :not_found, [nodes,"TODO"]
+                throw :not_found, [nodes,rest_creator]
               else
                 p_prev.call(next_nodes)
               end
@@ -35,7 +66,7 @@ module XML
               next_nodes = Accessors.subnodes_by_name_and_index(nodes,
                                                                 name,index)
               if (next_nodes == [])
-                throw :not_found, [nodes,"TODO"]
+                throw :not_found, [nodes,rest_creator]
               else
                 p_prev.call(next_nodes)
               end
@@ -44,7 +75,7 @@ module XML
             proc {|nodes|
               next_nodes = Accessors.subnodes_by_all(nodes)
               if (next_nodes == [])
-                throw :not_found, [nodes,"TODO"]
+                throw :not_found, [nodes,rest_creator]
               else
                 p_prev.call(next_nodes)
               end
@@ -53,7 +84,7 @@ module XML
             proc {|nodes|
               next_nodes = Accessors.subnodes_by_name(nodes,part)
               if (next_nodes == [])
-                throw :not_found, [nodes,"TODO"]
+                throw :not_found, [nodes,rest_creator]
               else
                 p_prev.call(next_nodes)
               end
@@ -81,11 +112,11 @@ module XML
     end
 
     def all(node,create=false)
-      last_nodes,remaining_path = catch(:not_found) do
+      last_nodes,rest_creator = catch(:not_found) do
         return @reader_proc.call([node])
       end
       if create
-        create(last_nodes[0],remaining_path)
+        [ rest_creator.call(last_nodes[0]) ]
       else
         []
       end
@@ -146,8 +177,9 @@ module XML
 
       def self.create_subnode_by_all(node)
         # TODO: better strategy here?
-        raise XPathError, "don't know how to create '*'" if node.elements.empty?
-        node.elements[1]
+        #   if this was an array node, for example,
+        #    we should just create nothing and return []
+        raise XPathError, "don't know how to create '*'" # if node.elements.empty?
       end
     end
   end
