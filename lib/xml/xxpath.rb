@@ -5,31 +5,49 @@ module XML
   class XPath
     def initialize(xpathstr)
       xpathstr=xpathstr[1..-1] if xpathstr[0]==?/
-      p = proc {|xmls,create,allow_nil| xmls}
-      xpathstr.split('/').each do |part|
+      p = proc {|nodes| nodes}
+      xpathstr.split('/').reverse.each do |part|
         p_prev=p
         p = case part
             when /^(.*?)\[@(.*?)='(.*?)'\]$/
               name,attr_name,attr_value = [$1,$2,$3]
-              proc {|xmls,create,allow_nil|
-                Accessors.subnodes_by_name_and_attr(p_prev.call(xmls,create,allow_nil),
-                                                    name,attr_name,attr_value, create,allow_nil)
+              proc {|nodes|
+                next_nodes = Accessors.subnodes_by_name_and_attr(nodes,
+                                                                 name,attr_name,attr_value)
+                if (next_nodes == [])
+                  throw :not_found, [nodes,"TODO"]
+                else
+                  p_prev.call(next_nodes)
+                end
               }
             when /^(.*?)\[(.*?)\]$/
               name,index = [$1,$2.to_i]
-              proc {|xmls,create,allow_nil|
-                Accessors.subnodes_by_name_and_index(p_prev.call(xmls,create,allow_nil),
-                                                     name,index, create,allow_nil)
+              proc {|nodes|
+                next_nodes = Accessors.subnodes_by_name_and_index(nodes,
+                                                                  name,index)
+                if (next_nodes == [])
+                  throw :not_found, [nodes,"TODO"]
+                else
+                  p_prev.call(next_nodes)
+                end
               }
             when '*'
-              proc {|xmls,create,allow_nil|
-              Accessors.subnodes_by_all(p_prev.call(xmls,create,allow_nil),
-                                        create,allow_nil)
+              proc {|nodes|
+                next_nodes = Accessors.subnodes_by_all(nodes)
+                if (next_nodes == [])
+                  throw :not_found, [nodes,"TODO"]
+                else
+                  p_prev.call(next_nodes)
+                end
               }
             else
-              proc {|xmls,create,allow_nil|
-                Accessors.subnodes_by_name(p_prev.call(xmls,create,allow_nil),
-                                           part,create,allow_nil)
+              proc {|nodes|
+                next_nodes = Accessors.subnodes_by_name(nodes,part)
+                if (next_nodes == [])
+                  throw :not_found, [nodes,"TODO"]
+                else
+                  p_prev.call(next_nodes)
+                end
               }
             end
       end
@@ -37,16 +55,27 @@ module XML
     end
 
 
-    def each(xml,create=false,allow_nil=false,&block)
+    def each(node,create=false,allow_nil=false,&block)
       all(xml,create,allow_nil).each(&block)
     end
 
-    def first(xml,create=false,allow_nil=false)
+    def first(node,create=false,allow_nil=false)
       all(xml,create,allow_nil)[0]
     end
 
-    def all(xml,create=false,allow_nil=false)
-      @compiled_proc.call([xml], create, allow_nil)
+    def all(node,create=false,allow_nil=false)
+      last_nodes,remaining_path = catch (:not_found) do
+        return @compiled_proc.call([node])
+      end
+      if create
+        create(last_nodes[0],remaining_path)
+      else
+        if allow_nil
+          nil
+        else
+          raise "path not found: ..."
+        end
+      end
     end
 
 
@@ -60,19 +89,19 @@ module XML
       end
 
 
-      def self.subnodes_by_name_singlesrc(node,name,create,allow_nil)
+      def self.subnodes_by_name_singlesrc(node,name)
         node.elements.select{|elt| elt.name==name}
       end
 
-      def self.subnodes_by_name_and_attr_singlesrc(node,name,attr_name,attr_value,create,allow_nil)
+      def self.subnodes_by_name_and_attr_singlesrc(node,name,attr_name,attr_value)
         node.elements.select{|elt| elt.name==name and elt.attributes[attr_name]==attr_value}
       end
 
-      def self.subnodes_by_name_and_index_singlesrc(node,name,index,create,allow_nil)
-        subnodes_by_name_singlesrc(node,name,create,allow_nil)[index-1]
+      def self.subnodes_by_name_and_index_singlesrc(node,name,index)
+        subnodes_by_name_singlesrc(node,name)[index-1]
       end
 
-      def self.subnodes_by_all_singlesrc(node,create,allow_nil)
+      def self.subnodes_by_all_singlesrc(node)
         node.elements.to_a
       end
     end
