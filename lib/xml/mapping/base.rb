@@ -174,17 +174,17 @@ module XML
       xml
     end
 
-    # This method is called by save_to_rexml immediately before it
-    # fills _self_'s state into an XML element. It *must* create and
-    # return that element (as a REXML::Element); it will then be
-    # passed to #fill_into_rexml by save_to_rexml.
+    # This method is called when _self_ is to be converted to an XML
+    # tree. It *must* create and return an XML element (as a
+    # REXML::Element); that element will then be passed to
+    # #fill_into_rexml.
     #
-    # The default implementation of this method creates a new
-    # REXML::Element whose name will be the #root_element_name of
-    # _self_'s class (see ClassMethods.root_element_name). By
-    # default, this is the class name, with capital letters converted
-    # to lowercase and preceded by a dash, e.g. "MySampleClass"
-    # becomes "my-sample-class".
+    # The default implementation of this method creates a new empty
+    # element whose name is the #root_element_name of _self_'s class
+    # (see ClassMethods.root_element_name). By default, this is the
+    # class name, with capital letters converted to lowercase and
+    # preceded by a dash, e.g. "MySampleClass" becomes
+    # "my-sample-class".
     def pre_save
       REXML::Element.new(self.class.root_element_name)
     end
