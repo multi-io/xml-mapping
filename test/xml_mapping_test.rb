@@ -11,6 +11,19 @@ end
 
 class XmlMappingTest < Test::Unit::TestCase
   def setup
+    # need to undo mapping class definitions that may have been
+    # established by other tests
+    XML::Mapping.module_eval <<-EOS
+      Classes_w_default_rootelt_names.clear
+    EOS
+    Object.send(:remove_const, "Company")
+    Object.send(:remove_const, "Address")
+    Object.send(:remove_const, "Office")
+    Object.send(:remove_const, "Customer")
+    $".delete "company.rb"
+    $:.unshift File.dirname(__FILE__)  # test/unit may have undone this (see test/unit/collector/dir.rb)
+    require 'company'
+
     @xml = REXML::Document.new(File.new(File.dirname(__FILE__) + "/fixtures/company1.xml"))
     @c = Company.load_from_xml(@xml.root)
   end
