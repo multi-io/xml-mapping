@@ -95,11 +95,11 @@ module XML
       end
       # "Real"
       # initializer. _base_path_+<tt>"/"</tt>+_per_arrelement_path_ is
-      # the XPath expression that must "yield" the mentioned sequence
-      # of XML nodes that is to be mapped to the array. _klass_ is the
-      # class of all the array's elements; it must be a mapping class,
-      # and each element of the array is mapped to the corresponding
-      # XML node in the sequence of XML nodes yielded by the XPath
+      # the XPath expression that must "yield" the sequence of XML
+      # nodes that is to be mapped to the array. _klass_ is the class
+      # of all the array's elements; it must be a mapping class, and
+      # each element of the array is mapped to the corresponding XML
+      # node in the sequence of XML nodes yielded by the XPath
       # expression.
       #
       # The difference between _base_path_ and _per_arrelement_path_

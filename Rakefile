@@ -33,9 +33,67 @@ Rake::RDocTask.new { |rdoc|
   #   this somewhat of a black art because RDocTask doesn't document the
   #   prerequisite of its rdoc task (<rdoc_dir>/index.html)
   #file rdoc.rdoc_target => ['examples/company.xml','examples/company.rb'] # private method
-  file "#{rdoc.rdoc_dir}/index.html" => ['examples/company.xml','examples/company.rb']
+  file "#{rdoc.rdoc_dir}/index.html" => ['examples/company.xml','examples/company.rb','examples/company_usage.intout']
 }
 
+rule '.intout' => '.intin.rb' do |task|
+  b = binding
+  visible=true; visible_retval=true; handle_exceptions=false
+  old_stdout = $stdout
+  old_wd = Dir.pwd
+  begin
+    File.open(task.name,"w") do |fout|
+      $stdout = fout
+      File.open(task.source,"r") do |fin|
+        Dir.chdir File.dirname(task.name)
+        fin.read.split("#<=\n").each do |snippet|
+
+          snippet.scan(/^#:(.*?):$/) do |(switch,)|
+            case switch
+            when "visible"
+              visible=true
+            when "invisible"
+              visible=false
+            when "visible_retval"
+              visible_retval=true
+            when "invisible_retval"
+              visible_retval=false
+            when "handle_exceptions"
+              handle_exceptions=true
+            when "no_exceptions"
+              handle_exceptions=false
+            end
+          end
+          snippet.gsub!(/^#:.*?:(?:\n|\z)/,'')
+
+          print "#{snippet}\n" if visible
+          exc_handled = false
+          value = begin
+                    eval(snippet,b)
+                  rescue Exception
+                    raise unless handle_exceptions
+                    exc_handled = true
+                    if visible
+                      print "#{$!.class}: #{$!}\n"
+                      for m in $@
+                        print "\tfrom #{m}\n"
+                      end
+                    end
+                  end
+          if visible and visible_retval and not exc_handled
+            print "=> #{value.inspect}\n"
+          end
+        end
+      end
+    end
+  rescue Exception
+    File.delete task.name
+    raise
+  ensure
+    $stdout = old_stdout
+    Dir.chdir old_wd
+  end
+end
 
 
 spec = Gem::Specification.new do |s|

@@ -23,54 +23,7 @@ module XML
   #
   # === usage:
   #
-  #   irb(main)> c = Company.load_from_file('company.xml')
-  #   => #<Company:0x40322ee0 @name="ACME inc.",
-  #        @customers=[#<Customer:0x4031eda4 @name="James Kirk", @id="jim">,
-  #                    #<Customer:0x4031c978 @name="Ernie", @id="ernie">,
-  #                    #<Customer:0x40319d90 @name="Bert", @id="bert">],
-  #        @address=#<Address:0x40322094 @zip=10113, @city="Berlin">>
-  #   irb(main)>
-  #   irb(main)* c.name
-  #   => "ACME inc."
-  #   irb(main)> c.customers.size
-  #   => 3
-  #   irb(main)> c.customers[1]
-  #   => #<Customer:0x4031c978 @name="Ernie", @id="ernie">
-  #   irb(main)> c.customers[1].name
-  #   => "Ernie"
-  #   irb(main)> c.customers[0].name
-  #   => "James Kirk"
-  #   irb(main)> c.customers[0].name = 'James Tiberius Kirk'
-  #   => "James Tiberius Kirk"
-  #   irb(main)* c.customers << Customer.new('cm','Cookie Monster')
-  #   => [#<Customer:0x4031eda4 @name="James Tiberius Kirk", @id="jim">,
-  #       #<Customer:0x4031c978 @name="Ernie", @id="ernie">,
-  #       #<Customer:0x40319d90 @name="Bert", @id="bert">,
-  #       #<Customer:0x4044fe30 @name="Cookie Monster", @id="cm">]
-  #   irb(main)> xml2 = c.save_to_rexml
-  #   => <company name='ACME inc.'> ... </>
-  #   irb(main)> xml2.write(STDOUT,2)
-  #   <company name='ACME inc.'>
-  #         <address>
-  #           <city>Berlin</city>
-  #           <zip>10113</zip>
-  #         </address>
-  #         <customers>
-  #           <customer id='jim'>
-  #             <name>James Tiberius Kirk</name>
-  #           </customer>
-  #           <customer id='ernie'>
-  #             <name>Ernie</name>
-  #           </customer>
-  #           <customer id='bert'>
-  #             <name>Bert</name>
-  #           </customer>
-  #           <customer id='cm'>
-  #             <name>Cookie Monster</name>
-  #           </customer>
-  #         </customers>
-  #       </company>=> #<IO:0x402f4078>
-  #   irb(main)>
+  #   :include: company_usage.intout
   #
   # So you have to include XML::Mapping into your class to turn it
   # into a "mapping class", that is, to add XML mapping capabilities
