@@ -1,10 +1,12 @@
 - write introductory text, including a small tutorial
 
-- XML::XPath: turn allow_nil, create_new etc. into keyword arguments
-
-- XML::XPath: generalize foo[@x='bar'] to foo[<any XPath expression>='bar']
+- XML::XPath: generalize foo[@x='bar'] to foo[<any XPath
+  expression>='bar'] (unless create/create_new implementation proves
+  to be too difficult, but I don't think so...)
 
 - XML::XPath: write documentation
+
+  - include design document there
 
 - XML::Mapping: add XML::Mapping::xml_to_object(xml) (or similarly
   nemed): function that creates an object from an XML tree, where the
@@ -13,3 +15,6 @@
 
   - add to ObjectNode, ArrayNode, HashNode corresponding initializers
     which don't require a _klass_ argument
+
+- Rakefile/rdoc task: generate irb session log files & include them in
+  the rdoc text(s). Pay attention to Windoze compatibility.
