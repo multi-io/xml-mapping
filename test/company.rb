@@ -1,5 +1,4 @@
 require 'xml/mapping'
-require 'xml_mapping_providerxml_nodes'
 
 # forward declarations
 class Address; end
