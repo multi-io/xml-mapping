@@ -48,10 +48,10 @@ module XML
         @klass = klass; @path = XML::XPath.new(path)
       end
       def extract_attr_value(xml) # :nodoc:
-        @klass.load_from_rexml(default_when_xpath_err{@path.first(xml)})
+        @klass.load_from_xml(default_when_xpath_err{@path.first(xml)})
       end
       def set_attr_value(xml, value) # :nodoc:
-        value.fill_into_rexml(@path.first(xml,:ensure_created=>true))
+        value.fill_into_xml(@path.first(xml,:ensure_created=>true))
       end
     end
 
@@ -142,14 +142,14 @@ module XML
       def extract_attr_value(xml) # :nodoc:
         result = []
         default_when_xpath_err{@reader_path.all(xml)}.each do |elt|
-          result << @klass.load_from_rexml(elt)
+          result << @klass.load_from_xml(elt)
         end
         result
       end
       def set_attr_value(xml, value) # :nodoc:
 	base_elt = @base_path.first(xml,:ensure_created=>true)
 	value.each do |arr_elt|
-	  arr_elt.fill_into_rexml(@per_arrelement_path.create_new(base_elt))
+	  arr_elt.fill_into_xml(@per_arrelement_path.create_new(base_elt))
 	end
       end
     end
@@ -192,7 +192,7 @@ module XML
         result = {}
         default_when_xpath_err{@reader_path.all(xml)}.each do |elt|
           key = @key_path.first(elt).text
-          value = @klass.load_from_rexml(elt)
+          value = @klass.load_from_xml(elt)
           result[key] = value
         end
         result
@@ -201,7 +201,7 @@ module XML
 	base_elt = @base_path.first(xml,:ensure_created=>true)
 	value.each_pair do |k,v|
           elt = @per_hashelement_path.create_new(base_elt)
-	  v.fill_into_rexml(elt)
+	  v.fill_into_xml(elt)
           @key_path.first(elt,:ensure_created=>true).text = k
 	end
       end

@@ -6,7 +6,7 @@ require 'company'
 class XmlMappingTest < Test::Unit::TestCase
   def setup
     @xml = REXML::Document.new(File.new(File.dirname(__FILE__) + "/fixtures/company1.xml"))
-    @c = Company.load_from_rexml(@xml.root)
+    @c = Company.load_from_xml(@xml.root)
   end
 
   def test_getter_text_node
@@ -39,19 +39,19 @@ class XmlMappingTest < Test::Unit::TestCase
 
   def test_setter_text_node
     @c.ent2 = "lalala"
-    assert_equal "lalala", REXML::XPath.first(@c.save_to_rexml, "arrtest/entry[2]").text
+    assert_equal "lalala", REXML::XPath.first(@c.save_to_xml, "arrtest/entry[2]").text
   end
 
 
   def test_setter_array_node
-    xml=@c.save_to_rexml
+    xml=@c.save_to_xml
     assert_equal ["pencils", "weapons of mass destruction"],
           XML::XPath.new("offices/office/@speciality").all(xml).map{|n|n.text}
   end
 
 
   def test_setter_hash_node
-    xml=@c.save_to_rexml
+    xml=@c.save_to_xml
     assert_equal @c.customers.keys.sort,
           XML::XPath.new("customers/customer/@id").all(@xml.root).map{|n|n.text}.sort
   end
@@ -59,21 +59,21 @@ class XmlMappingTest < Test::Unit::TestCase
 
   def test_setter_boolean_node
     @c.offices[0].classified = !@c.offices[0].classified
-    xml=@c.save_to_rexml
+    xml=@c.save_to_xml
     assert_equal @c.offices[0].classified,
           XML::XPath.new("offices/office[1]/classified").first(xml).text == "yes"
   end
 
 
   def test_root_element
-    xml=@c.save_to_rexml
+    xml=@c.save_to_xml
     assert_equal "company", xml.name
     Company.class_eval <<-EOS
         root_element_name 'my-test'
     EOS
-    xml=@c.save_to_rexml
+    xml=@c.save_to_xml
     assert_equal "my-test", xml.name
-    assert_equal "office", @c.offices[0].save_to_rexml.name
+    assert_equal "office", @c.offices[0].save_to_xml.name
   end
 
 
@@ -85,24 +85,24 @@ class XmlMappingTest < Test::Unit::TestCase
 
     assert_equal 18282, @c.offices[0].address.zip
     assert_equal 12576, @c.offices[1].address.zip
-    xml=@c.save_to_rexml
+    xml=@c.save_to_xml
     assert_equal "18282", hamburg_zip_path.first(xml).text
     assert_nil baghdad_zip_path.first(xml,:allow_nil=>true)
     @c.offices[1].address.zip = 12577
-    xml=@c.save_to_rexml
+    xml=@c.save_to_xml
     assert_equal "12577", baghdad_zip_path.first(xml).text
-    c2 = Company.load_from_rexml(xml)
+    c2 = Company.load_from_xml(xml)
     assert_equal 12577, c2.offices[1].address.zip
     @c.offices[1].address.zip = 12576
-    xml=@c.save_to_rexml
+    xml=@c.save_to_xml
     assert_nil baghdad_zip_path.first(xml,:allow_nil=>true)
 
     hamburg_address_path.first(xml).delete_element("zip")
-    c3 = Company.load_from_rexml(xml)
+    c3 = Company.load_from_xml(xml)
     assert_equal 12576, c3.offices[0].address.zip
     hamburg_address_path.first(xml).delete_element("city")
     assert_raises(XML::MappingError) {
-      Company.load_from_rexml(xml)
+      Company.load_from_xml(xml)
     }
   end
 
@@ -115,10 +115,10 @@ class XmlMappingTest < Test::Unit::TestCase
           @c.offices[0].address.street
 
     hamburg_address_path.first(@xml.root).delete_element("street")
-    c2 = Company.load_from_rexml(@xml.root)
+    c2 = Company.load_from_xml(@xml.root)
     assert_nil c2.offices[0].address.street
 
-    xml2=c2.save_to_rexml
+    xml2=c2.save_to_xml
     assert_nil hamburg_street_path.first(xml2,:allow_nil=>true)
   end
 

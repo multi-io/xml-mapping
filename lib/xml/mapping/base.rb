@@ -96,7 +96,7 @@ module XML
     # object's class are processed (i.e. have their
     # #xml_to_obj method called) in the order of their definition
     # inside the class, then #post_load is called.
-    def fill_from_rexml(xml)
+    def fill_from_xml(xml)
       pre_load(xml)
       self.class.xml_mapping_nodes.each do |node|
         node.xml_to_obj self, xml
@@ -129,7 +129,7 @@ module XML
     # (i.e. have their
     # #obj_to_xml method called) in the order of their definition
     # inside the class.
-    def fill_into_rexml(xml)
+    def fill_into_xml(xml)
       self.class.xml_mapping_nodes.each do |node|
         node.obj_to_xml self,xml
       end
@@ -138,11 +138,11 @@ module XML
     # Fill _self_'s state into a new xml node, return that
     # node.
     #
-    # This method calls #pre_save, then #fill_into_rexml, then
+    # This method calls #pre_save, then #fill_into_xml, then
     # #post_save.
-    def save_to_rexml
+    def save_to_xml
       xml = pre_save
-      fill_into_rexml(xml)
+      fill_into_xml(xml)
       post_save(xml)
       xml
     end
@@ -150,7 +150,7 @@ module XML
     # This method is called when _self_ is to be converted to an XML
     # tree. It *must* create and return an XML element (as a
     # REXML::Element); that element will then be passed to
-    # #fill_into_rexml.
+    # #fill_into_xml.
     #
     # The default implementation of this method creates a new empty
     # element whose name is the #root_element_name of _self_'s class
@@ -171,9 +171,9 @@ module XML
 
 
     # Save _self_'s state as XML into the file named _filename_.
-    # The XML is obtained by calling #save_to_rexml.
+    # The XML is obtained by calling #save_to_xml.
     def save_to_file(filename)
-      xml = save_to_rexml
+      xml = save_to_xml
       File.open(filename,"w") do |f|
         xml.write(f,2)
       end
@@ -194,7 +194,7 @@ module XML
     # object will handle all XML marshalling/unmarshalling for this
     # node, for all instances of the mapping class. For this purpose,
     # the marshalling and unmarshalling methods of a mapping class
-    # instance (fill_into_rexml and fill_from_rexml, respectively)
+    # instance (fill_into_xml and fill_from_xml, respectively)
     # will call obj_to_xml resp. xml_to_obj on all nodes of the
     # mapping class, in the order of their definition, passing the
     # REXML element the data is to be marshalled to/unmarshalled from
@@ -420,21 +420,21 @@ module XML
       end
 
       # Create a new instance of this class from the XML contained in
-      # the file named _filename_. Calls load_from_rexml internally.
+      # the file named _filename_. Calls load_from_xml internally.
       def load_from_file(filename)
         xml = REXML::Document.new(File.new(filename))
-        load_from_rexml(xml.root)
+        load_from_xml(xml.root)
       end
 
       # Create a new instance of this class from the XML contained in
       # _xml_ (a REXML::Element).
       #
-      # Allocates a new object, then calls fill_from_rexml(_xml_) on
+      # Allocates a new object, then calls fill_from_xml(_xml_) on
       # it.
-      def load_from_rexml(xml)
+      def load_from_xml(xml)
         obj = self.allocate
         obj.initialize_xml_mapping
-        obj.fill_from_rexml(xml)
+        obj.fill_from_xml(xml)
         obj
       end
 
@@ -449,7 +449,7 @@ module XML
       # method).
       #
       # The root element name is the name of the root element of the
-      # XML tree returned by <this class>.#save_to_rexml (or, more
+      # XML tree returned by <this class>.#save_to_xml (or, more
       # specifically, <this class>.#pre_save). By default, this method
       # returns the #default_root_element_name; you may call this
       # method with an argument to set the root element name to
