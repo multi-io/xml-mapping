@@ -10,6 +10,6 @@ c.customers[1].name #<=
 c.customers[0].name #<=
 c.customers[0].name = 'James Tiberius Kirk' #<=
 c.customers << Customer.new('cm','Cookie Monster') #<=
-xml2 = c.save_to_rexml #<=
+xml2 = c.save_to_xml #<=
 #:invisible_retval:
 xml2.write($stdout,2) #<=

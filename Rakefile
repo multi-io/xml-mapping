@@ -36,7 +36,8 @@ Rake::RDocTask.new { |rdoc|
   file "#{rdoc.rdoc_dir}/index.html" => ['examples/company.xml','examples/company.rb','examples/company_usage.intout']
 }
 
-rule '.intout' => '.intin.rb' do |task|
+#rule '.intout' => ['.intin.rb', *FileList.new("lib/**/*.rb")] do |task|  # doesn't work -- see below
+rule '.intout' => ['.intin.rb'] do |task|
   b = binding
   visible=true; visible_retval=true; handle_exceptions=false
   old_stdout = $stdout
@@ -87,6 +88,8 @@ rule '.intout' => '.intin.rb' do |task|
       end
     end
   rescue Exception
+    $stdout = old_stdout
+    Dir.chdir old_wd
     File.delete task.name
     raise
   ensure
@@ -94,6 +97,11 @@ rule '.intout' => '.intin.rb' do |task|
     Dir.chdir old_wd
   end
 end
+
+# have to add additional prerequisites manually because it appears
+# that rules can only define a single prerequisite :-\
+file "examples/company_usage.intout" => "examples/company_usage.intin.rb"
+file "examples/company_usage.intout" => FileList.new("lib/**/*.rb")
 
 
 spec = Gem::Specification.new do |s|
