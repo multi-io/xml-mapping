@@ -27,6 +27,9 @@ module XML
       self.class.object_nodes.each_pair do |attrname,(klass,path)|
         self.send "#{attrname}=".intern, klass.load_from_rexml(path.first(xml))
       end
+      self.class.boolean_nodes.each_pair do |attrname,(path,true_value,false_value)|
+        self.send "#{attrname}=".intern, path.first(xml)==true_value
+      end
       self.class.array_nodes.each_pair do |attrname,(klass,path)|
         arr = self.send "#{attrname}=".intern, []
         path.all(xml).each do |elt|
@@ -97,7 +100,8 @@ module XML
       end
 
 
-      attr_accessor :text_nodes, :int_nodes, :object_nodes, :array_nodes, :hash_nodes
+      attr_accessor :text_nodes, :int_nodes,
+        :object_nodes, :array_nodes, :hash_nodes, :boolean_nodes
 
       def xmlmapping_init
         @text_nodes = {}
@@ -105,6 +109,7 @@ module XML
         @object_nodes = {}
         @array_nodes = {}
         @hash_nodes = {}
+        @boolean_nodes = {}
       end
 
 
@@ -133,8 +138,9 @@ module XML
         add_accessor attrname
       end
 
-      def boolean_node(*args)
-        #TODO
+      def boolean_node(attrname,path,true_value,false_value)
+        boolean_nodes[attrname] = [XML::XPath.new(path),true_value,false_value]
+        add_accessor attrname
       end
 
       def comma_separated_strings_node(*args)
