@@ -130,12 +130,12 @@ module XML
       def initialize(owner,attrname,klass,path,path2=nil)
 	super(owner)
 	if path2
-	  do_initialize(owner,attrname,klass,path,path2)
+	  do_initialize(attrname,klass,path,path2)
 	else
-	  do_initialize(owner,attrname,klass,"",path)
+	  do_initialize(attrname,klass,"",path)
 	end
       end
-      def do_initialize(owner,attrname,klass,base_path,per_arrelement_path)
+      def do_initialize(attrname,klass,base_path,per_arrelement_path)
         @attrname = attrname; @klass = klass;
 	per_arrelement_path=per_arrelement_path[1..-1] if per_arrelement_path[0]==?/
 	@base_path = XML::XPath.new(base_path)
@@ -157,22 +157,37 @@ module XML
     end
 
     class HashNode < Node
-      def initialize(owner,attrname,klass,path,key_path)
+      def initialize(owner,attrname,klass,path1,path2,path3=nil)
         super(owner)
+        if path3
+          do_initialize(attrname,klass,path1,path2,path3)
+        else
+          do_initialize(attrname,klass,"",path1,path2)
+        end
+      end
+      def do_initialize(attrname,klass,base_path,per_hashelement_path,key_path)
         @attrname = attrname; @klass = klass;
-	@path = XML::XPath.new(path)
+	per_hashelement_path=per_hashelement_path[1..-1] if per_hashelement_path[0]==?/
+	@base_path = XML::XPath.new(base_path)
+	@per_hashelement_path = XML::XPath.new(per_hashelement_path)
 	@key_path = XML::XPath.new(key_path)
+	@reader_path = XML::XPath.new(base_path+"/"+per_hashelement_path)
       end
       def xml_to_obj(obj,xml)
         hash = obj.send "#{@attrname}=".intern, {}
-        @path.all(xml).each do |elt|
+        @reader_path.all(xml).each do |elt|
           key = @key_path.first(elt).text
           value = @klass.load_from_rexml(elt)
           hash[key] = value
         end
       end
       def obj_to_xml(obj,xml)
-        # TODO
+	base_elt = @base_path.first(xml,true)
+	obj.send(:"#{@attrname}").each_pair do |k,v|
+          elt = @per_hashelement_path.create_new(base_elt)
+	  v.fill_into_rexml(elt)
+          @key_path.first(elt,true).text = k
+	end
       end
     end
 
@@ -214,8 +229,8 @@ module XML
         add_accessor attrname
       end
 
-      def hash_node(attrname,klass,path,key_path)
-        HashNode.new(self,attrname,klass,path,key_path)
+      def hash_node(attrname,klass,path1,path2,path3=nil)
+        HashNode.new(self,attrname,klass,path1,path2,path3)
         add_accessor attrname
       end
 
