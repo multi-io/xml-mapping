@@ -21,36 +21,38 @@ class XPathTest < Test::Unit::TestCase
   end
 
   def test_read_byname
-    foores = XML::XPath.new("foo").all(@d.root)
-    assert_equal @d.root.elements.to_a("foo"), foores
-
-    fooures = XML::XPath.new("foo/u").all(@d.root)
-    assert_equal @d.root.elements.to_a("foo")[1].elements.to_a("u"), fooures
+    assert_equal @d.root.elements.to_a("foo"), XML::XPath.new("foo").all(@d.root)
+    assert_equal @d.root.elements.to_a("foo")[1].elements.to_a("u"), XML::XPath.new("foo/u").all(@d.root)
+    assert_equal [], XML::XPath.new("foo/notthere").all(@d.root)
   end
 
 
   def test_read_byidx
     assert_equal [@d.root.elements[1]], XML::XPath.new("foo[1]").all(@d.root)
     assert_equal [@d.root.elements[3]], XML::XPath.new("foo[2]").all(@d.root)
+    assert_equal [], XML::XPath.new("foo[10]").all(@d.root)
+    assert_equal [], XML::XPath.new("foo[3]").all(@d.root)
   end
 
 
   def test_read_byall
     assert_equal @d.root.elements.to_a, XML::XPath.new("*").all(@d.root)
+    assert_equal [], XML::XPath.new("notthere/*").all(@d.root)
   end
 
 
   def test_read_byattr
     assert_equal [@d.root.elements[3]], XML::XPath.new("foo[@key='xy']").all(@d.root)
+    assert_equal [], XML::XPath.new("foo[@key='notthere']").all(@d.root)
+    assert_equal [], XML::XPath.new("notthere[@key='xy']").all(@d.root)
   end
 
 
   def test_read_byidx_then_name
     assert_equal [@d.root.elements[3].elements[1]], XML::XPath.new("foo[2]/u").all(@d.root)
-  end
-
-  def test_read_notfound
     assert_equal [], XML::XPath.new("foo[2]/notthere").all(@d.root)
+    assert_equal [], XML::XPath.new("notthere[2]/u").all(@d.root)
+    assert_equal [], XML::XPath.new("foo[3]/u").all(@d.root)
   end
 
   def test_read_first

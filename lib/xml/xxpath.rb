@@ -144,7 +144,13 @@ module XML
       end
 
       def self.subnodes_by_name_and_index_singlesrc(node,name,index)
-        subnodes_by_name_singlesrc(node,name)[index-1]
+        index-=1
+        byname=subnodes_by_name_singlesrc(node,name)
+        if index>=byname.size
+          []
+        else
+          [byname[index]]
+        end
       end
 
       def self.subnodes_by_all_singlesrc(node)
