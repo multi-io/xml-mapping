@@ -3,6 +3,12 @@ require File.dirname(__FILE__)+"/tests_init"
 require 'test/unit'
 require 'company'
 
+module XML::Mapping
+  def ==(other)
+    Marshal.dump(self) == Marshal.dump(other)
+  end
+end
+
 class XmlMappingTest < Test::Unit::TestCase
   def setup
     @xml = REXML::Document.new(File.new(File.dirname(__FILE__) + "/fixtures/company1.xml"))
@@ -66,14 +72,34 @@ class XmlMappingTest < Test::Unit::TestCase
 
 
   def test_root_element
+    assert_equal @c, XML::Mapping.load_object_from_file(File.dirname(__FILE__) + "/fixtures/company1.xml")
+    assert_equal @c, XML::Mapping.load_object_from_xml(@xml.root)
+
+    assert_equal "company", Company.root_element_name
+    assert_equal Company, XML::Mapping.class_for_root_elt_name("company")
     xml=@c.save_to_xml
     assert_equal "company", xml.name
+    # Company.root_element_name 'my-test'
     Company.class_eval <<-EOS
         root_element_name 'my-test'
     EOS
+    assert_equal "my-test", Company.root_element_name
+    assert_equal Company, XML::Mapping.class_for_root_elt_name("my-test")
+    assert_nil XML::Mapping.class_for_root_elt_name("company")
     xml=@c.save_to_xml
     assert_equal "my-test", xml.name
     assert_equal "office", @c.offices[0].save_to_xml.name
+
+    assert_raises(XML::MappingError) {
+      XML::Mapping.load_object_from_xml @xml.root
+    }
+    @xml.root.name = 'my-test'
+    assert_equal @c, XML::Mapping.load_object_from_xml(@xml.root)
+
+    # white-box tests
+    assert_equal [["my-test", Company]], XML::Mapping::Classes_w_nondefault_rootelt_names.sort
+    assert_equal [["address", Address], ["customer", Customer], ["office", Office]],
+          XML::Mapping::Classes_w_default_rootelt_names.sort
   end
 
 

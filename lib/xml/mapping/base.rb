@@ -67,10 +67,26 @@ module XML
   # elements/documents in memory.
   module Mapping
 
+    # can't really use class variables for these because they must be
+    # shared by all class methods mixed into classes by including
+    # Mapping. See
+    # http://user.cs.tu-berlin.de/~klischat/mydocs/ruby/mixin_class_methods_global_state.txt.html
+    # for a more detailed discussion.
+    Classes_w_default_rootelt_names = {}     #:nodoc:
+    Classes_w_nondefault_rootelt_names = {}  #:nodoc:
+
     def self.append_features(base) #:nodoc:
       super
       base.extend(ClassMethods)
       base.xmlmapping_init
+      Classes_w_default_rootelt_names[base.default_root_element_name] = base
+    end
+
+
+    # TODO: implement Hash read-only instead of this interface
+    def self.class_for_root_elt_name(name)
+      Classes_w_nondefault_rootelt_names[name] ||
+        Classes_w_default_rootelt_names[name]
     end
 
 
@@ -411,6 +427,7 @@ module XML
     # The instance methods of this module are automatically added as
     # class methods to a class that includes XML::Mapping.
     module ClassMethods
+    #ClassMethods = Module.new do  # this is the alterbative -- but see above for peculiarities
 
       # Add getter and setter methods for a new attribute named _name_
       # (a string) to this class. This is a convenience method
@@ -458,7 +475,15 @@ module XML
       # method with an argument to set the root element name to
       # something other than the default.
       def root_element_name(name=nil)
-        @root_element_name = name if name
+        if name
+          Classes_w_nondefault_rootelt_names.delete(root_element_name)
+          Classes_w_default_rootelt_names.delete(root_element_name)
+          Classes_w_default_rootelt_names.delete(name)
+
+          @root_element_name = name
+
+          Classes_w_nondefault_rootelt_names[name]=self
+        end
         @root_element_name || default_root_element_name
       end
 
@@ -471,6 +496,20 @@ module XML
         self.name.split('::')[-1].gsub(/^(.)/){$1.downcase}.gsub(/(.)([A-Z])/){$1+"-"+$2.downcase}
       end
 
+    end
+
+
+
+    def self.load_object_from_xml(xml)
+      unless c = class_for_root_elt_name(xml.name)
+        raise MappingError, "no mapping class for root element name #{xml.name}"
+      end
+      c.load_from_xml(xml)
+    end
+
+    def self.load_object_from_file(filename)
+      xml = REXML::Document.new(File.new(filename))
+      load_object_from_xml(xml.root)
     end
 
   end
