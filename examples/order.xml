@@ -29,20 +29,20 @@
     <UnitPrice>0.85</UnitPrice>
   </Item>
 
-  <Signatures>
-    <Signed-By>
+  <Signed-By>
+    <Signature>
       <Name>John Doe</Name>
       <Position>product manager</Position>
-    </Signed-By>
+    </Signature>
     
-    <Signed-By>
+    <Signature>
       <Name>Jill Smith</Name>
       <Position>clerk</Position>
-    </Signed-By>
+    </Signature>
 
-    <Signed-By>
+    <Signature>
       <Name>Miles O'Brien</Name>
-    </Signed-By>
-  </Signatures>
+    </Signature>
+  </Signed-By>
 
 </Order>

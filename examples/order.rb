@@ -13,7 +13,7 @@ class Order
   text_node :reference, "@reference"
   object_node :client, Client, "Client"
   hash_node :items, Item, "Item", "@reference"
-  array_node :signatures, Signature, "Signatures", "Signed-By", :optional=>true, :default_value=>[]
+  array_node :signatures, Signature, "Signed-By", "Signature", :optional=>true, :default_value=>[]
 
   def total_price
     items.values.map{|i| i.total_price}.inject(0){|x,y|x+y}

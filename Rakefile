@@ -38,6 +38,7 @@ Rake::RDocTask.new { |rdoc|
                                          'examples/company_usage.intout',
                                          'examples/order_usage.intout'
                                         ]
+  file "#{rdoc.rdoc_dir}/index.html" => FileList.new("examples/**/*.rb")
 }
 
 #rule '.intout' => ['.intin.rb', *FileList.new("lib/**/*.rb")] do |task|  # doesn't work -- see below
