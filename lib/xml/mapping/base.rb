@@ -17,6 +17,13 @@ module XML
       self.class.text_nodes.each_pair do |attrname,path|
         self.send "#{attrname}=".intern, path.first(xml).text
       end
+      self.class.int_nodes.each_pair do |attrname,(path,opts)|
+        begin
+          self.send "#{attrname}=".intern, path.first(xml).text.to_i
+        rescue XML::XPathError
+          raise unless opts[:optional]
+        end
+      end
       self.class.object_nodes.each_pair do |attrname,(klass,path)|
         self.send "#{attrname}=".intern, klass.load_from_rexml(path.first(xml))
       end
@@ -82,10 +89,11 @@ module XML
       end
 
 
-      attr_accessor :text_nodes, :object_nodes, :array_nodes
+      attr_accessor :text_nodes, :int_nodes, :object_nodes, :array_nodes
 
       def xmlmapping_init
         @text_nodes = {}
+        @int_nodes = {}
         @object_nodes = {}
         @array_nodes = {}
       end
@@ -106,16 +114,21 @@ module XML
         add_accessor attrname
       end
 
-      def int_node(*args)
+      def int_node(attrname,path,opts={})
+        int_nodes[attrname] = [XML::XPath.new(path),opts]
+        add_accessor attrname
       end
 
       def boolean_node(*args)
+        #TODO
       end
 
       def comma_separated_strings_node(*args)
+        #TODO
       end
 
       def boolean_presence_node(*args)
+        #TODO
       end
     end
 
