@@ -3,6 +3,9 @@ require "xml/xpath"
 
 module XML
 
+  class MappingError < RuntimeError
+  end
+
   # This is the central interface module of the xml-mapping library.
   #
   # Including this module in your classes adds XML mapping
@@ -373,7 +376,14 @@ module XML
       # called if the attribute has the :default_value)
       def obj_to_xml(obj,xml)
         value = obj.send(:"#{@attrname}")
-        unless (@options[:optional] and value.equal?(@options[:default_value]))
+        if @options[:optional]
+          unless value.equal?(@options[:default_value])
+            set_attr_value(xml, value)
+          end
+        else
+          if value == nil
+            raise XML::MappingError, "no value, and no default value, for attribute #{@attrname}"
+          end
           set_attr_value(xml, value)
         end
       end
