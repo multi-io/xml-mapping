@@ -1,6 +1,9 @@
 
 module XML
 
+  class XPathError < RuntimeError
+  end
+
   # incredibly incomplete. Only implements what I need right now.
   class XPath
     def initialize(xpathstr)
@@ -51,35 +54,43 @@ module XML
               }
             end
       end
-      @compiled_proc = p
+      @reader_proc = p
     end
 
 
     def each(node,create=false,allow_nil=false,&block)
-      all(xml,create,allow_nil).each(&block)
+      all(node,create,allow_nil).each(&block)
     end
 
     def first(node,create=false,allow_nil=false)
-      all(xml,create,allow_nil)[0]
+      a=all(node,create)
+      if a.empty?
+        if allow_nil
+          nil
+        else
+          raise XPathError, "no such path: ..."
+        end
+      else
+        a[0]
+      end
     end
 
-    def all(node,create=false,allow_nil=false)
-      last_nodes,remaining_path = catch (:not_found) do
-        return @compiled_proc.call([node])
+    def all(node,create=false)
+      last_nodes,remaining_path = catch(:not_found) do
+        return @reader_proc.call([node])
       end
       if create
         create(last_nodes[0],remaining_path)
       else
-        if allow_nil
-          nil
-        else
-          raise "path not found: ..."
-        end
+        []
       end
     end
 
 
     module Accessors
+
+      # read accessors
+
       for things in %w{name name_and_attr name_and_index all} do
         self.module_eval <<-EOS
           def self.subnodes_by_#{things}(nodes, *args)
@@ -87,7 +98,6 @@ module XML
           end
         EOS
       end
-
 
       def self.subnodes_by_name_singlesrc(node,name)
         node.elements.select{|elt| elt.name==name}
@@ -103,6 +113,34 @@ module XML
 
       def self.subnodes_by_all_singlesrc(node)
         node.elements.to_a
+      end
+
+
+      # write accessors
+
+      def self.create_subnode_by_name(node,name)
+        node.elements.add name
+      end
+
+      def self.create_subnode_by_name_and_attr(node,name,attr_name,attr_value)
+        newnode = subnodes_by_name_singlesrc(node,name)[0] || node.elements.add(name)
+        newnode.attributes[attr_name]=attr_value
+        newnode
+      end
+
+      def self.create_subnode_by_name_and_index(node,name,index)
+        name_matches = subnodes_by_name_singlesrc(node,name)
+        newnode = name_matches[0]
+        (index-name_matches.size).times do
+          newnode = node.elements.add name
+        end
+        newnode
+      end
+
+      def self.create_subnode_by_all(node)
+        # TODO: better strategy here?
+        raise XPathError, "don't know how to create '*'" if node.elements.empty?
+        node.elements[1]
       end
     end
   end
