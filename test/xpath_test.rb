@@ -140,9 +140,15 @@ class XPathTest < Test::Unit::TestCase
   def test_write_byname_and_attr
     node1 = XML::XPath.new("hiho[@blubb='bla']").first(@d.root,:ensure_created=>true)
     node2 = XML::XPath.new("hiho[@blubb='bla']").first(@d.root,:ensure_created=>true)
+    node3 = XML::XPath.new("hiho[@blubb2='bla2']").first(@d.root,:ensure_created=>true)
     assert_equal node1, node2
+    assert_equal node2, node3
     assert_equal "hiho", node1.name
+    assert_equal 4, @d.root.elements.size
     assert_equal @d.root.elements[4], node1
+    assert_equal @d.root.elements[4], node3
+    assert_equal 'bla', node3.attributes['blubb']
+    assert_equal 'bla2', node3.attributes['blubb2']
   end
 
 
@@ -236,10 +242,13 @@ class XPathTest < Test::Unit::TestCase
   def test_create_new_byname_and_attr
     node1 = XML::XPath.new("hiho[@blubb='bla']").create_new(@d.root)
     node2 = XML::XPath.new("hiho[@blubb='bla']").create_new(@d.root)
+    node3 = XML::XPath.new("hiho[@blubb2='bla']").create_new(@d.root)
     assert_equal "hiho", node1.name
     assert_equal "hiho", node2.name
     assert_equal @d.root.elements[4], node1
     assert_equal @d.root.elements[5], node2
+    assert_equal @d.root.elements[6], node3
+    assert_not_equal @d.root.elements[5], node1
   end
 
 end
