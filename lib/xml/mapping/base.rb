@@ -12,72 +12,11 @@ module XML
   #
   # === Input document:
   #
-  #   <?xml version="1.0" encoding="ISO-8859-1"?>
-  #
-  #   <company name="ACME inc.">
-  #
-  #       <address>
-  #         <city>Berlin</city>
-  #         <zip>10113</zip>
-  #       </address>
-  #
-  #       <customers>
-  #
-  #         <customer id="jim">
-  #           <name>James Kirk</name>
-  #         </customer>
-  #
-  #         <customer id="ernie">
-  #           <name>Ernie</name>
-  #         </customer>
-  #
-  #         <customer id="bert">
-  #           <name>Bert</name>
-  #         </customer>
-  #
-  #       </customers>
-  #
-  #   </company>
+  #   :include: company.xml
   #
   # === mapping class declaration:
   #
-  #   require 'xml/mapping'
-  #
-  #   # forward declarations
-  #   class Address; end
-  #   class Customer; end
-  #
-  #
-  #   class Company
-  #     include XML::Mapping
-  #
-  #     text_node :name, "@name"
-  #
-  #     object_node :address, Address, "address"
-  #
-  #     array_node :customers, Customer, "customers", "customer"
-  #   end
-  #
-  #
-  #   class Address
-  #     include XML::Mapping
-  #
-  #     text_node :city, "city"
-  #     int_node :zip, "zip"
-  #   end
-  #
-  #
-  #   class Customer
-  #     include XML::Mapping
-  #
-  #     text_node :id, "@id"
-  #     text_node :name, "name"
-  #
-  #     def initialize(id,name)
-  #       @id,@name = [id,name]
-  #     end
-  #   end
-  #
+  #   :include: company.rb
   #
   # === usage:
   #
@@ -131,22 +70,41 @@ module XML
   #   irb(main)>
   #
   # So, in addition to the class and instance methods described below,
-  # you'll get one class methods like 'text_node', 'array_node' and so
-  # on, that is, one class method for each registered /node
-  # type/. Node types are classes deriving from XML::Mapping::Node;
-  # they're registered via add_node_class.  Several node types
-  # (TextNode, BooleanNode, IntNode, ObjectNode, ArrayNode, HashNode)
-  # are automatically registered by xml/mapping.rb; you can easily
-  # write your own ones.
+  # you'll get class methods like 'text_node', 'array_node' and so on,
+  # that is, one class method for each registered <em>node
+  # type</em>. Node types are classes derived from
+  # XML::Mapping::Node; they're registered via #add_node_class.
+  # Several node types (TextNode, BooleanNode, IntNode, ObjectNode,
+  # ArrayNode, HashNode) are automatically registered by
+  # xml/mapping.rb; you can easily write your own ones.
+  #
+  # Including XML::Mapping also adds all methods of
+  # XML::Mapping::ClassMethods to your class (as class methods).
+  #
+  # As you may have noticed from the example, the node factory methods
+  # generally use XPath expressions to specify locations in the mapped
+  # XML document. To make this work, XML::Mapping relies on
+  # XML::XPath, which implements a subset of XPath, but also provides
+  # write access, which is needed by the node types to support writing
+  # objects back to XML. Both XML::Mapping and XML::XPath use REXML
+  # (http://www.germane-software.com/software/rexml/) to represent XML
+  # elements/documents in memory.
   module Mapping
 
-    def self.append_features(base)
+    def self.append_features(base) #:nodoc:
       super
       base.extend(ClassMethods)
       base.xmlmapping_init
     end
 
 
+    # "fill" the contents of _xml_ into _self_. _xml_ is a
+    # REXML::Element or REXML::Document.
+    #
+    # First, pre_load(_xml_) is called, then all the nodes for this
+    # object's class are processed (i.e. have their
+    # #xml_to_obj method called) in the order of their definition
+    # inside the class, then #post_load is called.
     def fill_from_rexml(xml)
       pre_load(xml)
       self.class.xml_mapping_nodes.each do |node|
@@ -155,19 +113,40 @@ module XML
       post_load
     end
 
+    # This method is called immediately before _self_ is filled
+    # from an xml source. _xml_ is the source REXML::Element or
+    # REXML::Document.
+    #
+    # The default implementation of this method is empty.
     def pre_load(xml)
     end
 
+    
+    # This method is called immediately after _self_ has been
+    # filled from an xml source. You may set up additional field
+    # values here, for example.
+    #
+    # The default implementation of this method is empty.
     def post_load
     end
 
 
+    # Fill _self_'s state into the xml node (REXML::Element or
+    # REXML::Document) _xml_. All the nodes for this
+    # object's class are processed (i.e. have their
+    # #obj_to_xml method called) in the order of their definition
+    # inside the class.
     def fill_into_rexml(xml)
       self.class.xml_mapping_nodes.each do |node|
         node.obj_to_xml self,xml
       end
     end
 
+    # Fill _self_'s state into a new xml node, return that
+    # node.
+    #
+    # This method calls #pre_save, then #fill_into_rexml, then
+    # #post_save.
     def save_to_rexml
       xml = pre_save
       fill_into_rexml(xml)
@@ -175,14 +154,29 @@ module XML
       xml
     end
 
+    # This method is called immediately before _self_'s state is
+    # filled into an XML element. It *must* return a new
+    # REXML::Element, which will then be passed to #fill_into_rexml.
+    #
+    # The default implementation of this method creates a new
+    # REXML::Element whose name will be the #root_element_name of
+    # _self_'s class. By default, this is the class name, with capital
+    # letters converted to lowercase and preceded by a dash,
+    # e.g. "MySampleClass" becomes "my-sample-class".
     def pre_save
       REXML::Element.new(self.class.root_element_name)
     end
 
+    # This method is called immediately after _self_'s state has been
+    # filled into an XML element.
+    #
+    # The default implementation does nothing.
     def post_save(xml)
     end
 
 
+    # Save _self_'s state (generated by calling #save_to_rexml) as XML
+    # into the file named _filename_.
     def save_to_file(filename)
       xml = save_to_rexml
       File.open(filename,"w") do |f|
@@ -230,18 +224,45 @@ module XML
     end
 
 
+    # Registers the new node class _c_ (must be a descendant of Node)
+    # with the xml-mapping framework.
+    #
+    # A new "factory method" will be automatically added to
+    # ClassMethods (and therefore to all classes that include
+    # XML::Mapping from now on); so you can call it from the body of
+    # your mapping class definition in order to create nodes of type
+    # _c_. The name of the factory method is derived by "underscoring"
+    # the (unqualified) name of _c_; e.g. _c_==+Foo::Bar::MyNiftyNode+
+    # will result in the creation of a factory method named
+    # +my_nifty_node+. The generated factory method creates and
+    # returns a new instance of _c_. The list of argument to _c_.new
+    # consists of _self_ (i.e. this class) followed by the arguments
+    # passed to the factory method. You should always use the factory
+    # methods to create instances of node classes; you should never
+    # need to call a node class's constructor directly.
+    #
+    # For a demonstration, see the calls to +text_node+, +array_node+
+    # etc. in the examples along with the corresponding node classes
+    # TextNode, ArrayNode etc. (these predefined node classes are in
+    # no way "special"; they're added using add_node_class in
+    # mapping.rb just like any custom node classes would be.
     def self.add_node_class(c)
       meth_name = c.name.split('::')[-1].gsub(/^(.)/){$1.downcase}.gsub(/(.)([A-Z])/){$1+"_"+$2.downcase}
       ClassMethods.module_eval <<-EOS
-        def #{meth_name}(attrname,*args)
-          #{c.name}.new(self,attrname,*args)
+        def #{meth_name}(*args)
+          #{c.name}.new(self,*args)
         end
       EOS
     end
 
 
+    # The instance methods of this module are automatically added as
+    # class methods to a class that includes XML::Mapping.
     module ClassMethods
 
+      # Add getter and setter methods for a new attribute named _name_
+      # (a string) to this class. This is a convenience method
+      # intended to be called from Node class initializers.
       def add_accessor(name)
         name = name.id2name if name.kind_of? Symbol
         self.module_eval <<-EOS
@@ -249,29 +270,50 @@ module XML
         EOS
       end
 
+      # Create a new instance of this class from the XML contained in
+      # the file named _filename_. Calls load_from_rexml internally.
       def load_from_file(filename)
         xml = REXML::Document.new(File.new(filename))
         load_from_rexml(xml.root)
       end
 
+      # Create a new instance of this class from the XML contained in
+      # _xml_ (a REXML::Element or REXML::Document).
+      #
+      # Allocates a new object, then calls fill_from_rexml(_xml_) on
+      # it.
       def load_from_rexml(xml)
-        obj = self.new
+        obj = self.allocate
         obj.fill_from_rexml(xml)
         obj
       end
 
       attr_accessor :xml_mapping_nodes
 
-      def xmlmapping_init
+      def xmlmapping_init  #:nodoc:
         @xml_mapping_nodes = []
       end
 
 
+      # The "root element name" of this class (combined getter/setter
+      # method).
+      #
+      # The root element name is the name of the root element of the
+      # XML tree returned by <this class>.#save_to_rexml (or, more
+      # specifically, <this class>.#pre_save). By default, this method
+      # returns the #default_root_element_name; you may call this
+      # method with an argument to set the root element name to
+      # something other than the default.
       def root_element_name(name=nil)
         @root_element_name = name if name
         @root_element_name || default_root_element_name
       end
 
+
+      # The default root element name for this class. Equals the class
+      # name, with all parent module names stripped, and with capital
+      # letters converted to lowercase and preceded by a dash;
+      # e.g. "Foo::Bar::MySampleClass" becomes "my-sample-class".
       def default_root_element_name
         self.name.split('::')[-1].gsub(/^(.)/){$1.downcase}.gsub(/(.)([A-Z])/){$1+"-"+$2.downcase}
       end
