@@ -83,24 +83,23 @@ module XML
   # them "node factory methods". More precisely, there is one node
   # factory method for each registered <em>node type</em>. Node types
   # are classes derived from XML::Mapping::Node; they're registered
-  # via
-  # #add_node_class.  The node types TextNode, BooleanNode, IntNode,
-  # ObjectNode, ArrayNode, and HashNode are automatically registered
-  # by xml/mapping.rb; you can easily write your own ones. The name of
-  # a node factory method is inferred by 'underscoring' the name of
-  # the corresponding node type; e.g. 'TextNode' becomes
-  # 'text_node'. Each node factory method creates an instance of the
-  # corresponding node type and adds it to the mapping class (not its
-  # instances). The arguments to a node factory method are
-  # automatically turned into arguments to the corresponding node
-  # type's initializer. So, in order to learn more about the meaning
-  # of a node factory method's parameters, you read the documentation
-  # of the corresponding node type. All predefined node types expect
-  # as their first argument a symbol that names an r/w attribute which
-  # will be added to the mapping class. The mapping class is a normal
-  # Ruby class; you can add constructors, methods and attributes to
-  # it, derive from it, derive it from another class, include
-  # additional modules etc.
+  # with the xml-mapping library via XML::Mapping.add_node_class.  The
+  # node types TextNode, BooleanNode, IntNode, ObjectNode, ArrayNode,
+  # and HashNode are automatically registered by xml/mapping.rb; you
+  # can easily write your own ones. The name of a node factory method
+  # is inferred by 'underscoring' the name of the corresponding node
+  # type; e.g. 'TextNode' becomes 'text_node'. Each node factory
+  # method creates an instance of the corresponding node type and adds
+  # it to the mapping class (not its instances). The arguments to a
+  # node factory method are automatically turned into arguments to the
+  # corresponding node type's initializer. So, in order to learn more
+  # about the meaning of a node factory method's parameters, you read
+  # the documentation of the corresponding node type. All predefined
+  # node types expect as their first argument a symbol that names an
+  # r/w attribute which will be added to the mapping class. The
+  # mapping class is a normal Ruby class; you can add constructors,
+  # methods and attributes to it, derive from it, derive it from
+  # another class, include additional modules etc.
   #
   # Including XML::Mapping also adds all methods of
   # XML::Mapping::ClassMethods to your class (as class methods).
@@ -325,7 +324,8 @@ module XML
       #     text_node :city, "city", :optional=>true, :default_value=>"Berlin"
       #   end
       #
-      # Here +Address+ is the _owner_, +:city+ is the _attrname_,
+      # Here +Address+ is the _owner_, <tt>:city</tt> is the
+      # _attrname_,
       # <tt>{:optional=>true,:default_value=>"Berlin"}</tt> is the
       # @options, and ["city"] is the argument list that'll be passed
       # to TextNode.initialize_impl. "city" is of course the XPath
@@ -356,15 +356,7 @@ module XML
       class NoAttrValueSet < XPathError
       end
 
-      # (overridden) Sets the attribute named by _@attrname_ in _obj_
-      # to _extract_attr_value(xml)_ (so subclasses should override
-      # extract_attr_value instead of xml_to_obj). Handles the
-      # :optional and :default_value options if extract_attr_value
-      # raised NoAttrValueSet. In the example from the #initialize
-      # documentation, obj.city would be set to the value returned by
-      # extract_attr_value, or to "Berlin" if extract_attr_value
-      # raised NoAttrValueSet.
-      def xml_to_obj(obj,xml)
+      def xml_to_obj(obj,xml)  # :nodoc:
         begin
           obj.send :"#{@attrname}=", extract_attr_value(xml)
         rescue NoAttrValueSet => err
@@ -374,22 +366,20 @@ module XML
           obj.send :"#{@attrname}=", @options[:default_value]
         end
       end
+
       # (to be overridden by subclasses) Extract and return the
-      # attribute's value from _xml_. In the #initialize example,
-      # TextNode's implementation would return the current value of
-      # the sub-element named by @path (i.e., "city"). If the
+      # attribute's value from _xml_. In the example above, TextNode's
+      # implementation would return the current value of the
+      # sub-element named by @path (i.e., "city"). If the
       # implementation decides that the attribute value is "unset" in
       # _xml_, it should raise NoAttrValueSet in order to initiate
       # proper handling of possibly supplied :optional and
-      # :default_value options
+      # :default_value options (you may use #default_when_xpath_err
+      # for this purpose).
       def extract_attr_value(xml)
         raise "abstract method called"
       end
-      # (overridden) Calls #set_attr_value with _obj_'s current value
-      # of the attribute named by _@attrname_. Handles +:optional+ and
-      # +:default_value+ options (that is, #set_attr_value is not
-      # called if the attribute has the :default_value)
-      def obj_to_xml(obj,xml)
+      def obj_to_xml(obj,xml) # :nodoc:
         value = obj.send(:"#{@attrname}")
         if @options[:optional]
           unless value == @options[:default_value]
@@ -407,7 +397,7 @@ module XML
       def set_attr_value(xml, value)
         raise "abstract method called"
       end
-      def obj_initializing(obj)
+      def obj_initializing(obj)  # :nodoc:
         if @options[:optional]
           obj.send :"#{@attrname}=", @options[:default_value]
         end
@@ -431,7 +421,7 @@ module XML
     # Registers the new node class _c_ (must be a descendant of Node)
     # with the xml-mapping framework.
     #
-    # A new "factory method" will be automatically added to
+    # A new "factory method" will automatically be added to
     # ClassMethods (and therefore to all classes that include
     # XML::Mapping from now on); so you can call it from the body of
     # your mapping class definition in order to create nodes of type
@@ -451,7 +441,7 @@ module XML
     # etc. in the examples along with the corresponding node classes
     # TextNode, ArrayNode etc. (these predefined node classes are in
     # no way "special"; they're added using add_node_class in
-    # mapping.rb just like any custom node classes would be.
+    # mapping.rb just like any custom node classes would be).
     def self.add_node_class(c)
       meth_name = c.name.split('::')[-1].gsub(/^(.)/){$1.downcase}.gsub(/(.)([A-Z])/){$1+"_"+$2.downcase}
       ClassMethods.module_eval <<-EOS

@@ -14,10 +14,10 @@ module XML
       def initialize_impl(path)
         @path = XML::XPath.new(path)
       end
-      def extract_attr_value(xml)
+      def extract_attr_value(xml) # :nodoc:
         default_when_xpath_err{ @path.first(xml).text }
       end
-      def set_attr_value(xml, value)
+      def set_attr_value(xml, value) # :nodoc:
         @path.first(xml,:ensure_created=>true).text = value
       end
     end
@@ -28,10 +28,10 @@ module XML
       def initialize_impl(path)
         @path = XML::XPath.new(path)
       end
-      def extract_attr_value(xml)
+      def extract_attr_value(xml) # :nodoc:
         default_when_xpath_err{ @path.first(xml).text.to_i }
       end
-      def set_attr_value(xml, value)
+      def set_attr_value(xml, value) # :nodoc:
         raise RuntimeError, "Not an integer: #{value}" unless Integer===value
         @path.first(xml,:ensure_created=>true).text = value.to_s
       end
@@ -47,10 +47,10 @@ module XML
       def initialize_impl(klass,path)
         @klass = klass; @path = XML::XPath.new(path)
       end
-      def extract_attr_value(xml)
+      def extract_attr_value(xml) # :nodoc:
         @klass.load_from_rexml(default_when_xpath_err{@path.first(xml)})
       end
-      def set_attr_value(xml, value)
+      def set_attr_value(xml, value) # :nodoc:
         value.fill_into_rexml(@path.first(xml,:ensure_created=>true))
       end
     end
@@ -68,10 +68,10 @@ module XML
         @path = XML::XPath.new(path)
         @true_value = true_value; @false_value = false_value
       end
-      def extract_attr_value(xml)
+      def extract_attr_value(xml) # :nodoc:
         default_when_xpath_err{ @path.first(xml).text==@true_value }
       end
-      def set_attr_value(xml, value)
+      def set_attr_value(xml, value) # :nodoc:
         @path.first(xml,:ensure_created=>true).text = value ? @true_value : @false_value
       end
     end
@@ -139,14 +139,14 @@ module XML
 	@per_arrelement_path = XML::XPath.new(per_arrelement_path)
 	@reader_path = XML::XPath.new(base_path+"/"+per_arrelement_path)
       end
-      def extract_attr_value(xml)
+      def extract_attr_value(xml) # :nodoc:
         result = []
         default_when_xpath_err{@reader_path.all(xml)}.each do |elt|
           result << @klass.load_from_rexml(elt)
         end
         result
       end
-      def set_attr_value(xml, value)
+      def set_attr_value(xml, value) # :nodoc:
 	base_elt = @base_path.first(xml,:ensure_created=>true)
 	value.each do |arr_elt|
 	  arr_elt.fill_into_rexml(@per_arrelement_path.create_new(base_elt))
@@ -188,7 +188,7 @@ module XML
 	@key_path = XML::XPath.new(key_path)
 	@reader_path = XML::XPath.new(base_path+"/"+per_hashelement_path)
       end
-      def extract_attr_value(xml)
+      def extract_attr_value(xml) # :nodoc:
         result = {}
         default_when_xpath_err{@reader_path.all(xml)}.each do |elt|
           key = @key_path.first(elt).text
@@ -197,7 +197,7 @@ module XML
         end
         result
       end
-      def set_attr_value(xml, value)
+      def set_attr_value(xml, value) # :nodoc:
 	base_elt = @base_path.first(xml,:ensure_created=>true)
 	value.each_pair do |k,v|
           elt = @per_hashelement_path.create_new(base_elt)

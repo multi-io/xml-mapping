@@ -23,7 +23,7 @@ Rake::TestTask.new(:test) { |t|
 
 
 Rake::RDocTask.new { |rdoc|
-  rdoc.rdoc_dir = 'doc'
+  rdoc.rdoc_dir = 'doc/api'
   rdoc.title    = "XML::Mapping -- Simple, extensible Ruby-to-XML (and back) mapper"
   rdoc.options << '--line-numbers --inline-source --accessor cattr_accessor=object --include examples'
   rdoc.rdoc_files.include('README')
