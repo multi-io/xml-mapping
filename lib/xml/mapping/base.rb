@@ -381,7 +381,7 @@ module XML
       def obj_to_xml(obj,xml)
         value = obj.send(:"#{@attrname}")
         if @options[:optional]
-          unless value.equal?(@options[:default_value])
+          unless value == @options[:default_value]
             set_attr_value(xml, value)
           end
         else
