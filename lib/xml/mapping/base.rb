@@ -41,7 +41,7 @@ module XML
     end
 
     def pre_save
-      REXML::Document.new
+      REXML::Element.new(self.class.root_element_name)
     end
 
     def post_save(xml)
@@ -129,6 +129,16 @@ module XML
 
       def xmlmapping_init
         @xml_mapping_nodes = []
+      end
+
+
+      def root_element_name(name=nil)
+        @root_element_name = name if name
+        @root_element_name || default_root_element_name
+      end
+
+      def default_root_element_name
+        self.name.split('::')[-1].gsub(/^(.)/){$1.downcase}.gsub(/(.)([A-Z])/){$1+"-"+$2.downcase}
       end
 
     end

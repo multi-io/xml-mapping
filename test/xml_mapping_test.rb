@@ -64,4 +64,16 @@ class XmlMappingTest < Test::Unit::TestCase
           XML::XPath.new("offices/office[1]/classified").first(xml).text == "yes"
   end
 
+
+  def test_root_element
+    xml=@c.save_to_rexml
+    assert_equal "company", xml.name
+    Company.class_eval <<-EOS
+        root_element_name 'my-test'
+    EOS
+    xml=@c.save_to_rexml
+    assert_equal "my-test", xml.name
+    assert_equal "office", @c.offices[0].save_to_rexml.name
+  end
+
 end
