@@ -16,7 +16,7 @@ class TimeNode < XML::Mapping::SingleAttributeNode
   end
 
   def set_attr_value(xml, value)
-    raise RuntimeError, "Not a Time: #{value}" unless Time===value
+    raise "Not a Time: #{value}" unless Time===value
     @y_path.first(xml,:ensure_created=>true).text = value.year
     @m_path.first(xml,:ensure_created=>true).text = value.month
     @d_path.first(xml,:ensure_created=>true).text = value.day

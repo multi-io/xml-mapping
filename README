@@ -134,6 +134,10 @@ the mapping class declaration to look like this:
 
 (i.e. a new "time_node" declaration was added).
 
+We want this +signed_on+ call to define an attribute named +signed_on+
+which holds the date value from the XML in an instance of class
++Time+.
+
 This node type can be defined with this piece of code:
 
   :include: time_node.rb
@@ -147,7 +151,7 @@ There will be one instance of the node type per mapping class (not per
 mapping class instance). That instance will be created by the node
 factory method (+time_node+); there's no need to instantiate the node
 type directly. Whenever an instance of the mapping class needs to be
-marshalled/unmarshalled to/from XML, the +set_attr_value+
+marshalled/unmarshalled to/from XML, +set_attr_value+
 resp. +extract_attr_value+ will be called on the node type instance
 ("node" for short).  The node factory method places the node into the
 mapping class; the @owner attribute of the node is set to reference
@@ -156,7 +160,7 @@ the example, that would be <tt>:signed_on, "signed-on",
 :optional=>true, :default_value=>Time.now</tt>) to the node's
 initializer. TimeNode's parent class XML::Mapping::SingleAttributeNode
 already handles the <tt>:signed_on</tt> and <tt> :optional=>true,
-:default_value=>Time.now</tt> automatically -- <tt>:signed_on</tt> is
+:default_value=>Time.now</tt> arguments -- <tt>:signed_on</tt> is
 stored into <tt>@attrname</tt>, and the default value declarations
 will be described in a moment. The remaining argument
 <tt>"signed-on"</tt> gets passed to our +initialize_impl+ method as
@@ -205,7 +209,28 @@ trying to extract. (XML::XPath is designed to know knothing about
 XML::Mapping, so it doesn't raise
 XML::Mapping::SingleAttributeNode::NoAttrValueSet directly)
 
-set_attr_value
+The +set_attr_value+ method is called whenever an instance of the
+class the node belongs to (+Signature+ in the example) is being stored
+into an XML tree. The _xml_ parameter is the XML tree (a REXML element
+node); _value_ is the current value of the attribute. _xml_ will most
+probably be "half-populated" by the time this method is called -- the
+framework calls the +set_attr_value+ methods of all nodes of a mapping
+class in the order of their definition, letting each node fill its
+"bit" into _xml_. The method implementation is expected to write
+_value_ into (the correct sub-elements of) _xml_, or raise an
+exception to signal an error and abort the whole process. No default
+value handling is done here; +set_attr_value+ won't be called at all
+if the attribute had been set to its default value. In our
+implementation we grab the year, month and day values from _value_
+(which must be a +Time+), and store it into the sub-elements of _xml_
+identified by XPath expressions <tt>@y_path</tt>, <tt>@m_path</tt> and
+<tt>@d_path</tt>, respectively. We do this by calling XML::XPath#first
+with an additional parameter <tt>:ensure_created=>true</tt>. An
+expression _xpath_expr_.first(_xml_,:ensure_created=>true) works just
+like _xpath_expr_.first(_xml_) if _xpath_expr_ was already present in
+_xml_. If it was not, it is created (preferable at the end of _xml_'s
+list of sub-nodes), and returned. See below for a more detailed
+documentation of the XPath interpreter.
 
 
 == XPath interpreter

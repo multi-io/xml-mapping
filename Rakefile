@@ -36,7 +36,8 @@ Rake::RDocTask.new { |rdoc|
   file "#{rdoc.rdoc_dir}/index.html" => ['examples/company.xml',
                                          'examples/company.rb',
                                          'examples/company_usage.intout',
-                                         'examples/order_usage.intout'
+                                         'examples/order_usage.intout',
+                                         'examples/order_signature_enhanced_usage.intout'
                                         ]
   file "#{rdoc.rdoc_dir}/index.html" => FileList.new("examples/**/*.rb")
 }
