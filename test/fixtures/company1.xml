@@ -32,22 +32,22 @@
 
     <customers>
 
-      <customer id="jim">
+      <customer uid="jim">
         <name>James Kirk</name>
         <payment_method>cash</payment_method>
       </customer>
 
-      <customer id="ernie">
+      <customer uid="ernie">
         <name>Ernie</name>
         <payment_method>sweeties</payment_method>
       </customer>
 
-      <customer id="cm">
+      <customer uid="cm">
         <name>Cookie Monster</name>
         <payment_method>cookies</payment_method>
       </customer>
       
-      <customer id="sad">
+      <customer uid="sad">
         <name>Saddam Hussein</name>
         <payment_method>independent arms broker</payment_method>
       </customer>
@@ -63,7 +63,7 @@
 
 
     <stuff>
-      <customer id="sad">
+      <customer uid="sad">
         <name>Saddam Hussein</name>
         <payment_method>independent arms broker</payment_method>
       </customer>

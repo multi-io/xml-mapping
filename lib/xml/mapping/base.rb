@@ -444,13 +444,20 @@ module XML
       end
 
       # Add getter and setter methods for a new attribute named _name_
-      # (a string) to this class. This is a convenience method
-      # intended to be called from Node class initializers.
+      # to this class. This is a convenience method intended to be
+      # called from Node class initializers.
       def add_accessor(name)
         name = name.id2name if name.kind_of? Symbol
-        self.module_eval <<-EOS
-          attr_accessor :#{name}
-        EOS
+        unless self.instance_methods.include?(name)
+          self.module_eval <<-EOS
+            attr_reader :#{name}
+          EOS
+        end
+        unless self.instance_methods.include?("#{name}=")
+          self.module_eval <<-EOS
+            attr_writer :#{name}
+          EOS
+        end
       end
 
       # Create a new instance of this class from the XML contained in

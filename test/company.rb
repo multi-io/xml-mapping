@@ -14,7 +14,7 @@ class Company
   object_node :address, "address", :class=>Address
 
   array_node :offices, "offices", "office", :class=>Office
-  hash_node :customers, "customers", "customer", "@id", :class=>Customer
+  hash_node :customers, "customers", "customer", "@uid", :class=>Customer
 
   text_node :ent1, "arrtest/entry[1]"
   text_node :ent2, "arrtest/entry[2]"
@@ -49,6 +49,6 @@ end
 class Customer
   include XML::Mapping
 
-  text_node :id, "@id"
+  text_node :uid, "@uid"
   text_node :name, "name"
 end

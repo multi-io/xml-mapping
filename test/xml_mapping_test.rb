@@ -46,7 +46,7 @@ class XmlMappingTest < Test::Unit::TestCase
     assert_equal 4, @c.customers.keys.size
     ["cm", "ernie", "jim", "sad"].zip(@c.customers.keys.sort).each do |exp,ckey|
       assert_equal exp, ckey
-      assert_equal exp, @c.customers[ckey].id
+      assert_equal exp, @c.customers[ckey].uid
     end
   end
 
@@ -72,7 +72,7 @@ class XmlMappingTest < Test::Unit::TestCase
   def test_setter_hash_node
     xml=@c.save_to_xml
     assert_equal @c.customers.keys.sort,
-          XML::XPath.new("customers/customer/@id").all(@xml.root).map{|n|n.text}.sort
+          XML::XPath.new("customers/customer/@uid").all(@xml.root).map{|n|n.text}.sort
   end
 
 
