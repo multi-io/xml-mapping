@@ -1,0 +1,15 @@
+- write introductory text, including a small tutorial
+
+- XML::XPath: turn allow_nil, create_new etc. into keyword arguments
+
+- XML::XPath: generalize foo[@x='bar'] to foo[<any XPath expression>='bar']
+
+- XML::XPath: write documentation
+
+- XML::Mapping: add XML::Mapping::xml_to_object(xml) (or similarly
+  nemed): function that creates an object from an XML tree, where the
+  object's class is deduced be 'un-dashing' the tree's root element
+  name (i.e. reverse operation of default_root_element_name)
+
+  - add to ObjectNode, ArrayNode, HashNode corresponding initializers
+    which don't require a _klass_ argument
