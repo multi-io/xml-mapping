@@ -37,7 +37,10 @@ class Office
 
   text_node :speciality, "@speciality"
   boolean_node :classified, "classified", "yes", "no"
-  object_node :address, "address", :class=>Address
+  # object_node :address, "address", :class=>Address
+  object_node :address, "address",
+        :marshaller=>proc {|xml,value| value.fill_into_xml(xml)},
+        :unmarshaller=>proc {|xml| Address.load_from_xml(xml)}
 end
 
 

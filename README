@@ -238,14 +238,15 @@ appends those nodes to the end of the list of subnodes of the node the
 xpath expression was applied to. All xml-mapping nodes that come with
 xml-mapping use XML::XPath when writing data to XML, and therefore
 also append their data to the XML data written by preceding nodes (the
-nodes are invoked in the order of their definition). This means that
-your output data will appear in the XML document in the same order in
-which the corresponding xml-mapping node definitions appeared in the
-mapping class. For instance, in the example from the beginning of this
+nodes are invoked in the order of their definition). This means that,
+generally, your output data will appear in the XML document in the
+same order in which the corresponding xml-mapping node definitions
+appeared in the mapping class (unless you used XPath expressions like
+foo[number] which explicitly dictate a fixed position in the sequence
+of XML nodes). For instance, in the example from the beginning of this
 document, if we put the <tt>:signatures</tt> node _before_ the
 <tt>:items</tt> node, the <tt><Signed-By></tt> element will appear
-_before_ the sequence of <tt><Item></tt> elements in the output
-XML.
+_before_ the sequence of <tt><Item></tt> elements in the output XML.
 
 
 

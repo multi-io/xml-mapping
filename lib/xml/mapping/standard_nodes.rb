@@ -43,12 +43,18 @@ module XML
       end
     end
 
-    # abstract base class for nodes whose initializers support :class
-    # and :marshaller, :unmarshaller keyword arguments
-    class ClassAndMarshallingSupportNode < SingleAttributeNode
-      # processes the @options :class, :marshaller, and :unmarshaller
-      # (args are ignored). See documentation of ObjectNode for
-      # details on the meaning of these options.
+    # (does somebody have a better name for this class?) base class
+    # for nodes that map some sub-nodes of their XML tree to
+    # (Ruby-)sub-objects of their attribute. For this purpose, the
+    # initializer introduces additional optional keyword arguments
+    # :class :marshaller and :unmarshaller.
+    class SubObjectBaseNode < SingleAttributeNode
+      # processes the keyword arguments :class, :marshaller, and
+      # :unmarshaller (_args_ is ignored). When this initiaizer
+      # returns, @options[:marshaller] and @options[:unmarshaller] are
+      # set to procs that marshal/unmarshal Ruby objects to/from XML
+      # trees according to the keyword arguments that were passed to
+      # the initializer. See documentation of ObjectNode for details.
       def initialize_impl(*args)
         if @options[:class]
           unless @options[:marshaller]
@@ -69,7 +75,7 @@ module XML
     end
 
     # Node that maps a subtree in the source XML to a Ruby object
-    class ObjectNode < ClassAndMarshallingSupportNode
+    class ObjectNode < SubObjectBaseNode
       # Initializer. _path_ (a string denoting an XPath expression) is
       # the location of the subtree. The object the subtree is
       # marshalled to/unmarshalled from is specified using keyword
@@ -122,7 +128,7 @@ module XML
     # attribute containing an array of Ruby objects, with each array
     # element mapping to a corresponding member of the sequence of
     # sub-nodes.
-    class ArrayNode < ClassAndMarshallingSupportNode
+    class ArrayNode < SubObjectBaseNode
       # Initializer, delegates to do_initialize. Called with keyword
       # arguments and either 1 or 2 paths; the hindmost path argument
       # passed is delegated to _per_arrelement_path_; the preceding
@@ -200,7 +206,7 @@ module XML
     # sub-nodes. The (string-valued) hash key associated with a hash
     # value _v_ is mapped to the text of a specific sub-node of _v_'s
     # sub-node.
-    class HashNode < ClassAndMarshallingSupportNode
+    class HashNode < SubObjectBaseNode
       # Initializer, delegates to do_initialize. Called with keyword
       # arguments and either 2 or 3 paths; the hindmost path argument
       # passed is delegated to _key_path_, the preceding path argument
