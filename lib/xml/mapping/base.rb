@@ -294,6 +294,9 @@ module XML
         else
           @options={}
         end
+        if @options[:optional] and not(@options.has_key?(:default_value))
+          @options[:default_value] = nil
+        end
         initialize_impl(*args)
       end
       # Initializer to be implemented by subclasses.
@@ -313,7 +316,7 @@ module XML
         begin
           obj.send :"#{@attrname}=", extract_attr_value(xml)
         rescue NoAttrValueSet => err
-          unless @options[:optional]
+          unless @options.has_key? :default_value
             raise XML::MappingError, "no value, and no default value: #{err}"
           end
           obj.send :"#{@attrname}=", @options[:default_value]
@@ -334,7 +337,7 @@ module XML
       end
       def obj_to_xml(obj,xml) # :nodoc:
         value = obj.send(:"#{@attrname}")
-        if @options[:optional]
+        if @options.has_key? :default_value
           unless value == @options[:default_value]
             set_attr_value(xml, value)
           end
@@ -351,7 +354,7 @@ module XML
         raise "abstract method called"
       end
       def obj_initializing(obj)  # :nodoc:
-        if @options[:optional]
+        if @options.has_key? :default_value
           obj.send :"#{@attrname}=", @options[:default_value]
         end
       end

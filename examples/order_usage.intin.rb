@@ -57,8 +57,8 @@ o.items['XY-42'].quantity = 3
 o.items['XY-42'].unit_price = 299.95
 
 o.save_to_xml.write($stdout,2)
+#<=
 ## the root element name when saving an object to XML will by default
 ## be derived from the class name (in this example, "Order" became
 ## "order"). This can be overridden on a per-class basis; see
 ## XML::Mapping::ClassMethods#root_element_namefor details.
-#<=

@@ -72,7 +72,7 @@ From the example:
   class Signature
     include XML::Mapping
 
-    text_node :position, "Position", :optional=>true, :default_value=>"Some Employee"
+    text_node :position, "Position", :default_value=>"Some Employee"
   end
 
 The semantics of default values are as follows:
@@ -157,16 +157,15 @@ resp. +extract_attr_value+ will be called on the node type instance
 mapping class; the @owner attribute of the node is set to reference
 the mapping class. The node factory method passes its arguments (in
 the example, that would be <tt>:signed_on, "signed-on",
-:optional=>true, :default_value=>Time.now</tt>) to the node's
-initializer. TimeNode's parent class XML::Mapping::SingleAttributeNode
-already handles the <tt>:signed_on</tt> and <tt> :optional=>true,
-:default_value=>Time.now</tt> arguments -- <tt>:signed_on</tt> is
-stored into <tt>@attrname</tt>, and the default value declarations
-will be described in a moment. The remaining argument
-<tt>"signed-on"</tt> gets passed to our +initialize_impl+ method as
-parameter _path_. We'll interpret it as an XPath expression that
-locates the time value relative to the parent mapping object's XML
-tree (in this case, this would be the XML tree the +Signature+
+:default_value=>Time.now</tt>) to the node's initializer. TimeNode's
+parent class XML::Mapping::SingleAttributeNode already handles the
+<tt>:signed_on</tt> and <tt>:default_value=>Time.now</tt> arguments --
+<tt>:signed_on</tt> is stored into <tt>@attrname</tt>, and the default
+value declarations will be described in a moment. The remaining
+argument <tt>"signed-on"</tt> gets passed to our +initialize_impl+
+method as parameter _path_. We'll interpret it as an XPath expression
+that locates the time value relative to the parent mapping object's
+XML tree (in this case, this would be the XML tree the +Signature+
 instance was read from). We'll later have to read/store the year,
 month, and day values from <tt>path+"/year"</tt>,
 <tt>path+"/month"</tt>, and <tt>path+"/day"</tt>, respectively, so we
@@ -231,6 +230,23 @@ like _xpath_expr_.first(_xml_) if _xpath_expr_ was already present in
 _xml_. If it was not, it is created (preferable at the end of _xml_'s
 list of sub-nodes), and returned. See below for a more detailed
 documentation of the XPath interpreter.
+
+=== element order in created XML documents
+
+As just said, XML::XPath, when used to create new XML nodes, generally
+appends those nodes to the end of the list of subnodes of the node the
+xpath expression was applied to. All xml-mapping nodes that come with
+xml-mapping use XML::XPath when writing data to XML, and therefore
+also append their data to the XML data written by preceding nodes (the
+nodes are invoked in the order of their definition). This means that
+your output data will appear in the XML document in the same order in
+which the corresponding xml-mapping node definitions appeared in the
+mapping class. For instance, in the example from the beginning of this
+document, if we put the <tt>:signatures</tt> node _before_ the
+<tt>:items</tt> node, the <tt><Signed-By></tt> element will appear
+_before_ the sequence of <tt><Item></tt> elements in the output
+XML.
+
 
 
 == XPath interpreter

@@ -13,7 +13,7 @@ class Order
   text_node :reference, "@reference"
   object_node :client, Client, "Client"
   hash_node :items, Item, "Item", "@reference"
-  array_node :signatures, Signature, "Signed-By", "Signature", :optional=>true, :default_value=>[]
+  array_node :signatures, Signature, "Signed-By", "Signature", :default_value=>[]
 
   def total_price
     items.values.map{|i| i.total_price}.inject(0){|x,y|x+y}
@@ -56,5 +56,5 @@ class Signature
   include XML::Mapping
 
   text_node :name, "Name"
-  text_node :position, "Position", :optional=>true, :default_value=>"Some Employee"
+  text_node :position, "Position", :default_value=>"Some Employee"
 end
