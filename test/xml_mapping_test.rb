@@ -87,7 +87,7 @@ class XmlMappingTest < Test::Unit::TestCase
     assert_equal 12576, @c.offices[1].address.zip
     xml=@c.save_to_rexml
     assert_equal "18282", hamburg_zip_path.first(xml).text
-    assert_nil baghdad_zip_path.first(xml,false,true)
+    assert_nil baghdad_zip_path.first(xml,:allow_nil=>true)
     @c.offices[1].address.zip = 12577
     xml=@c.save_to_rexml
     assert_equal "12577", baghdad_zip_path.first(xml).text
@@ -95,7 +95,7 @@ class XmlMappingTest < Test::Unit::TestCase
     assert_equal 12577, c2.offices[1].address.zip
     @c.offices[1].address.zip = 12576
     xml=@c.save_to_rexml
-    assert_nil baghdad_zip_path.first(xml,false,true)
+    assert_nil baghdad_zip_path.first(xml,:allow_nil=>true)
 
     hamburg_address_path.first(xml).delete_element("zip")
     c3 = Company.load_from_rexml(xml)
@@ -119,7 +119,7 @@ class XmlMappingTest < Test::Unit::TestCase
     assert_nil c2.offices[0].address.street
 
     xml2=c2.save_to_rexml
-    assert_nil hamburg_street_path.first(xml2,false,true)
+    assert_nil hamburg_street_path.first(xml2,:allow_nil=>true)
   end
 
 end

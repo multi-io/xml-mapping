@@ -18,7 +18,7 @@ module XML
         @path.first(xml).text
       end
       def set_attr_value(xml, value)
-        @path.first(xml,true).text = value
+        @path.first(xml,:ensure_created=>true).text = value
       end
     end
 
@@ -33,7 +33,7 @@ module XML
       end
       def set_attr_value(xml, value)
         raise RuntimeError, "Not an integer: #{value}" unless Integer===value
-        @path.first(xml,true).text = value.to_s
+        @path.first(xml,:ensure_created=>true).text = value.to_s
       end
     end
 
@@ -51,7 +51,7 @@ module XML
         @klass.load_from_rexml(@path.first(xml))
       end
       def set_attr_value(xml, value)
-        value.fill_into_rexml(@path.first(xml,true))
+        value.fill_into_rexml(@path.first(xml,:ensure_created=>true))
       end
     end
 
@@ -72,7 +72,7 @@ module XML
         @path.first(xml).text==@true_value
       end
       def set_attr_value(xml, value)
-        @path.first(xml,true).text = value ? @true_value : @false_value
+        @path.first(xml,:ensure_created=>true).text = value ? @true_value : @false_value
       end
     end
 
@@ -147,7 +147,7 @@ module XML
         result
       end
       def set_attr_value(xml, value)
-	base_elt = @base_path.first(xml,true)
+	base_elt = @base_path.first(xml,:ensure_created=>true)
 	value.each do |arr_elt|
 	  arr_elt.fill_into_rexml(@per_arrelement_path.create_new(base_elt))
 	end
@@ -198,11 +198,11 @@ module XML
         result
       end
       def set_attr_value(xml, value)
-	base_elt = @base_path.first(xml,true)
+	base_elt = @base_path.first(xml,:ensure_created=>true)
 	value.each_pair do |k,v|
           elt = @per_hashelement_path.create_new(base_elt)
 	  v.fill_into_rexml(elt)
-          @key_path.first(elt,true).text = k
+          @key_path.first(elt,:ensure_created=>true).text = k
 	end
       end
     end

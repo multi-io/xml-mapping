@@ -98,14 +98,14 @@ module XML
     end
 
 
-    def each(node,create=false,allow_nil=false,&block)
-      all(node,create,allow_nil).each(&block)
+    def each(node,options={},&block)
+      all(node,options).each(&block)
     end
 
-    def first(node,create=false,allow_nil=false,create_new=false)
-      a=all(node,create,create_new)
+    def first(node,options={})
+      a=all(node,options)
       if a.empty?
-        if allow_nil
+        if options[:allow_nil]
           nil
         else
           raise XPathError, "path not found: #{@xpathstr}"
@@ -115,16 +115,16 @@ module XML
       end
     end
 
-    def all(node,create=false,create_new=false)
-      if create_new
-        raise XPathError, "XPath.all: create=false,create_new=true not allowed" unless create
+    def all(node,options={})
+      raise "options not a hash" unless Hash===options
+      if options[:create_new]
         return [ @creator_procs[-1].call(node,true) ]
       else
         last_nodes,rest_creator = catch(:not_found) do
           return @reader_proc.call([node])
         end
-        if create
-          [ rest_creator.call(last_nodes[0],create_new) ]
+        if options[:ensure_created]
+          [ rest_creator.call(last_nodes[0],false) ]
         else
           []
         end
@@ -133,7 +133,7 @@ module XML
 
     # convenience method
     def create_new(base_node)
-      first(base_node,true,false,true)
+      first(base_node,:create_new=>true)
     end
 
 
