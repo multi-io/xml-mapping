@@ -1,0 +1,15 @@
+#!/bin/sh
+
+export RAILS_ENV=test
+
+if [ -n "$1" ]; then
+  require_cmdline_lib="require \"$1\""
+fi
+
+ruby -r irb -e "
+$:.unshift \"../lib\"
+$:.unshift \"../test\"
+
+$require_cmdline_lib
+IRB.start
+"
