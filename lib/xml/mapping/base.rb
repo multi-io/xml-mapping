@@ -27,11 +27,15 @@ module XML
     end
 
 
+    def fill_into_rexml(xml)
+      self.class.nodes.each do |node|
+        node.obj_to_xml self,xml
+      end
+    end
+
     def save_to_rexml
       xml = pre_save
-      self.class.text_nodes.each_pair do |attrname,path|
-        # TODO: XPath.write xml,path, self.send "#{attrname}".intern
-      end
+      fill_into_rexml(xml)
       post_save(xml)
       xml
     end
@@ -67,6 +71,9 @@ module XML
       def xml_to_obj(obj,xml)
         obj.send "#{@attrname}=".intern, @path.first(xml).text
       end
+      def obj_to_xml(obj,xml)
+        @path.first(xml,true).text = obj.send "#{@attrname}".intern
+      end
     end
 
     class IntNode < Node
@@ -81,6 +88,15 @@ module XML
           raise unless @opts[:optional]
         end
       end
+      def obj_to_xml(obj,xml)
+        val = obj.send("#{@attrname}".intern)
+        if val
+          @path.first(xml,true).text = val.to_s
+        else
+          raise RuntimeError, "required attribute: #{@attrname}" unless @opts[:optional]
+        end
+      end
+      # TODO: make :optional flag available as a general feature to all node types
     end
 
     class ObjectNode < Node
@@ -90,6 +106,9 @@ module XML
       end
       def xml_to_obj(obj,xml)
         obj.send "#{@attrname}=".intern, @klass.load_from_rexml(@path.first(xml))
+      end
+      def obj_to_xml(obj,xml)
+        obj.send("#{@attrname}".intern).fill_into_rexml(@path.first(xml,true))
       end
     end
 
@@ -101,6 +120,9 @@ module XML
       end
       def xml_to_obj(obj,xml)
         obj.send "#{@attrname}=".intern, @path.first(xml)==@true_value
+      end
+      def obj_to_xml(obj,xml)
+        @path.first(xml,true).text = obj.send("#{@attrname}".intern)? @true_value : @false_value
       end
     end
 
@@ -114,6 +136,9 @@ module XML
         @path.all(xml).each do |elt|
           arr << @klass.load_from_rexml(elt)
         end
+      end
+      def obj_to_xml(obj,xml)
+        # TODO
       end
     end
 
@@ -129,6 +154,9 @@ module XML
           value = @klass.load_from_rexml(elt)
           hash[key] = value
         end
+      end
+      def obj_to_xml(obj,xml)
+        # TODO
       end
     end
 
