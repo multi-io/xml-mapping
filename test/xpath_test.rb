@@ -134,4 +134,97 @@ class XPathTest < Test::Unit::TestCase
     assert_equal s1+1, elt.attributes.size
   end
 
+
+  def test_create_new_byname
+    s1 = @d.elements[1].elements.size
+    s2 = @d.elements[1].elements[1].elements.size
+    startnode = @d.elements[1].elements[1]
+    node1 = XML::XPath.new("new1").first(startnode,true,false,true)
+    node2 = XML::XPath.new("new1").first(startnode,true,false,true)
+    assert_equal "new1", node1.name
+    assert_equal "new1", node2.name
+    assert node1.attributes.empty?
+    assert node2.attributes.empty?
+    assert_equal @d.elements[1].elements[1].elements[1], node1
+    assert_equal @d.elements[1].elements[1].elements[2], node2
+    assert_equal s1, @d.elements[1].elements.size
+    assert_equal s2+2, @d.elements[1].elements[1].elements.size
+  end
+
+
+  def test_create_new_byname_then_name
+    s1 = @d.elements[1].elements.size
+    node1 = XML::XPath.new("foo/new1").first(@d.root,true,false,true)
+    node2 = XML::XPath.new("foo/new1").first(@d.root,true,false,true)
+    assert_equal "new1", node1.name
+    assert_equal "new1", node2.name
+    assert node1.attributes.empty?
+    assert node2.attributes.empty?
+    assert_equal @d.elements[1].elements[s1+1].elements[1], node1
+    assert_equal @d.elements[1].elements[s1+2].elements[1], node2
+    assert_equal s1+2, @d.elements[1].elements.size
+  end
+
+
+  def test_create_new_byidx
+    assert_raises(XML::XPathError) {
+      XML::XPath.new("foo[2]").first(@d.root,true,false,true)
+    }
+    node1 = XML::XPath.new("foo[3]").first(@d.root,true,false,true)
+    assert_raises(XML::XPathError) {
+      XML::XPath.new("foo[3]").first(@d.root,true,false,true)
+    }
+    assert_equal @d.elements[1].elements[4], node1
+    assert_equal "foo", node1.name
+    node2 = XML::XPath.new("foo[4]").first(@d.root,true,false,true)
+    assert_equal @d.elements[1].elements[5], node2
+    assert_equal "foo", node2.name
+    node3 = XML::XPath.new("foo[10]").first(@d.root,true,false,true)
+    assert_raises(XML::XPathError) {
+      XML::XPath.new("foo[10]").first(@d.root,true,false,true)
+    }
+    XML::XPath.new("foo[11]").first(@d.root,true,false,true)
+    assert_equal @d.elements[1].elements[11], node3
+    assert_equal "foo", node3.name
+    # @d.write
+  end
+
+  def test_create_new_byname_then_idx
+    node1 = XML::XPath.new("hello/bar[3]").first(@d.root,true,false,true)
+    node2 = XML::XPath.new("hello/bar[3]").first(@d.root,true,false,true)
+    node3 = XML::XPath.new("hello/bar[3]").first(@d.root,true,false,true)
+    assert_equal @d.elements[1].elements[4].elements[3], node1
+    assert_equal @d.elements[1].elements[5].elements[3], node2
+    assert_equal @d.elements[1].elements[6].elements[3], node3
+    assert_not_equal node1, node2
+    assert_not_equal node1, node3
+    assert_not_equal node2, node3
+  end
+
+
+  def test_create_new_byattrname
+    node1 = XML::XPath.new("@lala").first(@d.root,true,false,true)
+    assert_raises(XML::XPathError) {
+      XML::XPath.new("@lala").first(@d.root,true,false,true)
+    }
+    assert node1.kind_of?(XML::XPath::Accessors::Attribute)
+    node1.text = "val1"
+    assert_equal "val1", @d.elements[1].attributes["lala"]
+    foo2 = XML::XPath.new("foo[2]").first(@d.root)
+    assert_raises(XML::XPathError) {
+      XML::XPath.new("@key").first(foo2,true,false,true)
+    }
+    node2 = XML::XPath.new("@bar").first(foo2,true,false,true)
+    assert node2.kind_of?(XML::XPath::Accessors::Attribute)
+    node2.text = "val2"
+    assert_equal "val2", @d.elements[1].elements[3].attributes["bar"]
+  end
+
+
+  def test_create_new_param_exception
+    assert_raises(XML::XPathError) {
+      node1 = XML::XPath.new("foo/new1").first(@d.root,false,false,true)
+    }
+  end
+
 end

@@ -17,35 +17,37 @@ module XML
       #    maybe: build & create the procs using eval
 
       # create creators
-      @creator_procs = [ proc{|node| node} ]
+      @creator_procs = [ proc{|node,create_new| node} ]
       parts.each do |part|
         p_prev=@creator_procs[-1]
         @creator_procs <<
           case part
           when /^(.*?)\[@(.*?)='(.*?)'\]$/
             name,attr_name,attr_value = [$1,$2,$3]
-            proc {|node|
-              p_prev.call(Accessors.create_subnode_by_name_and_attr(node,
-                                                                    name,attr_name,attr_value))
+            proc {|node,create_new|
+              p_prev.call(Accessors.create_subnode_by_name_and_attr(node,create_new,
+                                                                    name,attr_name,attr_value),
+                          create_new)
             }
           when /^(.*?)\[(.*?)\]$/
             name,index = [$1,$2.to_i]
-            proc {|node|
-              p_prev.call(Accessors.create_subnode_by_name_and_index(node,
-                                                                     name,index))
+            proc {|node,create_new|
+              p_prev.call(Accessors.create_subnode_by_name_and_index(node,create_new,
+                                                                     name,index),
+                          create_new)
             }
           when /^@(.*)$/
             name = $1
-            proc {|node|
-              p_prev.call(Accessors.create_subnode_by_attr_name(node,name))
+            proc {|node,create_new|
+              p_prev.call(Accessors.create_subnode_by_attr_name(node,create_new,name), create_new)
             }
           when '*'
-            proc {|node|
-              p_prev.call(Accessors.create_subnode_by_all(node))
+            proc {|node,create_new|
+              p_prev.call(Accessors.create_subnode_by_all(node,create_new), create_new)
             }
           else
-            proc {|node|
-              p_prev.call(Accessors.create_subnode_by_name(node,part))
+            proc {|node,create_new|
+              p_prev.call(Accessors.create_subnode_by_name(node,create_new,part), create_new)
             }
           end
       end
@@ -115,8 +117,8 @@ module XML
       all(node,create,allow_nil).each(&block)
     end
 
-    def first(node,create=false,allow_nil=false)
-      a=all(node,create)
+    def first(node,create=false,allow_nil=false,create_new=false)
+      a=all(node,create,create_new)
       if a.empty?
         if allow_nil
           nil
@@ -128,14 +130,19 @@ module XML
       end
     end
 
-    def all(node,create=false)
-      last_nodes,rest_creator = catch(:not_found) do
-        return @reader_proc.call([node])
-      end
-      if create
-        [ rest_creator.call(last_nodes[0]) ]
+    def all(node,create=false,create_new=false)
+      if create_new
+        raise XPathError, "XPath.all: create=false,create_new=true not allowed" unless create
+        return [ @creator_procs[-1].call(node,true) ]
       else
-        []
+        last_nodes,rest_creator = catch(:not_found) do
+          return @reader_proc.call([node])
+        end
+        if create
+          [ rest_creator.call(last_nodes[0],create_new) ]
+        else
+          []
+        end
       end
     end
 
@@ -217,21 +224,25 @@ module XML
 
 
       # write accessors
-      #  precondition: we know that a node with exactly the requested attributes
-      #                doesn't exist yet (else we wouldn't have been called)
 
-      def self.create_subnode_by_name(node,name)
+      #  precondition: unless create_new, we know that a node with
+      #    exactly the requested attributes doesn't exist yet (else we
+      #    wouldn't have been called)
+      def self.create_subnode_by_name(node,create_new,name)
         node.elements.add name
       end
 
-      def self.create_subnode_by_name_and_attr(node,name,attr_name,attr_value)
-        newnode = subnodes_by_name_singlesrc(node,name)[0] || node.elements.add(name)
+      def self.create_subnode_by_name_and_attr(node,create_new,name,attr_name,attr_value)
+        newnode = (not(create_new) and subnodes_by_name_singlesrc(node,name)[0]) or node.elements.add(name)
         newnode.attributes[attr_name]=attr_value
         newnode
       end
 
-      def self.create_subnode_by_name_and_index(node,name,index)
+      def self.create_subnode_by_name_and_index(node,create_new,name,index)
         name_matches = subnodes_by_name_singlesrc(node,name)
+        if create_new and (name_matches.size >= index)
+          raise XPathError, "XPath (#{@xpathstr}): #{name}[#{index}]: create_new and element already exists"
+        end
         newnode = name_matches[0]
         (index-name_matches.size).times do
           newnode = node.elements.add name
@@ -239,11 +250,14 @@ module XML
         newnode
       end
 
-      def self.create_subnode_by_attr_name(node,name)
+      def self.create_subnode_by_attr_name(node,create_new,name)
+        if create_new and node.attributes[name]
+          raise XPathError, "XPath (#{@xpathstr}): @#{name}: create_new and attribute already exists"
+        end
         Attribute.new(node,name,true)
       end
 
-      def self.create_subnode_by_all(node)
+      def self.create_subnode_by_all(node,create_new)
         # TODO: better strategy here?
         #   if this was an array node, for example,
         #    we should just create nothing and return []
