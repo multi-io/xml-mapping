@@ -8,53 +8,58 @@ module XML
   class XPath
     def initialize(xpathstr)
       xpathstr=xpathstr[1..-1] if xpathstr[0]==?/
-      p = proc {|nodes| nodes}
+
+      # create creators
+      @creator_procs = []
+
+      # create readers
+      @reader_proc = proc {|nodes| nodes}
       xpathstr.split('/').reverse.each do |part|
-        p_prev=p
-        p = case part
-            when /^(.*?)\[@(.*?)='(.*?)'\]$/
-              name,attr_name,attr_value = [$1,$2,$3]
-              proc {|nodes|
-                next_nodes = Accessors.subnodes_by_name_and_attr(nodes,
-                                                                 name,attr_name,attr_value)
-                if (next_nodes == [])
-                  throw :not_found, [nodes,"TODO"]
-                else
-                  p_prev.call(next_nodes)
-                end
-              }
-            when /^(.*?)\[(.*?)\]$/
-              name,index = [$1,$2.to_i]
-              proc {|nodes|
-                next_nodes = Accessors.subnodes_by_name_and_index(nodes,
-                                                                  name,index)
-                if (next_nodes == [])
-                  throw :not_found, [nodes,"TODO"]
-                else
-                  p_prev.call(next_nodes)
-                end
-              }
-            when '*'
-              proc {|nodes|
-                next_nodes = Accessors.subnodes_by_all(nodes)
-                if (next_nodes == [])
-                  throw :not_found, [nodes,"TODO"]
-                else
-                  p_prev.call(next_nodes)
-                end
-              }
-            else
-              proc {|nodes|
-                next_nodes = Accessors.subnodes_by_name(nodes,part)
-                if (next_nodes == [])
-                  throw :not_found, [nodes,"TODO"]
-                else
-                  p_prev.call(next_nodes)
-                end
-              }
-            end
+        p_prev=@reader_proc
+        @reader_proc =
+          case part
+          when /^(.*?)\[@(.*?)='(.*?)'\]$/
+            name,attr_name,attr_value = [$1,$2,$3]
+            proc {|nodes|
+              next_nodes = Accessors.subnodes_by_name_and_attr(nodes,
+                                                               name,attr_name,attr_value)
+              if (next_nodes == [])
+                throw :not_found, [nodes,"TODO"]
+              else
+                p_prev.call(next_nodes)
+              end
+            }
+          when /^(.*?)\[(.*?)\]$/
+            name,index = [$1,$2.to_i]
+            proc {|nodes|
+              next_nodes = Accessors.subnodes_by_name_and_index(nodes,
+                                                                name,index)
+              if (next_nodes == [])
+                throw :not_found, [nodes,"TODO"]
+              else
+                p_prev.call(next_nodes)
+              end
+            }
+          when '*'
+            proc {|nodes|
+              next_nodes = Accessors.subnodes_by_all(nodes)
+              if (next_nodes == [])
+                throw :not_found, [nodes,"TODO"]
+              else
+                p_prev.call(next_nodes)
+              end
+            }
+          else
+            proc {|nodes|
+              next_nodes = Accessors.subnodes_by_name(nodes,part)
+              if (next_nodes == [])
+                throw :not_found, [nodes,"TODO"]
+              else
+                p_prev.call(next_nodes)
+              end
+            }
+          end
       end
-      @reader_proc = p
     end
 
 
@@ -117,6 +122,8 @@ module XML
 
 
       # write accessors
+      #  precondition: we know that a node with exactly the requested attributes
+      #                doesn't exist yet (else we wouldn't have been called)
 
       def self.create_subnode_by_name(node,name)
         node.elements.add name
