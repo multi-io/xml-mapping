@@ -48,6 +48,29 @@ class XPathTest < Test::Unit::TestCase
   end
 
 
+  def test_attribute
+    elt = @d.root.elements[3]
+    attr1 = XML::XPath::Accessors::Attribute.new(elt,"key",false)
+    attr2 = XML::XPath::Accessors::Attribute.new(elt,"key",false)
+    assert_not_nil attr1
+    assert_not_nil attr2
+    assert_equal attr1,attr2  # tests Attribute.==
+    assert_nil XML::XPath::Accessors::Attribute.new(elt,"notthere",false)
+    assert_nil XML::XPath::Accessors::Attribute.new(elt,"notthere",false)
+    newattr = XML::XPath::Accessors::Attribute.new(elt,"new",true)
+    assert_not_nil newattr
+    assert_equal newattr, XML::XPath::Accessors::Attribute.new(elt,"new",false)
+    newattr.text = "lala"
+    assert_equal "lala", elt.attributes["new"]
+  end
+
+  def test_read_byattrname
+    assert_equal [XML::XPath::Accessors::Attribute.new(@d.root.elements[3],"key",false)],
+                 XML::XPath.new("foo/@key").all(@d.root)
+    assert_equal [], XML::XPath.new("foo/@notthere").all(@d.root)
+  end
+
+
   def test_read_byidx_then_name
     assert_equal [@d.root.elements[3].elements[1]], XML::XPath.new("foo[2]/u").all(@d.root)
     assert_equal [], XML::XPath.new("foo[2]/notthere").all(@d.root)
@@ -95,6 +118,18 @@ class XPathTest < Test::Unit::TestCase
     node = XML::XPath.new("foo[10]").first(@d.root,true)
     assert_equal 10, @d.root.elements.select{|elt| elt.name=="foo"}.size
     assert_equal "foo", node.name
+  end
+
+
+  def test_write_byattrname
+    elt = @d.root.elements[3]
+    attr_key = XML::XPath.new("foo[2]/@key").first(@d.root,true)
+    assert_equal elt.attributes["key"], attr_key.text
+
+    attr_new = XML::XPath.new("foo[2]/@new").first(@d.root,true)
+    attr_new.text = "haha"
+    assert_equal "haha", attr_new.text
+    assert_equal "haha", elt.attributes["new"]
   end
 
 end

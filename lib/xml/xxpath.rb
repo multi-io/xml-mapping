@@ -32,6 +32,11 @@ module XML
               p_prev.call(Accessors.create_subnode_by_name_and_index(node,
                                                                      name,index))
             }
+          when /^@(.*)$/
+            name = $1
+            proc {|node|
+              p_prev.call(Accessors.create_subnode_by_attr_name(node,name))
+            }
           when '*'
             proc {|node|
               p_prev.call(Accessors.create_subnode_by_all(node))
@@ -65,6 +70,16 @@ module XML
             proc {|nodes|
               next_nodes = Accessors.subnodes_by_name_and_index(nodes,
                                                                 name,index)
+              if (next_nodes == [])
+                throw :not_found, [nodes,rest_creator]
+              else
+                p_prev.call(next_nodes)
+              end
+            }
+          when /^@(.*)$/
+            name=$1
+            proc {|nodes|
+              next_nodes = Accessors.subnodes_by_attr_name(nodes,name)
               if (next_nodes == [])
                 throw :not_found, [nodes,rest_creator]
               else
@@ -125,9 +140,45 @@ module XML
 
     module Accessors
 
+      # attribute node, half-way compatible
+      #  with REXML's Element.
+      # REXML doesn't provide one...
+      class Attribute
+        attr_reader :parent, :name
+
+        def initialize(parent,name)
+          @parent,@name = parent,name
+        end
+
+        def self.new(parent,name,create)
+          if parent.attributes[name]
+            super(parent,name)
+          else
+            if create
+              parent.attributes[name] = "[unset]"
+              super(parent,name)
+            else
+              nil
+            end
+          end
+        end
+
+        def text
+          parent.attributes[name]
+        end
+
+        def text=(x)
+          parent.attributes[name] = x
+        end
+
+        def ==(other)
+          other.kind_of?(Attribute) and other.parent==parent and other.name==name
+        end
+      end
+
       # read accessors
 
-      for things in %w{name name_and_attr name_and_index all} do
+      for things in %w{name name_and_attr name_and_index attr_name all} do
         self.module_eval <<-EOS
           def self.subnodes_by_#{things}(nodes, *args)
             nodes.map{|node| subnodes_by_#{things}_singlesrc(node,*args)}.flatten
@@ -151,6 +202,11 @@ module XML
         else
           [byname[index]]
         end
+      end
+
+      def self.subnodes_by_attr_name_singlesrc(node,name)
+        attr=Attribute.new(node,name,false)
+        if attr then [attr] else [] end
       end
 
       def self.subnodes_by_all_singlesrc(node)
@@ -179,6 +235,10 @@ module XML
           newnode = node.elements.add name
         end
         newnode
+      end
+
+      def self.create_subnode_by_attr_name(node,name)
+        Attribute.new(node,name,true)
       end
 
       def self.create_subnode_by_all(node)

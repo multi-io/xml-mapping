@@ -1,4 +1,5 @@
 require 'rexml/document'
+require "xml/xpath"
 
 module XML
 
@@ -14,14 +15,14 @@ module XML
     def fill_from_rexml(xml)
       pre_load(xml)
       self.class.text_nodes.each_pair do |attrname,path|
-        self.send "#{attrname}=".intern, REXML::XPath.first(xml,path).text
+        self.send "#{attrname}=".intern, path.first(xml).text
       end
       self.class.object_nodes.each_pair do |attrname,(klass,path)|
-        self.send "#{attrname}=".intern, klass.load_from_rexml(REXML::XPath.first(xml,path))
+        self.send "#{attrname}=".intern, klass.load_from_rexml(path.first(xml))
       end
       self.class.array_nodes.each_pair do |attrname,(klass,path)|
         arr = self.send "#{attrname}=".intern, []
-        REXML::XPath.each(xml,path) do |elt|
+        path.all(xml).each do |elt|
           arr << klass.load_from_rexml(elt)
         end
       end
@@ -91,17 +92,17 @@ module XML
 
 
       def text_node(attrname,path)
-        text_nodes[attrname] = path
+        text_nodes[attrname] = XML::XPath.new(path)
         add_accessor attrname
       end
 
       def array_node(attrname,klass,path)
-        array_nodes[attrname] = [klass,path]
+        array_nodes[attrname] = [klass,XML::XPath.new(path)]
         add_accessor attrname
       end
 
       def object_node(attrname,klass,path)
-        object_nodes[attrname] = [klass,path]
+        object_nodes[attrname] = [klass,XML::XPath.new(path)]
         add_accessor attrname
       end
 
