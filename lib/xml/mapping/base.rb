@@ -69,10 +69,10 @@ module XML
         @attrname = attrname; @path = XML::XPath.new(path)
       end
       def xml_to_obj(obj,xml)
-        obj.send "#{@attrname}=".intern, @path.first(xml).text
+        obj.send :"#{@attrname}=", @path.first(xml).text
       end
       def obj_to_xml(obj,xml)
-        @path.first(xml,true).text = obj.send "#{@attrname}".intern
+        @path.first(xml,true).text = obj.send :"#{@attrname}"
       end
     end
 
@@ -83,13 +83,13 @@ module XML
       end
       def xml_to_obj(obj,xml)
         begin
-          obj.send "#{@attrname}=".intern, @path.first(xml).text.to_i
+          obj.send :"#{@attrname}=", @path.first(xml).text.to_i
         rescue XML::XPathError
           raise unless @opts[:optional]
         end
       end
       def obj_to_xml(obj,xml)
-        val = obj.send("#{@attrname}".intern)
+        val = obj.send :"#{@attrname}"
         if val
           @path.first(xml,true).text = val.to_s
         else
@@ -105,10 +105,10 @@ module XML
         @attrname = attrname; @klass = klass; @path = XML::XPath.new(path)
       end
       def xml_to_obj(obj,xml)
-        obj.send "#{@attrname}=".intern, @klass.load_from_rexml(@path.first(xml))
+        obj.send :"#{@attrname}=", @klass.load_from_rexml(@path.first(xml))
       end
       def obj_to_xml(obj,xml)
-        obj.send("#{@attrname}".intern).fill_into_rexml(@path.first(xml,true))
+        obj.send(:"#{@attrname}").fill_into_rexml(@path.first(xml,true))
       end
     end
 
@@ -119,10 +119,10 @@ module XML
         @true_value = true_value; @false_value = false_value
       end
       def xml_to_obj(obj,xml)
-        obj.send "#{@attrname}=".intern, @path.first(xml)==@true_value
+        obj.send :"#{@attrname}=", @path.first(xml)==@true_value
       end
       def obj_to_xml(obj,xml)
-        @path.first(xml,true).text = obj.send("#{@attrname}".intern)? @true_value : @false_value
+        @path.first(xml,true).text = obj.send(:"#{@attrname}")? @true_value : @false_value
       end
     end
 
@@ -143,7 +143,7 @@ module XML
 	@reader_path = XML::XPath.new(base_path+"/"+per_arrelement_path)
       end
       def xml_to_obj(obj,xml)
-        arr = obj.send "#{@attrname}=".intern, []
+        arr = obj.send :"#{@attrname}=", []
         @reader_path.all(xml).each do |elt|
           arr << @klass.load_from_rexml(elt)
         end
@@ -174,7 +174,7 @@ module XML
 	@reader_path = XML::XPath.new(base_path+"/"+per_hashelement_path)
       end
       def xml_to_obj(obj,xml)
-        hash = obj.send "#{@attrname}=".intern, {}
+        hash = obj.send :"#{@attrname}=", {}
         @reader_path.all(xml).each do |elt|
           key = @key_path.first(elt).text
           value = @klass.load_from_rexml(elt)
