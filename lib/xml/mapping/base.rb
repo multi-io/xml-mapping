@@ -76,10 +76,18 @@ module XML
     Classes_w_nondefault_rootelt_names = {}  #:nodoc:
 
     def self.append_features(base) #:nodoc:
+      reincluded = base.included_modules.member? XML::Mapping
       super
+      return if reincluded
       base.extend(ClassMethods)
-      base.xmlmapping_init
       Classes_w_default_rootelt_names[base.default_root_element_name] = base
+      # TODO: we have to do the last step for all of base's currently
+      # defined subclasses as well (we already overwrite inherited in
+      # ClassMethods to catch class derivations done after this
+      # include -- see there). It's probably easier to just require
+      # the user to include XML::Mapping directly in all classes he
+      # wants to be mapped, even if he already did so in one of the
+      # superclasses.
     end
 
 
@@ -91,7 +99,7 @@ module XML
 
 
     def initialize_xml_mapping  #:nodoc:
-      self.class.xml_mapping_nodes.each do |node|
+      self.class.all_xml_mapping_nodes.each do |node|
         node.obj_initializing(self)
       end
     end
@@ -114,7 +122,7 @@ module XML
     # inside the class, then #post_load is called.
     def fill_from_xml(xml)
       pre_load(xml)
-      self.class.xml_mapping_nodes.each do |node|
+      self.class.all_xml_mapping_nodes.each do |node|
         node.xml_to_obj self, xml
       end
       post_load
@@ -146,7 +154,7 @@ module XML
     # #obj_to_xml method called) in the order of their definition
     # inside the class.
     def fill_into_xml(xml)
-      self.class.xml_mapping_nodes.each do |node|
+      self.class.all_xml_mapping_nodes.each do |node|
         node.obj_to_xml self,xml
       end
     end
@@ -429,6 +437,12 @@ module XML
     module ClassMethods
     #ClassMethods = Module.new do  # this is the alterbative -- but see above for peculiarities
 
+      # TODO: take care of other people overriding this method
+      # (i.e. aliasing?)
+      def inherited(subclass)  #:nodoc:
+        XML::Mapping::Classes_w_default_rootelt_names[subclass.default_root_element_name] = subclass
+      end
+
       # Add getter and setter methods for a new attribute named _name_
       # (a string) to this class. This is a convenience method
       # intended to be called from Node class initializers.
@@ -458,10 +472,28 @@ module XML
         obj
       end
 
-      attr_accessor :xml_mapping_nodes
 
-      def xmlmapping_init  #:nodoc:
-        @xml_mapping_nodes = []
+      # array of all nodes types defined in this class, in the order
+      # of their definition
+      def xml_mapping_nodes
+        @xml_mapping_nodes ||= []
+      end
+
+
+      # enumeration of all nodes types in effect when
+      # marshalling/unmarshalling this class, that is, node types
+      # defined for this class as well as for its superclasses.  The
+      # node types are returned in the order of their definition,
+      # starting with the topmost superclass that has node types
+      # defined.
+      def all_xml_mapping_nodes
+        # TODO: we could return a dynamic Enumerable here, or cache
+        # the array...
+        result = []
+        if superclass and superclass.respond_to?(:all_xml_mapping_nodes)
+          result += superclass.all_xml_mapping_nodes
+        end
+        result += xml_mapping_nodes
       end
 
 

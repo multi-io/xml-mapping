@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+
+<folder>
+  <name>home</name>
+
+  <entries>
+    <document>
+      <name>plan</name>
+      <contents>
+        inhale, exhale
+        eat, drink, sleep
+      </contents>
+    </document>
+
+    <folder>
+      <name>work</name>
+
+      <entries>
+        <folder>
+          <name>xml-mapping</name>
+
+          <entries>
+            <document>
+              <name>README</name>
+              <contents>
+                XML-MAPPING: XML-to-object (and back) mapper
+                for Ruby, including XPath interpreter
+              </contents>
+            </document>
+            <document>
+              <name>Rakefile</name>
+              <contents>
+                rake away
+              </contents>
+            </document>
+          </entries>
+        </folder>
+
+        <document>
+          <name>schedule</name>
+          <contents>
+            12:00 AM lunch
+             4:00 PM appointment
+          </contents>
+        </document>
+      </entries>
+    </folder>
+
+
+    <folder>
+      <name>books</name>
+
+      <entries>
+        <document>
+          <name>The Hitchhiker's Guide to the Galaxy</name>
+          <contents>
+            The Answer to Life, the Universe, and Everything
+          </contents>
+        </document>
+        <document>
+          <name>Programming Ruby</name>
+          <contents>
+            The Pragmatic Programmer's Guide
+          </contents>
+        </document>
+      </entries>
+    </folder>
+
+  </entries>
+</folder>

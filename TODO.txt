@@ -1,4 +1,4 @@
-- write introductory text, including a small tutorial
+- add_accessor: take care of already defined attribute accessors
 
 - XML::XPath: generalize foo[@x='bar'] to foo[<any XPath
   expression>='bar'] (unless create/create_new implementation proves
@@ -28,5 +28,14 @@
 - XML::Mapping/default attribute values: Update documentation, digest
   "nil" issues...
 
-- Rakefile/rdoc task: generate irb session log files & :include: them
-  in the rdoc text(s). Pay attention to Windoze compatibility.
+- XML::XPath/XML::Mapping: add XML text nodes (the sub-node of an
+  element node that contains that element's text) first-class to
+  XML::XPath. Use it for things like text_node :contents, "text()".
+
+  Along those lines: promote XPath node "unspecifiedness" from an
+  attribute to a REXML node object of "unspecified" class that's
+  turned into an attribute/element/text node when necessary
+
+- (eventually, maybe) provide a "scaffolding" feature to automatically
+  turn a dtd/schema into a set of node type definitions or even a set
+  of mapping classes
