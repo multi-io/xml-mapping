@@ -15,7 +15,7 @@ module XML
         @path = XML::XPath.new(path)
       end
       def extract_attr_value(xml)
-        @path.first(xml).text
+        default_when_xpath_err{ @path.first(xml).text }
       end
       def set_attr_value(xml, value)
         @path.first(xml,:ensure_created=>true).text = value
@@ -29,7 +29,7 @@ module XML
         @path = XML::XPath.new(path)
       end
       def extract_attr_value(xml)
-        @path.first(xml).text.to_i
+        default_when_xpath_err{ @path.first(xml).text.to_i }
       end
       def set_attr_value(xml, value)
         raise RuntimeError, "Not an integer: #{value}" unless Integer===value
@@ -48,7 +48,7 @@ module XML
         @klass = klass; @path = XML::XPath.new(path)
       end
       def extract_attr_value(xml)
-        @klass.load_from_rexml(@path.first(xml))
+        @klass.load_from_rexml(default_when_xpath_err{@path.first(xml)})
       end
       def set_attr_value(xml, value)
         value.fill_into_rexml(@path.first(xml,:ensure_created=>true))
@@ -69,7 +69,7 @@ module XML
         @true_value = true_value; @false_value = false_value
       end
       def extract_attr_value(xml)
-        @path.first(xml).text==@true_value
+        default_when_xpath_err{ @path.first(xml).text==@true_value }
       end
       def set_attr_value(xml, value)
         @path.first(xml,:ensure_created=>true).text = value ? @true_value : @false_value
@@ -141,7 +141,7 @@ module XML
       end
       def extract_attr_value(xml)
         result = []
-        @reader_path.all(xml).each do |elt|
+        default_when_xpath_err{@reader_path.all(xml)}.each do |elt|
           result << @klass.load_from_rexml(elt)
         end
         result
@@ -190,7 +190,7 @@ module XML
       end
       def extract_attr_value(xml)
         result = {}
-        @reader_path.all(xml).each do |elt|
+        default_when_xpath_err{@reader_path.all(xml)}.each do |elt|
           key = @key_path.first(elt).text
           value = @klass.load_from_rexml(elt)
           result[key] = value

@@ -101,7 +101,7 @@ class XmlMappingTest < Test::Unit::TestCase
     c3 = Company.load_from_rexml(xml)
     assert_equal 12576, c3.offices[0].address.zip
     hamburg_address_path.first(xml).delete_element("city")
-    assert_raises(XML::XPathError) {
+    assert_raises(XML::MappingError) {
       Company.load_from_rexml(xml)
     }
   end

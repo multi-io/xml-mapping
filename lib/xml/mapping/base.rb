@@ -347,30 +347,41 @@ module XML
       def initialize_impl(*args)
         raise "abstract method called"
       end
+
+      # Exception that may be used by implementations of
+      # #extract_attr_value to announce that the attribute value is
+      # not set in the XML and, consequently, the default value should
+      # be set in the object being created, or an Exception be raised
+      # if no default value was specified.
+      class NoAttrValueSet < XPathError
+      end
+
       # (overridden) Sets the attribute named by _@attrname_ in _obj_
       # to _extract_attr_value(xml)_ (so subclasses should override
       # extract_attr_value instead of xml_to_obj). Handles the
       # :optional and :default_value options if extract_attr_value
-      # raised an exception. In the example from the #initialize
+      # raised NoAttrValueSet. In the example from the #initialize
       # documentation, obj.city would be set to the value returned by
       # extract_attr_value, or to "Berlin" if extract_attr_value
-      # raised an exception.
-      #
-      # TODO: It's probably wiser to invent a specific Exception type
-      # for this in order to avoid "silent failures" caused by
-      # accidentally caught XML::XPathErrors
+      # raised NoAttrValueSet.
       def xml_to_obj(obj,xml)
         begin
           obj.send :"#{@attrname}=", extract_attr_value(xml)
-        rescue XML::XPathError
-          raise unless @options[:optional]
+        rescue NoAttrValueSet => err
+          unless @options[:optional]
+            raise XML::MappingError, "no value, and no default value: #{err}"
+          end
           obj.send :"#{@attrname}=", @options[:default_value]
         end
       end
       # (to be overridden by subclasses) Extract and return the
       # attribute's value from _xml_. In the #initialize example,
       # TextNode's implementation would return the current value of
-      # the sub-element named by @path (i.e., "city").
+      # the sub-element named by @path (i.e., "city"). If the
+      # implementation decides that the attribute value is "unset" in
+      # _xml_, it should raise NoAttrValueSet in order to initiate
+      # proper handling of possibly supplied :optional and
+      # :default_value options
       def extract_attr_value(xml)
         raise "abstract method called"
       end
@@ -399,6 +410,19 @@ module XML
       def obj_initializing(obj)
         if @options[:optional]
           obj.send :"#{@attrname}=", @options[:default_value]
+        end
+      end
+      # utility method to be used by implementations of
+      # #extract_attr_value. Calls the supplied block, catching
+      # XML::XPathError and mapping it to NoAttrValueSet. This is for
+      # the common case that an implementation considers an attribute
+      # value not to be present in the XML if some specific sub-path
+      # does not exist.
+      def default_when_xpath_err # :yields:
+        begin
+          yield
+        rescue XML::XPathError => err
+          raise NoAttrValueSet, "Attribute #{@attrname} not set (XPathError: #{err})"
         end
       end
     end
