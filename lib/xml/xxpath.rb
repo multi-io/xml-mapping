@@ -131,6 +131,11 @@ module XML
       end
     end
 
+    # convenience method
+    def create_new(base_node)
+      first(base_node,true,false,true)
+    end
+
 
     module Accessors
 
