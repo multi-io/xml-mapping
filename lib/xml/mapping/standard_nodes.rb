@@ -15,24 +15,16 @@ module XML
     end
 
     class IntNode < SingleAttributeNode
-      def initialize_impl(path,opts={})
-        @path = XML::XPath.new(path); @opts = opts
+      def initialize_impl(path)
+        @path = XML::XPath.new(path)
       end
       def extract_attr_value(xml)
-        begin
-          @path.first(xml).text.to_i
-        rescue XML::XPathError
-          raise unless @opts[:optional]
-        end
+        @path.first(xml).text.to_i
       end
       def set_attr_value(xml, value)
-        if value
-          @path.first(xml,true).text = value.to_s
-        else
-          raise RuntimeError, "required attribute: #{@attrname}" unless @opts[:optional]
-        end
+        raise RuntimeError, "Not an integer: #{value}" unless Integer===value
+        @path.first(xml,true).text = value.to_s
       end
-      # TODO: make :optional flag available as a general feature to all node types
     end
 
     class ObjectNode < SingleAttributeNode

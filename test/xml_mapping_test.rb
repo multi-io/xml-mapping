@@ -76,4 +76,50 @@ class XmlMappingTest < Test::Unit::TestCase
     assert_equal "office", @c.offices[0].save_to_rexml.name
   end
 
+
+  def test_optional_flag
+    hamburg_address_path = XML::XPath.new("offices/office[1]/address")
+    baghdad_address_path = XML::XPath.new("offices/office[2]/address")
+    hamburg_zip_path = XML::XPath.new("offices/office[1]/address/zip")
+    baghdad_zip_path = XML::XPath.new("offices/office[2]/address/zip")
+
+    assert_equal 18282, @c.offices[0].address.zip
+    assert_equal 12576, @c.offices[1].address.zip
+    xml=@c.save_to_rexml
+    assert_equal "18282", hamburg_zip_path.first(xml).text
+    assert_nil baghdad_zip_path.first(xml,false,true)
+    @c.offices[1].address.zip = 12577
+    xml=@c.save_to_rexml
+    assert_equal "12577", baghdad_zip_path.first(xml).text
+    c2 = Company.load_from_rexml(xml)
+    assert_equal 12577, c2.offices[1].address.zip
+    @c.offices[1].address.zip = 12576
+    xml=@c.save_to_rexml
+    assert_nil baghdad_zip_path.first(xml,false,true)
+
+    hamburg_address_path.first(xml).delete_element("zip")
+    c3 = Company.load_from_rexml(xml)
+    assert_equal 12576, c3.offices[0].address.zip
+    hamburg_address_path.first(xml).delete_element("city")
+    assert_raises(XML::XPathError) {
+      Company.load_from_rexml(xml)
+    }
+  end
+
+
+  def test_optional_flag_nodefault
+    hamburg_address_path = XML::XPath.new("offices/office[1]/address")
+    hamburg_street_path = XML::XPath.new("offices/office[1]/address/street")
+
+    assert_equal hamburg_street_path.first(@xml.root).text,
+          @c.offices[0].address.street
+
+    hamburg_address_path.first(@xml.root).delete_element("street")
+    c2 = Company.load_from_rexml(@xml.root)
+    assert_nil c2.offices[0].address.street
+
+    xml2=c2.save_to_rexml
+    assert_nil hamburg_street_path.first(xml2,false,true)
+  end
+
 end

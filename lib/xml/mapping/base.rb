@@ -70,8 +70,8 @@ module XML
   #   irb(main)>
   #
   # So, you have to include XML::Mapping into your class to turn it
-  # into a mapping class, that is, to add XML mappings to it. In
-  # addition to the class and instance methods defined in
+  # into a mapping class, that is, to add XML mapping capabilities to
+  # it. In addition to the class and instance methods defined in
   # XML::Mapping, your mapping class will get class methods like
   # 'text_node', 'array_node' and so on; I call them "node factory
   # methods". More precisely, there is one node factory method for
@@ -82,7 +82,9 @@ module XML
   # by xml/mapping.rb; you can easily write your own ones. The name of
   # a node factory method is inferred by 'underscoring' the name of
   # the corresponding node type; e.g. 'TextNode' becomes
-  # 'text_node'. The arguments to a node factory method are
+  # 'text_node'. Each node factory method creates an instance of the
+  # corresponding node type and adds it to the mapping class (not its
+  # instances). The arguments to a node factory method are
   # automatically turned into arguments to the corresponding node
   # type's initializer. So, in order to learn more about the meaning
   # of a node factory method's parameters, you read the documentation
@@ -219,19 +221,33 @@ module XML
         super(owner)
         @attrname = attrname
         owner.add_accessor attrname
+        if Hash===args[-1]
+          @options = args[-1]
+          args = args[0..-2]
+        else
+          @options={}
+        end
         initialize_impl(*args)
       end
       def initialize_impl(*args)
         raise "abstract method called"
       end
       def xml_to_obj(obj,xml)
-        obj.send :"#{@attrname}=", extract_attr_value(xml)
+        begin
+          obj.send :"#{@attrname}=", extract_attr_value(xml)
+        rescue XML::XPathError
+          raise unless @options[:optional]
+          obj.send :"#{@attrname}=", @options[:default_value]
+        end
       end
       def extract_attr_value(xml)
         raise "abstract method called"
       end
       def obj_to_xml(obj,xml)
-        set_attr_value(xml, obj.send(:"#{@attrname}"))
+        value = obj.send(:"#{@attrname}")
+        unless (@options[:optional] and value.equal?(@options[:default_value]))
+          set_attr_value(xml, value)
+        end
       end
       def set_attr_value(xml, value)
         raise "abstract method called"
