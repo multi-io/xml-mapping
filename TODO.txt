@@ -2,7 +2,7 @@
 
 - XML::XPath: generalize foo[@x='bar'] to foo[<any XPath
   expression>='bar'] (unless create/create_new implementation proves
-  to be too difficult, but I don't think so...)
+  to be too difficult, but I don't think it will...)
 
 - XML::XPath: write documentation
 
@@ -16,5 +16,5 @@
   - add to ObjectNode, ArrayNode, HashNode corresponding initializers
     which don't require a _klass_ argument
 
-- Rakefile/rdoc task: generate irb session log files & include them in
-  the rdoc text(s). Pay attention to Windoze compatibility.
+- Rakefile/rdoc task: generate irb session log files & :include: them
+  in the rdoc text(s). Pay attention to Windoze compatibility.
