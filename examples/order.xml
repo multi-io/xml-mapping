@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<Order reference="12343-AHSHE-314159">
+  <Client>
+    <Name>Jean Smith</Name>
+    <Address>
+      <City>San Mateo</City>
+      <State>CA</State>
+      <ZIP>94403</ZIP>
+      <Street>2000, Alameda de las Pulgas</Street>
+    </Address>
+  </Client>
+
+  <Item reference="RF-0001">
+    <Description>Stuffed Penguin</Description>
+    <Quantity>10</Quantity>
+    <UnitPrice>8.95</UnitPrice>
+  </Item>
+
+  <Item reference="RF-0034">
+    <Description>Chocolate</Description>
+    <Quantity>5</Quantity>
+    <UnitPrice>28.50</UnitPrice>
+  </Item>
+
+  <Item reference="RF-3341">
+    <Description>Cookie</Description>
+    <Quantity>30</Quantity>
+    <UnitPrice>0.85</UnitPrice>
+  </Item>
+
+  <Signatures>
+    <Signed-By>
+      <Name>John Doe</Name>
+      <Position>product manager</Position>
+    </Signed-By>
+    
+    <Signed-By>
+      <Name>Jill Smith</Name>
+      <Position>clerk</Position>
+    </Signed-By>
+
+    <Signed-By>
+      <Name>Miles O'Brien</Name>
+      <Position>packer</Position>
+    </Signed-By>
+  </Signatures>
+
+</Order>

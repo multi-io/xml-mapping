@@ -33,7 +33,11 @@ Rake::RDocTask.new { |rdoc|
   #   this somewhat of a black art because RDocTask doesn't document the
   #   prerequisite of its rdoc task (<rdoc_dir>/index.html)
   #file rdoc.rdoc_target => ['examples/company.xml','examples/company.rb'] # private method
-  file "#{rdoc.rdoc_dir}/index.html" => ['examples/company.xml','examples/company.rb','examples/company_usage.intout']
+  file "#{rdoc.rdoc_dir}/index.html" => ['examples/company.xml',
+                                         'examples/company.rb',
+                                         'examples/company_usage.intout',
+                                         'examples/order_usage.intout'
+                                        ]
 }
 
 #rule '.intout' => ['.intin.rb', *FileList.new("lib/**/*.rb")] do |task|  # doesn't work -- see below
@@ -100,8 +104,11 @@ end
 
 # have to add additional prerequisites manually because it appears
 # that rules can only define a single prerequisite :-\
-file "examples/company_usage.intout" => ['examples/company_usage.intin.rb', 'examples/company.xml']
-file "examples/company_usage.intout" => FileList.new("lib/**/*.rb")
+for f in %{examples/company_usage examples/order_usage} do
+  file "#{f}.intout" => ['#{f}.intin.rb', 'examples/company.xml']
+  file "#{f}.intout" => FileList.new("lib/**/*.rb")
+  file "#{f}.intout" => FileList.new("examples/**/*.rb")
+end
 
 
 spec = Gem::Specification.new do |s|
