@@ -3,6 +3,141 @@ require "xml/xpath"
 
 module XML
 
+  # This is the central interface module of the xml-mapping library.
+  #
+  # Including this module in your classes adds XML mapping
+  # capabilities to them.
+  #
+  # == Example
+  #
+  # === Input document:
+  #
+  #   <?xml version="1.0" encoding="ISO-8859-1"?>
+  #
+  #   <company name="ACME inc.">
+  #
+  #       <address>
+  #         <city>Berlin</city>
+  #         <zip>10113</zip>
+  #       </address>
+  #
+  #       <customers>
+  #
+  #         <customer id="jim">
+  #           <name>James Kirk</name>
+  #         </customer>
+  #
+  #         <customer id="ernie">
+  #           <name>Ernie</name>
+  #         </customer>
+  #
+  #         <customer id="bert">
+  #           <name>Bert</name>
+  #         </customer>
+  #
+  #       </customers>
+  #
+  #   </company>
+  #
+  # === mapping class declaration:
+  #
+  #   require 'xml/mapping'
+  #
+  #   # forward declarations
+  #   class Address; end
+  #   class Customer; end
+  #
+  #
+  #   class Company
+  #     include XML::Mapping
+  #
+  #     text_node :name, "@name"
+  #
+  #     object_node :address, Address, "address"
+  #
+  #     array_node :customers, Customer, "customers", "customer"
+  #   end
+  #
+  #
+  #   class Address
+  #     include XML::Mapping
+  #
+  #     text_node :city, "city"
+  #     int_node :zip, "zip"
+  #   end
+  #
+  #
+  #   class Customer
+  #     include XML::Mapping
+  #
+  #     text_node :id, "@id"
+  #     text_node :name, "name"
+  #
+  #     def initialize(id,name)
+  #       @id,@name = [id,name]
+  #     end
+  #   end
+  #
+  #
+  # === usage:
+  #
+  #   irb(main)> c = Company.load_from_file('company.xml')
+  #   => #<Company:0x40322ee0 @name="ACME inc.",
+  #        @customers=[#<Customer:0x4031eda4 @name="James Kirk", @id="jim">,
+  #                    #<Customer:0x4031c978 @name="Ernie", @id="ernie">,
+  #                    #<Customer:0x40319d90 @name="Bert", @id="bert">],
+  #        @address=#<Address:0x40322094 @zip=10113, @city="Berlin">>
+  #   irb(main)>
+  #   irb(main)* c.name
+  #   => "ACME inc."
+  #   irb(main)> c.customers.size
+  #   => 3
+  #   irb(main)> c.customers[1]
+  #   => #<Customer:0x4031c978 @name="Ernie", @id="ernie">
+  #   irb(main)> c.customers[1].name
+  #   => "Ernie"
+  #   irb(main)> c.customers[0].name
+  #   => "James Kirk"
+  #   irb(main)> c.customers[0].name = 'James Tiberius Kirk'
+  #   => "James Tiberius Kirk"
+  #   irb(main)* c.customers << Customer.new('cm','Cookie Monster')
+  #   => [#<Customer:0x4031eda4 @name="James Tiberius Kirk", @id="jim">,
+  #       #<Customer:0x4031c978 @name="Ernie", @id="ernie">,
+  #       #<Customer:0x40319d90 @name="Bert", @id="bert">,
+  #       #<Customer:0x4044fe30 @name="Cookie Monster", @id="cm">]
+  #   irb(main)> xml2 = c.save_to_rexml
+  #   => <company name='ACME inc.'> ... </>
+  #   irb(main)> xml2.write(STDOUT,2)
+  #   <company name='ACME inc.'>
+  #         <address>
+  #           <city>Berlin</city>
+  #           <zip>10113</zip>
+  #         </address>
+  #         <customers>
+  #           <customer id='jim'>
+  #             <name>James Tiberius Kirk</name>
+  #           </customer>
+  #           <customer id='ernie'>
+  #             <name>Ernie</name>
+  #           </customer>
+  #           <customer id='bert'>
+  #             <name>Bert</name>
+  #           </customer>
+  #           <customer id='cm'>
+  #             <name>Cookie Monster</name>
+  #           </customer>
+  #         </customers>
+  #       </company>=> #<IO:0x402f4078>
+  #   irb(main)>
+  #
+  # So, in addition to the class and instance methods described below,
+  # you'll get one class methods like 'text_node', 'array_node' and so
+  # on, that is, one class method for each registered /node
+  # type/. Node types are classes deriving from XML::Mapping::Node;
+  # they're registered via add_node_class.  Several node types
+  # (TextNode, BooleanNode, IntNode, ObjectNode, ArrayNode, HashNode)
+  # are automatically registered by xml/mapping.rb; you can easily
+  # write your own ones.
   module Mapping
 
     def self.append_features(base)
