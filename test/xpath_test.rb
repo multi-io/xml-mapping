@@ -123,6 +123,7 @@ class XPathTest < Test::Unit::TestCase
 
   def test_write_byattrname
     elt = @d.root.elements[3]
+    s1 = elt.attributes.size
     attr_key = XML::XPath.new("foo[2]/@key").first(@d.root,true)
     assert_equal elt.attributes["key"], attr_key.text
 
@@ -130,6 +131,7 @@ class XPathTest < Test::Unit::TestCase
     attr_new.text = "haha"
     assert_equal "haha", attr_new.text
     assert_equal "haha", elt.attributes["new"]
+    assert_equal s1+1, elt.attributes.size
   end
 
 end
