@@ -355,6 +355,10 @@ module XML
       # documentation, obj.city would be set to the value returned by
       # extract_attr_value, or to "Berlin" if extract_attr_value
       # raised an exception.
+      #
+      # TODO: It's probably wiser to invent a specific Exception type
+      # for this in order to avoid "silent failures" caused by
+      # accidentally caught XML::XPathErrors
       def xml_to_obj(obj,xml)
         begin
           obj.send :"#{@attrname}=", extract_attr_value(xml)
