@@ -4,7 +4,7 @@ require "rexml/document"
 require "xml/xpath"
 
 
-class XmlMappingTest < Test::Unit::TestCase
+class XPathTest < Test::Unit::TestCase
   include REXML
 
   def test_read_byname
