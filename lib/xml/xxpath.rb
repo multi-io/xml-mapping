@@ -7,6 +7,8 @@ module XML
   # incredibly incomplete. Only implements what I need right now.
   class XPath
     def initialize(xpathstr)
+      @xpathstr = xpathstr  # for error messages
+
       xpathstr=xpathstr[1..-1] if xpathstr[0]==?/
 
       parts = xpathstr.split('/').reverse
@@ -119,7 +121,7 @@ module XML
         if allow_nil
           nil
         else
-          raise XPathError, "no such path: ..."
+          raise XPathError, "path not found: #{@xpathstr}"
         end
       else
         a[0]
