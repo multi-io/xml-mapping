@@ -1,5 +1,3 @@
-- add_accessor: take care of already defined attribute accessors
-
 - XML::XPath: generalize foo[@x='bar'] to foo[<any XPath
   expression>='bar'] (unless create/create_new implementation proves
   to be too difficult, but I don't think it will...)
@@ -8,22 +6,8 @@
 
   - include design document there
 
-- XML::Mapping: add XML::Mapping::xml_to_object(xml) (or similarly
-  nemed): function that creates an object from an XML tree, where the
-  object's class is deduced be 'un-dashing' the tree's root element
-  name (i.e. reverse operation of default_root_element_name)
-
-  - add to ObjectNode, ArrayNode, HashNode corresponding initializers
-    which don't require a _klass_ argument
-
 - XML::Mapping: Move @options hash functionality from
   SingleAttributeNode to Node.
-
-- XML::Mapping: Additional node type "ProcNode" which is initialized
-  with a "marshaller" and an "unmarshaller" procedure; they do the
-  actual job. One could also think of optional :marshaller,
-  :unmarshaller options for ObjectNode, ArrayNode, HashNode, (maybe
-  others) which would, if given, replace the klass argument.
 
 - XML::Mapping/default attribute values: Update documentation, digest
   "nil" issues...
