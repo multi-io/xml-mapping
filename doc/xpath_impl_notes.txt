@@ -4,9 +4,11 @@ At the lowest level, the "Accessors" sub-module contains reader and
 creator functions that correspond to the various types of path
 elements (_elt_name_, @_attr_name_,
 _elt_name_[@_attr_name_='_attr_value_'] etc.) that xml-xpath
-supports. The reader functions get an array of nodes and return an
-array with all matching sub-nodes of any of the supplied nodes; the
-creator functions get one node and return the created sub-node.
+supports. A reader function gets an array of nodes and the search
+parameters corresponding to its path element type (e.g. _elt_name_,
+_attr_name_, _attr_value_) and returns an array with all matching
+direct sub-nodes of any of the supplied nodes. A creator function gets
+one node and the search parameters and returns the created sub-node.
 
 An XPath expression <tt><things1>/<things2>/.../<thingsx></tt> is
 compiled into a bunch of nested closures, each of which is responsible
