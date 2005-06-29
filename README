@@ -26,15 +26,20 @@ http://www.castor.org/xml-mapping.html)
 == Description
 
 As shown in the example, you have to include XML::Mapping into a class
-to turn it into a "mapping class". An instance of a mapping class can
-be created from/converted into an XML node by means of instance
-methods like XML::Mapping.load_from_xml, XML::Mapping#save_to_xml,
-XML::Mapping.load_from_file, XML::Mapping#save_to_file. Special class
-methods like "text_node", "array_node" etc., called "node factory
-methods", may be called from the body of the class definition to
-define instance attributes that are automatically and bidirectionally
-mapped to subtrees of the XML element an instance of the class is
-mapped to. For example, in the definition
+to turn it into a "mapping class". There are no other restrictions
+imposed on mapping classes; you can add attributes and methods to
+them, include additional modules in them, derive them from other
+classes, derive other classes from them etc.pp.
+
+An instance of a mapping class can be created from/converted into an
+XML node by means of instance methods like XML::Mapping.load_from_xml,
+XML::Mapping#save_to_xml, XML::Mapping.load_from_file,
+XML::Mapping#save_to_file. Special class methods like "text_node",
+"array_node" etc., called "node factory methods", may be called from
+the body of the class definition to define instance attributes that
+are automatically and bidirectionally mapped to subtrees of the XML
+element an instance of the class is mapped to. For example, in the
+definition
 
   class Address
     include XML::Mapping
@@ -55,16 +60,37 @@ attribute will be set to the text of the XML element's "City" child
 element. When you convert an instance of Address into an XML element,
 a sub-element "City" is added and it text is set to the current value
 of the +city+ attribute. The other node types (numeric_node,
-array_node etc.) work similarly. The node types +object_node+,
+array_node etc.) work analogously. The node types +object_node+,
 +array_node+, and +hash_node+ recursively map sub-trees to instances
 of mapping classes (as opposed to simple types like String
-etc.). Refer to the reference documentation for details about the node
-types that are included in the xml-mapping library.
+etc.). For example, with the line
+
+  array_node :signatures, "Signed-By", "Signature", :class=>Signature, :default_value=>[]
+
+, an attribute named "signatures" is added to the surrounding class
+(here: Order); the attribute will be an array whose elements
+correspond to the XML elements yielded by the XPath
+"Signed-By/Signature". Each element will be of class +Signature+ (each
+array element is created from the corresponding XML element by just
+calling <tt>Signature.load_from_xml(the_xml_element)</tt>). The reason
+why the path "Signed-By/Signature" is provieded in two arguments
+instead of just one combined one becomes apparent when marshalling the
+array (along with the surrounding object) back into a sequence of XML
+elements. When that happens, "Signed-By" names the common base element
+for all those elements, and "Signature" is the path that will be
+duplicated for each element. The input document in the example above
+shows how this ends up looking.
+
+Hash nodes work similarly, but they define hash-valued attributes
+instead of array-valued ones.
+
+Refer to the reference documentation for details about the node types
+that are included in the xml-mapping library.
 
 
 === Default Values
 
-For each node you may define a _default value_, which will be set if
+For each node you may define a _default value_ which will be set if
 there was no value defined for the attribute in the XML source.
 
 From the example:
@@ -165,22 +191,24 @@ value declarations will be described in a moment. The remaining
 argument <tt>"signed-on"</tt> gets passed to our +initialize_impl+
 method as parameter _path_. We'll interpret it as an XPath expression
 that locates the time value relative to the parent mapping object's
-XML tree (in this case, this would be the XML tree the +Signature+
-instance was read from). We'll later have to read/store the year,
-month, and day values from <tt>path+"/year"</tt>,
-<tt>path+"/month"</tt>, and <tt>path+"/day"</tt>, respectively, so we
-create (and precompile) three corresponding XPath expressions using
-XML::XPath.new and store them into member variables of the
-node. XML::XPath is an XPath implementation that is bundled with
-xml-mapping. It is very incomplete, but it supports writing (not just
-reading) of XML nodes, which is needed to support writing data back to
-XML. The XML::XPath library is explained in more detail below.
+XML tree (in this case, this would be the XML tree rooted at the
++<Signature>+ element, i.e. the tree the +Signature+ instance was read
+from). We'll later have to read/store the year, month, and day values
+from <tt>path+"/year"</tt>, <tt>path+"/month"</tt>, and
+<tt>path+"/day"</tt>, respectively, so we create (and precompile)
+three corresponding XPath expressions using XML::XPath.new and store
+them into member variables of the node. XML::XPath is an XPath
+implementation that is bundled with xml-mapping. It is very
+incomplete, but it supports writing (not just reading) of XML nodes,
+which is needed to support writing data back to XML. The XML::XPath
+library is explained in more detail below.
 
 The +extract_attr_value+ method is called whenever an instance of the
 class the node belongs to (+Signature+ in the example) is being
-created from an XML tree. The parameter _xml_ is that tree. The method
-implementation is expected to extract the attribute's value from _xml_
-and return it, or raise
+created from an XML tree. The parameter _xml_ is that tree (again,
+this is the tree rooted at the +<Signature>+ element in this
+example). The method implementation is expected to extract the
+attribute's value from _xml_ and return it, or raise
 XML::Mapping::SingleAttributeNode::NoAttrValueSet if the attribute was
 "unset" in the XML (so the default value should be put in place if it
 was defined), or raise any other exception to signal an error and
@@ -192,13 +220,16 @@ sub-element of _xml_ that matches _xpath_expr_, or raises
 XML::XPathError if there was no such element. We apply REXML's _text_
 method to the returned element to get out the element's text, convert
 it to integer, and supply it to the constructor of the +Time+ object
-to be returned. (as a side note, XML::XPath extends REXML to support a
-_text_ method for attribute nodes too, so this would've worked also if
-our XPath expressions named XML attributes, not elements). The
-+default_when_xpath_err+ thing calls the supplied block and returns
-its value, but maps the exception XML::XPathError to the mentioned
-XML::Mapping::SingleAttributeNode::NoAttrValueSet (any other
-exceptions fall through unchanged). As said above,
+to be returned. (as a side note, if an XPath expression matches XML
+attributes, XML::XPath methods like _first_ will return "Attribute"
+nodes that behave similarly to REXML::Element nodes, including
+messages like _name_ and _text_ (XML::XPath extends REXML to support
+this because REXML's Attribute class is too incompatible), so this
+would've worked also if our XPath expressions named XML attributes,
+not elements). The +default_when_xpath_err+ thing calls the supplied
+block and returns its value, but maps the exception XML::XPathError to
+the mentioned XML::Mapping::SingleAttributeNode::NoAttrValueSet (any
+other exceptions fall through unchanged). As said above,
 XML::Mapping::NoAttrValueSet is then caught by our superclass
 (XML::Mapping::SingleAttributeNode), and the default value is set if
 it was provided. So you should just wrap +default_when_xpath_err+
@@ -211,11 +242,12 @@ XML::Mapping::SingleAttributeNode::NoAttrValueSet directly)
 The +set_attr_value+ method is called whenever an instance of the
 class the node belongs to (+Signature+ in the example) is being stored
 into an XML tree. The _xml_ parameter is the XML tree (a REXML element
-node); _value_ is the current value of the attribute. _xml_ will most
-probably be "half-populated" by the time this method is called -- the
-framework calls the +set_attr_value+ methods of all nodes of a mapping
-class in the order of their definition, letting each node fill its
-"bit" into _xml_. The method implementation is expected to write
+node; here this is again the tree rooted at the +<Signature>+
+element); _value_ is the current value of the attribute. _xml_ will
+most probably be "half-populated" by the time this method is called --
+the framework calls the +set_attr_value+ methods of all nodes of a
+mapping class in the order of their definition, letting each node fill
+its "bit" into _xml_. The method implementation is expected to write
 _value_ into (the correct sub-elements of) _xml_, or raise an
 exception to signal an error and abort the whole process. No default
 value handling is done here; +set_attr_value+ won't be called at all
@@ -259,8 +291,8 @@ xml-mapping use it). It is very incomplete and probably will always be
 _elt_name_[@_attr_name_=_attr_value_], _elt_name_[_index_], and *),
 but it should be reasonably efficient (XPath expressions are
 precompiled), and, most importantly, it supports write access. For
-example, if you create the path "bar[3]/baz[@key='hiho']" in the XML
-document
+example, if you create the path "/foo/bar[3]/baz[@key='hiho']" in the
+XML document
 
   <foo>
     <bar>
@@ -282,9 +314,7 @@ document
     </bar>
   </foo>
 
-(note that the path is relative to the root element, so it doesn't
-contain the name "foo") XML::XPath is explained in detail in the
-reference documentation.
+XML::XPath is explained in more detail in the reference documentation.
 
 
 == License

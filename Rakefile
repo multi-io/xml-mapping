@@ -26,7 +26,7 @@ Rake::RDocTask.new { |rdoc|
   rdoc.rdoc_dir = 'doc/api'
   rdoc.title    = "XML::Mapping -- Simple, extensible Ruby-to-XML (and back) mapper"
   rdoc.options << '--line-numbers --inline-source --accessor cattr_accessor=object --include examples'
-  rdoc.rdoc_files.include('README')
+  rdoc.rdoc_files.include('README','README_XPATH')
   rdoc.rdoc_files.include('lib/**/*.rb')
 
   # additional file dependencies for the rdoc task
@@ -35,8 +35,10 @@ Rake::RDocTask.new { |rdoc|
   #file rdoc.rdoc_target => ['examples/company.xml','examples/company.rb'] # private method
   file "#{rdoc.rdoc_dir}/index.html" => ['examples/company.xml',
                                          'examples/company.rb',
-                                         'examples/company_usage.intout',
+                                         #'examples/company_usage.intout',
                                          'examples/order_usage.intout',
+                                         'examples/xpath_usage.intout',
+                                         'examples/xpath_docvsroot.intout',
                                          'examples/order_signature_enhanced_usage.intout'
                                         ]
   file "#{rdoc.rdoc_dir}/index.html" => FileList.new("examples/**/*.rb")
@@ -108,7 +110,11 @@ end
 
 # have to add additional prerequisites manually because it appears
 # that rules can only define a single prerequisite :-\
-for f in %w{examples/company_usage examples/order_usage} do
+for f in %w{examples/company_usage
+            examples/order_usage
+            examples/order_signature_enhanced_usage.intout
+            examples/xpath_usage.intout
+            examples/xpath_docvsroot.intout} do
   file "#{f}.intout" => ["#{f}.intin.rb", 'examples/company.xml']
   file "#{f}.intout" => FileList.new("lib/**/*.rb")
   file "#{f}.intout" => FileList.new("examples/**/*.rb")
@@ -125,6 +131,7 @@ spec = Gem::Specification.new do |s|
     item.include?("CVS") || item.include?("rdoc") || item =~ /~$/
   end
   s.files << "README"
+  s.files << "README_XPATH"
   s.files << "LICENSE"
   s.require_path = 'lib'
   s.autorequire = 'xml/mapping'

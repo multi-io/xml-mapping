@@ -76,23 +76,19 @@ module XML
     Classes_w_nondefault_rootelt_names = {}  #:nodoc:
 
     def self.append_features(base) #:nodoc:
-      reincluded = base.included_modules.member? XML::Mapping
       super
-      return if reincluded
       base.extend(ClassMethods)
       Classes_w_default_rootelt_names[base.default_root_element_name] = base
-      # TODO: we have to do the last step for all of base's currently
-      # defined subclasses as well (we already overwrite inherited in
-      # ClassMethods to catch class derivations done after this
-      # include -- see there). It's probably easier to just require
-      # the user to include XML::Mapping directly in all classes he
-      # wants to be mapped, even if he already did so in one of the
-      # superclasses.
     end
 
 
-    # TODO: implement Hash read-only instead of this interface
+    # Finds the mapping class corresponding to the given XML root
+    # element name. This is the inverse operation to
+    # <class>.root_element_name (see
+    # XML::Mapping::ClassMethods.root_element_name).
     def self.class_for_root_elt_name(name)
+      # TODO: implement Hash read-only instead of this
+      # interface
       Classes_w_nondefault_rootelt_names[name] ||
         Classes_w_default_rootelt_names[name]
     end
@@ -268,7 +264,7 @@ module XML
     # attribute of their mapping class. This class also introduces a
     # general "options" hash parameter which may be used to influence
     # the creation of nodes in numerous ways, e.g. by providing
-    # default attribute value when there is no source data in the
+    # default attribute values when there is no source data in the
     # mapped XML.
     #
     # All node types that come with xml-mapping inherit from
@@ -286,9 +282,17 @@ module XML
       # If the last argument is a hash, it is assumed to be the
       # abovementioned "options hash", and is stored into
       # @options. Two entries -- :optional and :default_value -- in
-      # the options hash are already processed in
-      # SingleAttributeNode. See xml_to_obj, obj_to_xml below for
-      # details.
+      # the options hash are already processed in SingleAttributeNode:
+      #
+      # Supplying :default_value=>_obj_ makes _obj_ the _default
+      # value_ for this attribute. When unmarshalling (loading) an
+      # object from an XML source, the attribute will be set to this
+      # value if nothing was provided in the XML; when marshalling
+      # (saving), the attribute won't be saved if it is set to the
+      # default value.
+      #
+      # Providing just :optional=>true is equivalent to providing
+      # :default_value=>nil.
       #
       # The remaining arguments are passed to initialize_impl, which
       # is the initializer subclasses should overwrite instead of
@@ -437,12 +441,6 @@ module XML
     module ClassMethods
     #ClassMethods = Module.new do  # this is the alterbative -- but see above for peculiarities
 
-      # TODO: take care of other people overriding this method
-      # (i.e. aliasing?)
-      def inherited(subclass)  #:nodoc:
-        XML::Mapping::Classes_w_default_rootelt_names[subclass.default_root_element_name] = subclass
-      end
-
       # Add getter and setter methods for a new attribute named _name_
       # to this class. This is a convenience method intended to be
       # called from Node class initializers.
@@ -539,6 +537,10 @@ module XML
 
 
 
+    # "polymorphic" load function. Turns the XML tree _xml_ into an
+    # object, which is returned. The class of the object is
+    # automatically determined from the root element name of _xml_
+    # using XML::Mapping::class_for_root_elt_name.
     def self.load_object_from_xml(xml)
       unless c = class_for_root_elt_name(xml.name)
         raise MappingError, "no mapping class for root element name #{xml.name}"
@@ -546,6 +548,8 @@ module XML
       c.load_from_xml(xml)
     end
 
+    # Like load_object_from_xml, but loads from the XML file named by
+    # _filename_.
     def self.load_object_from_file(filename)
       xml = REXML::Document.new(File.new(filename))
       load_object_from_xml(xml.root)

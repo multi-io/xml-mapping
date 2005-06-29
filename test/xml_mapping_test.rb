@@ -12,9 +12,12 @@ end
 class XmlMappingTest < Test::Unit::TestCase
   def setup
     # need to undo mapping class definitions that may have been
-    # established by other tests
+    # established by other tests (and outlive those tests)
+
+    # this requires some ugly hackery with internal variables
     XML::Mapping.module_eval <<-EOS
       Classes_w_default_rootelt_names.clear
+      Classes_w_nondefault_rootelt_names.clear
     EOS
     Object.send(:remove_const, "Company")
     Object.send(:remove_const, "Address")
@@ -49,38 +52,38 @@ class XmlMappingTest < Test::Unit::TestCase
       assert_equal exp, @c.customers[ckey].uid
     end
   end
-
+  
   def test_getter_array_node
     assert_equal ["pencils", "weapons of mass destruction"],
           @c.offices.map{|o|o.speciality}
   end
-
-
+  
+  
   def test_setter_text_node
     @c.ent2 = "lalala"
     assert_equal "lalala", REXML::XPath.first(@c.save_to_xml, "arrtest/entry[2]").text
   end
-
-
+  
+  
   def test_setter_array_node
     xml=@c.save_to_xml
     assert_equal ["pencils", "weapons of mass destruction"],
           XML::XPath.new("offices/office/@speciality").all(xml).map{|n|n.text}
   end
-
-
+  
+  
   def test_setter_hash_node
     xml=@c.save_to_xml
     assert_equal @c.customers.keys.sort,
           XML::XPath.new("customers/customer/@uid").all(@xml.root).map{|n|n.text}.sort
   end
-
-
+  
+  
   def test_setter_boolean_node
     @c.offices[0].classified = !@c.offices[0].classified
     xml=@c.save_to_xml
     assert_equal @c.offices[0].classified,
-          XML::XPath.new("offices/office[1]/classified").first(xml).text == "yes"
+           XML::XPath.new("offices/office[1]/classified").first(xml).text == "yes"
   end
 
 

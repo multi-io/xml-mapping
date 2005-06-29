@@ -2,15 +2,28 @@
   expression>='bar'] (unless create/create_new implementation proves
   to be too difficult, but I don't think it will...)
 
-- XML::XPath: write documentation
+- documentation:
 
-  - include design document there
+  - write documentation for XML::XPath
+
+    - include design document there
+
+  - README:
+
+    - advanced usage: inheriting from mapping classes, explain that
+      existing methods won't be overwritten, think up nice example
+      (mapping stdlib classes like Dir/File etc.)
+
+    - include some more complicated XPath paths in the examples.
 
 - XML::Mapping: Move @options hash functionality from
   SingleAttributeNode to Node.
 
 - XML::Mapping/default attribute values: Update documentation, digest
   "nil" issues...
+
+- add streaming input/output to XML::Mapping, i.e. SAX-based input in
+  addition to the current REXML/DOM - based one.
 
 - XML::XPath/XML::Mapping: add XML text nodes (the sub-node of an
   element node that contains that element's text) first-class to
