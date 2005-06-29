@@ -197,13 +197,19 @@ module XML
               # implementation of the class we get mixed into always
               # calls text (instead of just accessing @text or so)
               if unspecified?
-                "<UNDEFINED>"
+                "[UNSPECIFIED]"
               else
                 _text_orig
               end
             end
             def text=(x)
               _textis_orig(x)
+              unspecified=false
+            end
+
+            alias_method :_nameis_orig, :name=
+            def name=(x)
+              _nameis_orig(x)
               unspecified=false
             end
           EOS
@@ -223,6 +229,7 @@ module XML
       # matched an attribute node.
       class Attribute
         attr_reader :parent, :name
+        attr_writer :name
 
         def initialize(parent,name)
           @parent,@name = parent,name
@@ -243,11 +250,11 @@ module XML
 
         # the value of the attribute.
         def text
-          parent.attributes[name]
+          parent.attributes[@name]
         end
 
         def text=(x)
-          parent.attributes[name] = x
+          parent.attributes[@name] = x
         end
 
         def ==(other)
