@@ -119,7 +119,7 @@ module XML
     # If :ensure_created=>true is provided, first() ensures that a
     # match exists in _node_, creating one if none existed before.
     #
-    # <tt>path.first(node,:create_new=>true)(node)</tt> is equivalent
+    # <tt>path.first(node,:create_new=>true)</tt> is equivalent
     # to <tt>path.create_new(node)</tt>.
     def first(node,options={})
       a=all(node,options)
@@ -162,7 +162,7 @@ module XML
     # existed in <i>base_node</i>.
     #
     # <tt>path.create_new(node)</tt> is equivalent to
-    # <tt>path.first(node,:create_new=>true)(node)</tt>.
+    # <tt>path.first(node,:create_new=>true)</tt>.
     def create_new(base_node)
       first(base_node,:create_new=>true)
     end
