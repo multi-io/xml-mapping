@@ -204,13 +204,13 @@ module XML
             end
             def text=(x)
               _textis_orig(x)
-              unspecified=false
+              self.unspecified=false
             end
 
             alias_method :_nameis_orig, :name=
             def name=(x)
               _nameis_orig(x)
-              unspecified=false
+              self.unspecified=false
             end
           EOS
         end
