@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<folder1 name="root" last-changed="123">
+  <entries1>
+    <bookmark1 bmname="ruby" bmlast-changed="345">
+      <url>http://www.ruby-lang.org</url>
+    </bookmark1>
+
+    <bookmark1 bmname="RAA">
+      <url>http://raa.ruby-lang.org/</url>
+    </bookmark1>
+
+    <folder1 name="news">
+      <entries1>
+        <bookmark1 bmname="/." bmlast-changed="233">
+          <url>http://www.slashdot.org/</url>
+        </bookmark1>
+        <bookmark1 bmname="groklaw" bmlast-changed="238">
+          <url>http://www.groklaw.net/</url>
+        </bookmark1>
+      </entries1>
+    </folder1>
+  </entries1>
+</folder1>
