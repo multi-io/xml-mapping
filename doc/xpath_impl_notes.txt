@@ -71,7 +71,7 @@ The implementations of the <tt>@creator_procs</tt> look like this:
 
   @creator_procs[n] =
     proc {|node,create_new|
-      @creator_procs[n-1].call(Accessors.create_subnode_by_<thingsn>(node,create_new,<thingsn>),
+      @creator_procs[n-1].call(Accessors.create_subnode_by_<things[x+1-n]>(node,create_new,<things[x+1-n]>),
                                create_new)
     }
 
