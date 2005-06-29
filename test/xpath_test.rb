@@ -261,10 +261,12 @@ class XPathTest < Test::Unit::TestCase
   def test_unspecifiedness
     node1 = XML::XPath.new("foo/hello").create_new(@d.root)
     assert(!(node1.unspecified?))
+    assert_equal @d.root, node1.parent.parent
     node2 = XML::XPath.new("foo/*").create_new(@d.root)
+    assert_equal @d.root, node2.parent.parent
     assert node2.unspecified?
     node2.name = "newone"
-    assert_equal node2.name, "newone"
+    assert_equal "newone", node2.name
     assert(!(node2.unspecified?))
   end
 

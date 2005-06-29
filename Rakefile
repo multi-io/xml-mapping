@@ -38,6 +38,9 @@ Rake::RDocTask.new { |rdoc|
                                          #'examples/company_usage.intout',
                                          'examples/order_usage.intout',
                                          'examples/xpath_usage.intout',
+                                         'examples/xpath_ensure_created.intout',
+                                         'examples/xpath_create_new.intout',
+                                         'examples/xpath_pathological.intout',
                                          'examples/xpath_docvsroot.intout',
                                          'examples/order_signature_enhanced_usage.intout'
                                         ]
@@ -112,9 +115,12 @@ end
 # that rules can only define a single prerequisite :-\
 for f in %w{examples/company_usage
             examples/order_usage
-            examples/order_signature_enhanced_usage.intout
-            examples/xpath_usage.intout
-            examples/xpath_docvsroot.intout} do
+            examples/order_signature_enhanced_usage
+            examples/xpath_usage
+            examples/xpath_ensure_created
+            examples/xpath_create_new
+            examples/xpath_pathological
+            examples/xpath_docvsroot} do
   file "#{f}.intout" => ["#{f}.intin.rb", 'examples/company.xml']
   file "#{f}.intout" => FileList.new("lib/**/*.rb")
   file "#{f}.intout" => FileList.new("examples/**/*.rb")

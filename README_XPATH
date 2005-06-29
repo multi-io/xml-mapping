@@ -88,6 +88,11 @@ REXML::Element. This is so you can write things like
 special-case anything even if the path matches attributes, not just
 elements.
 
+As you can see, you can re-use path objects, applying them to
+different XML elements at will. You should do this because the XPath
+pattern is stored inside the XPath object in a pre-compiled form,
+which makes it more efficient.
+
 The path elements of the XPath pattern are applied to the
 <tt>.elements</tt> collection of the passed XML element and its
 sub-elements, starting with the first one. This is shown by the
@@ -110,6 +115,49 @@ against the +firstelt+ element in the example *must not* start with
 
 === Write Access
 
+You may pass a <tt>:ensure_created=>true</tt> option argument to
+_path_.first(_elt_)/_path_.all(_elt_) calls to make sure that _path_
+exists inside the passed XML element _elt_. If it existed before,
+nothing changes, and the call behaves just as it would without the
+option argument. If the path didn't exist before, the XML element is
+modified such that
+
+- the path exists afterwards
+
+- all paths that existed before still exist afterwards
+
+- the modification is as small as possible (i.e. as few elements as
+  possible are added, additional attributes are added to existing
+  elements if possible etc.)
+
+The created resp. previously existing, matching elements are returned.
+
+
+Examples:
+
+  :include: xpath_ensure_created.intout
+
+
+Alternatively, you may pass a <tt>:create_new=>true</tt> option
+argument or call <tt>create_new</tt> (_path_.create_new(_elt_) is
+equivalent to _path_.first(_elt_,:create_new=>true)). In that case, a
+new node in created in _elt_ for each path element of _path_ (or an
+exception raised if that wasn't possible for any path element).
+
+Examples:
+
+  :include: xpath_create_new.intout
+
+
+=== Pathological Cases
+
+What is created when the Path "*" is to be created inside an empty XML
+element? The name of the element to be created isn't known, but still
+some element must be created. The answer is that xml-xpath creates a
+special "unspecified" element whose name must be set by the caller
+afterwards.
+
+  :include: xpath_pathological.intout
 
 
 == Implentation notes
