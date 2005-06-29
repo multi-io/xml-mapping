@@ -149,6 +149,12 @@ class XPathTest < Test::Unit::TestCase
     assert_equal @d.root.elements[4], node3
     assert_equal 'bla', node3.attributes['blubb']
     assert_equal 'bla2', node3.attributes['blubb2']
+
+    node4 = XML::XPath.new("hiho[@blubb='foo42']").first(@d.root,:ensure_created=>true)
+    assert_not_equal node3, node4
+    assert_equal 5, @d.root.elements.size
+    assert_equal @d.root.elements[5], node4
+    assert_equal 'foo42', node4.attributes['blubb']
   end
 
 
