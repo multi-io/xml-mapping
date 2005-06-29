@@ -26,7 +26,7 @@ Rake::RDocTask.new { |rdoc|
   rdoc.rdoc_dir = 'doc/api'
   rdoc.title    = "XML::Mapping -- Simple, extensible Ruby-to-XML (and back) mapper"
   rdoc.options << '--line-numbers --inline-source --accessor cattr_accessor=object --include examples'
-  rdoc.rdoc_files.include('README','README_XPATH')
+  rdoc.rdoc_files.include('README','README_XPATH','doc/xpath_impl_notes.txt')
   rdoc.rdoc_files.include('lib/**/*.rb')
 
   # additional file dependencies for the rdoc task

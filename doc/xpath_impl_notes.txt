@@ -1,0 +1,117 @@
+=== latest design (12/2004)
+
+At the lowest level, the "Accessors" sub-module contains reader and
+creator functions that correspond to the various types of path
+elements (_elt_name_, @_attr_name_,
+_elt_name_[@_attr_name_='_attr_value_'] etc.) that xml-xpath
+supports. The reader functions get an array of nodes and return an
+array with all matching sub-nodes of any of the supplied nodes; the
+creator functions get one node and return the created sub-node.
+
+An XPath expression <tt><things1>/<things2>/.../<thingsx></tt> is
+compiled into a bunch of nested closures, each of which is responsible
+for a specific path element and calls the corresponding accessor
+function:
+
+- <tt>@creator_procs</tt> -- an array of "creator"
+  functions. <tt>@creator_procs[i]</tt> gets passed a base node (XML
+  element) and a create_new flag, and it creates the path
+  <tt><things[x-i+1]>/<things[x-i+2]>/.../<thingsx></tt> inside the
+  base node and returns the hindmost element created (i.e. the one
+  corresponding to <tt><thingsx></tt>).
+
+- <tt>@reader_proc</tt> -- a "reader" function that gets passed an
+  array of nodes and returns an array of all nodes that matched the
+  path in any of the supplied nodes, or, if no match was found, throws
+  :not_found along with the last non-empty set of nodes that was
+  found, and the element of <tt>@creator_procs</tt> that could be used
+  to create the remaining part of the path.
+
+The +all+ function is then trivially implemented on top of this:
+
+    def all(node,options={})
+      raise "options not a hash" unless Hash===options
+      if options[:create_new]
+        return [ @creator_procs[-1].call(node,true) ]
+      else
+        last_nodes,rest_creator = catch(:not_found) do
+          return @reader_proc.call([node])
+        end
+        if options[:ensure_created]
+          [ rest_creator.call(last_nodes[0],false) ]
+        else
+          []
+        end
+      end
+    end
+
+...and +first+, <tt>create_new</tt> etc. are even more trivial
+frontends to that.
+
+The implementations of the <tt>@creator_procs</tt> look like this:
+
+  @creator_procs[0] =
+    proc{|node,create_new| node}
+
+  @creator_procs[1] =
+    proc {|node,create_new|
+      @creator_procs[0].call(Accessors.create_subnode_by_<thingsx>(node,create_new,<thingsx>),
+                             create_new)
+    }
+
+  @creator_procs[2] =
+    proc {|node,create_new|
+      @creator_procs[1].call(Accessors.create_subnode_by_<thingsx-1>(node,create_new,<thingsx-1>),
+                             create_new)
+    }
+
+  ...
+
+  @creator_procs[n] =
+    proc {|node,create_new|
+      @creator_procs[n-1].call(Accessors.create_subnode_by_<thingsn>(node,create_new,<thingsn>),
+                               create_new)
+    }
+
+  ...
+  @creator_procs[x] =
+    proc {|node,create_new|
+      @creator_procs[x-1].call(Accessors.create_subnode_by_<things1>(node,create_new,<things1>),
+                               create_new)
+    }
+
+
+
+..and the implementation of @reader_proc looks like this:
+
+  @reader_proc = rpx where
+
+  rp0 = proc {|nodes| nodes}
+
+  rp1 = proc {|nodes|
+                next_nodes = Accessors.subnodes_by_<thingsx>(nodes,<thingsx>)
+                if (next_nodes == [])
+                  throw :not_found, [nodes,@creator_procs[1]]
+                else
+                  rp0.call(next_nodes)
+                end
+              }
+
+  rp2 = proc {|nodes|
+                next_nodes = Accessors.subnodes_by_<thingsx-1>(nodes,<thingsx-1>)
+                if (next_nodes == [])
+                  throw :not_found, [nodes,@creator_procs[2]]
+                else
+                  rp1.call(next_nodes)
+                end
+              }
+  ...
+
+  rpx = proc {|nodes|
+                next_nodes = Accessors.subnodes_by_<things1>(nodes,<things1>)
+                if (next_nodes == [])
+                  throw :not_found, [nodes,@creator_procs[x]]
+                else
+                  rpx-1.call(next_nodes)
+                end
+              }

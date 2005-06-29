@@ -155,9 +155,17 @@ What is created when the Path "*" is to be created inside an empty XML
 element? The name of the element to be created isn't known, but still
 some element must be created. The answer is that xml-xpath creates a
 special "unspecified" element whose name must be set by the caller
-afterwards.
+afterwards:
 
   :include: xpath_pathological.intout
 
+The "newelt" object in the last example is an ordinary
+REXML::Element. xml-xpath mixes the "unspecified" attribute into that
+class, as well as into the XML::XPath::Accessors::Attribute class
+mentioned above.
+
 
 == Implentation notes
+
+<tt>doc/xpath_impl_notes.txt</tt> contains some documentation on the
+implementation of xml-xpath.

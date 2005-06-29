@@ -30,10 +30,13 @@ d.write($stdout,2)#<=
 ### a new "unspecified" element was created
 newelt.unspecified?#<=
 
-# we must modify it to "specify" it
+### we must modify it to "specify" it
 newelt.name="new-one"
 newelt.text="hello!"
 newelt.unspecified?#<=
 
 #:invisible_retval:
 d.write($stdout,2)#<=
+
+### you could also set unspecified to false explicitly, as in:
+newelt.unspecified=true
