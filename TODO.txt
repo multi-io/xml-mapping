@@ -4,17 +4,9 @@
 
 - documentation:
 
-  - write documentation for XML::XPath
-
-    - include design document there
-
   - README:
 
-    - advanced usage: inheriting from mapping classes, explain that
-      existing methods won't be overwritten, think up nice example
-      (mapping stdlib classes like Dir/File etc.)
-
-    - include some more complicated XPath paths in the examples.
+    - multi-attribute nodes
 
 - XML::Mapping: Move @options hash functionality from
   SingleAttributeNode to Node.
@@ -23,7 +15,9 @@
   "nil" issues...
 
 - add streaming input/output to XML::Mapping, i.e. SAX-based input in
-  addition to the current REXML/DOM - based one.
+  addition to the current REXML/DOM - based one. Probably won't be
+  implementable for some more complicated XPaths -- raise meaningful
+  exceptions in those cases.
 
 - XML::XPath/XML::Mapping: add XML text nodes (the sub-node of an
   element node that contains that element's text) first-class to

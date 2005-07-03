@@ -186,19 +186,19 @@ etc. Xml-apping noticed that the getter methods for those attributes
 existed, so it didn't overwrite them. When calling +save_to_xml+ on a
 +Time+ object, these methods are called and return the object's values
 for those fields, which then get written to the output XML. Of course
-you could also derive a new class from your pre-existing business
-class and implement the XML::Mapping stuff there, or even derive
-several such classes in order to define more than one XML mapping for
-the same business class.
+you could also derive a new class from a pre-existing one and
+implement the XML::Mapping stuff there, or even derive several such
+classes in order to define more than one XML mapping for one existing
+class.
 
 It should be mentioned that in the +Time+ example above, the setter
-methods (<tt>year=</tt>, <tt>month=</tt> etc.) don't exist in +Time+
+methods (<tt>year=</tt>, <tt>month=</tt> etc.) didn't exist in +Time+
 (+Time+ objects are immutable), so xml-mapping defined its own setter
 methods that just set <tt>@year</tt>, <tt>@month</tt> etc., which is
 pretty useless for this case. So you can't really read +Time+ values
-back from an XML representation in this example. You'll need
-<tt>blah</tt> and <tt>blah=(x)</tt> methods for each +blah+ attribute
-that you want to define an XML mapping for.
+back from an XML representation in this example. For that to work,
+you'd need functioning <tt>blah=(x)</tt> methods for each +blah+
+attribute that you want to define an XML mapping for.
 
 
 === Defining your own node types
