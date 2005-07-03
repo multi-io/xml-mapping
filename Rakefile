@@ -37,6 +37,7 @@ Rake::RDocTask.new { |rdoc|
                                          'examples/company.rb',
                                          #'examples/company_usage.intout',
                                          'examples/order_usage.intout',
+                                         'examples/time_augm.intout',
                                          'examples/xpath_usage.intout',
                                          'examples/xpath_ensure_created.intout',
                                          'examples/xpath_create_new.intout',
@@ -116,6 +117,7 @@ end
 for f in %w{examples/company_usage
             examples/order_usage
             examples/order_signature_enhanced_usage
+            examples/time_augm
             examples/xpath_usage
             examples/xpath_ensure_created
             examples/xpath_create_new

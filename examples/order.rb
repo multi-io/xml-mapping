@@ -25,7 +25,8 @@ class Client
   include XML::Mapping
 
   text_node :name, "Name"
-  object_node :address, "Address", :class=>Address
+  object_node :home_address, "Address[@where='home']", :class=>Address
+  object_node :work_address, "Address[@where='work']", :class=>Address, :default_value=>nil
 end
 
 

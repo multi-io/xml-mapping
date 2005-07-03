@@ -14,11 +14,11 @@ http://www.castor.org/xml-mapping.html)
 
   :include: order.xml
 
-=== mapping class declaration:
+=== Mapping class declaration:
 
   :include: order.rb
 
-=== usage:
+=== Usage:
 
   :include: order_usage.intout
 
@@ -88,7 +88,7 @@ Refer to the reference documentation for details about the node types
 that are included in the xml-mapping library.
 
 
-=== Default Values
+=== Default values
 
 For each node you may define a _default value_ which will be set if
 there was no value defined for the attribute in the XML source.
@@ -143,7 +143,65 @@ This implies that:
   saving
 
 
-=== defining your own node types
+
+=== Attribute handling details, augmenting existing classes
+
+I'll shed some more light on how xml-mapping adds mapped attributes to
+Ruby classes. An attribute declaration like
+
+  text_node :city, "City"
+
+maps some portion of the XML tree (here: the "City" sub-element) to an
+attribute (here: "city") of the class whose body the declaration
+appears in. When writing (marshalling) instances of the surrounding
+class into an XML document, xml-mapping will read the attribute value
+from the instance using the function named +city+; when reading
+(unmarshalling) an instance from an XML document, xml-mapping will use
+the one-parameter function <tt>city=</tt> to set the attribute in the
+instance to the value read from the XML document.
+
+If these functions don't exist at the time the node declaration is
+executed, xml-mapping adds default implementations that simply
+read/write the attribute value to instance variables that have the
+same name as the attribute. For example, the +city+ attribute
+declaration in the +Address+ class in the example added functions
++city+ and <tt>city=</tt> that read/write from/to the instance
+variable <tt>@city</tt>.
+
+If, however, these functions already exist prior to defining the
+attributes, xml-mapping will leave them untouched, so your precious
+self-written accessor methods that do whatever complicated internal
+processing of the data won't be overwritten.
+
+This means that you can not only create new mapping classes from
+scratch, you can also take existing classes that contain some
+"business logic" and "augment" them with xml-mapping capabilities. As
+a simple example, let's augment Ruby's "Time" class with node
+declarations that declare XML mappings for the day, month etc. fields:
+
+  :include: time_augm.intout
+
+Here XML mappings are defined for the existing fields +year+, +month+
+etc. Xml-apping noticed that the getter methods for those attributes
+existed, so it didn't overwrite them. When calling +save_to_xml+ on a
++Time+ object, these methods are called and return the object's values
+for those fields, which then get written to the output XML. Of course
+you could also derive a new class from your pre-existing business
+class and implement the XML::Mapping stuff there, or even derive
+several such classes in order to define more than one XML mapping for
+the same business class.
+
+It should be mentioned that in the +Time+ example above, the setter
+methods (<tt>year=</tt>, <tt>month=</tt> etc.) don't exist in +Time+
+(+Time+ objects are immutable), so xml-mapping defined its own setter
+methods that just set <tt>@year</tt>, <tt>@month</tt> etc., which is
+pretty useless for this case. So you can't really read +Time+ values
+back from an XML representation in this example. You'll need
+<tt>blah</tt> and <tt>blah=(x)</tt> methods for each +blah+ attribute
+that you want to define an XML mapping for.
+
+
+=== Defining your own node types
 
 It's easy to write additional node types and register them with the
 xml-mapping library. Let's say we want to extend the +Signature+ class
@@ -263,7 +321,7 @@ _xml_. If it was not, it is created (preferable at the end of _xml_'s
 list of sub-nodes), and returned. See below for a more detailed
 documentation of the XPath interpreter.
 
-=== element order in created XML documents
+=== Element order in created XML documents
 
 As just said, XML::XPath, when used to create new XML nodes, generally
 appends those nodes to the end of the list of subnodes of the node the
@@ -284,15 +342,15 @@ _before_ the sequence of <tt><Item></tt> elements in the output XML.
 
 == XPath interpreter
 
-XML::XPath is an XPath parser. It is primarily intended to be used in
-xml-mapping node type definitions (all node types that come with
-xml-mapping use it). It is very incomplete and probably will always be
-(it only supports path elements of types _elt_name_, @_attr_name_,
-_elt_name_[@_attr_name_=_attr_value_], _elt_name_[_index_], and *),
-but it should be reasonably efficient (XPath expressions are
-precompiled), and, most importantly, it supports write access. For
-example, if you create the path "/foo/bar[3]/baz[@key='hiho']" in the
-XML document
+XML::XPath is an XPath parser. It is used in xml-mapping node type
+definitions, but can just as well be utilized stand-alone (it does
+not depend on xml-mapping). XML::XPath is very incomplete and probably
+will always be (it only supports path elements of types _elt_name_,
+@_attr_name_, _elt_name_[@_attr_name_=_attr_value_],
+_elt_name_[_index_], and *), but it should be reasonably efficient
+(XPath expressions are precompiled), and, most importantly, it
+supports write access. For example, if you create the path
+"/foo/bar[3]/baz[@key='hiho']" in the XML document
 
   <foo>
     <bar>

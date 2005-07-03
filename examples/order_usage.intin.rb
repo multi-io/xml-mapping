@@ -28,7 +28,9 @@ s.name='Harry Smith'
 s.position='general manager'
 o.signatures << s
 xml=o.save_to_xml #convert to REXML node; there's also o.save_to_file(name) #<=
+#:invisible_retval:
 xml.write($stdout,2) #<=
+#:visible_retval:
 
 ####Starting a new order from scratch
 o = Order.new #<=
@@ -45,19 +47,22 @@ o.reference = "FOOBAR-1234"
 
 o.client = Client.new
 o.client.name = 'Ford Prefect'
-o.client.address = Address.new
-o.client.address.street = 'Park Av. 42'
-o.client.address.city = 'small planet'
-o.client.address.zip = 17263
-o.client.address.state = 'Betelgeuse system'
+o.client.home_address = Address.new
+o.client.home_address.street = '42 Park Av.'
+o.client.home_address.city = 'small planet'
+o.client.home_address.zip = 17263
+o.client.home_address.state = 'Betelgeuse system'
 
 o.items={'XY-42' => Item.new}
 o.items['XY-42'].descr = 'improbability drive'
 o.items['XY-42'].quantity = 3
 o.items['XY-42'].unit_price = 299.95
 
+#:invisible_retval:
 o.save_to_xml.write($stdout,2)
 #<=
+#:visible_retval:
+
 ## the root element name when saving an object to XML will by default
 ## be derived from the class name (in this example, "Order" became
 ## "order"). This can be overridden on a per-class basis; see

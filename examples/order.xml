@@ -3,11 +3,17 @@
 <Order reference="12343-AHSHE-314159">
   <Client>
     <Name>Jean Smith</Name>
-    <Address>
+    <Address where="home">
       <City>San Mateo</City>
       <State>CA</State>
       <ZIP>94403</ZIP>
       <Street>2000, Alameda de las Pulgas</Street>
+    </Address>
+    <Address where="work">
+      <City>San Francisco</City>
+      <State>CA</State>
+      <ZIP>94102</ZIP>
+      <Street>98765, Fulton Street</Street>
     </Address>
   </Client>
 
