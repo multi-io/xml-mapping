@@ -40,7 +40,7 @@ class XmlMappingTest < Test::Unit::TestCase
   end
 
   def test_getter_boolean_node
-    path=XML::XPath.new("offices/office[2]/classified")
+    path=XML::XXPath.new("offices/office[2]/classified")
     assert_equal(path.first(@xml.root).text == "yes",
                  @c.offices[1].classified)
   end
@@ -68,14 +68,14 @@ class XmlMappingTest < Test::Unit::TestCase
   def test_setter_array_node
     xml=@c.save_to_xml
     assert_equal ["pencils", "weapons of mass destruction"],
-          XML::XPath.new("offices/office/@speciality").all(xml).map{|n|n.text}
+          XML::XXPath.new("offices/office/@speciality").all(xml).map{|n|n.text}
   end
   
   
   def test_setter_hash_node
     xml=@c.save_to_xml
     assert_equal @c.customers.keys.sort,
-          XML::XPath.new("customers/customer/@uid").all(@xml.root).map{|n|n.text}.sort
+          XML::XXPath.new("customers/customer/@uid").all(@xml.root).map{|n|n.text}.sort
   end
   
   
@@ -83,7 +83,7 @@ class XmlMappingTest < Test::Unit::TestCase
     @c.offices[0].classified = !@c.offices[0].classified
     xml=@c.save_to_xml
     assert_equal @c.offices[0].classified,
-           XML::XPath.new("offices/office[1]/classified").first(xml).text == "yes"
+           XML::XXPath.new("offices/office[1]/classified").first(xml).text == "yes"
   end
 
 
@@ -120,10 +120,10 @@ class XmlMappingTest < Test::Unit::TestCase
 
 
   def test_optional_flag
-    hamburg_address_path = XML::XPath.new("offices/office[1]/address")
-    baghdad_address_path = XML::XPath.new("offices/office[2]/address")
-    hamburg_zip_path = XML::XPath.new("offices/office[1]/address/zip")
-    baghdad_zip_path = XML::XPath.new("offices/office[2]/address/zip")
+    hamburg_address_path = XML::XXPath.new("offices/office[1]/address")
+    baghdad_address_path = XML::XXPath.new("offices/office[2]/address")
+    hamburg_zip_path = XML::XXPath.new("offices/office[1]/address/zip")
+    baghdad_zip_path = XML::XXPath.new("offices/office[2]/address/zip")
 
     assert_equal 18282, @c.offices[0].address.zip
     assert_equal 12576, @c.offices[1].address.zip
@@ -150,8 +150,8 @@ class XmlMappingTest < Test::Unit::TestCase
 
 
   def test_optional_flag_nodefault
-    hamburg_address_path = XML::XPath.new("offices/office[1]/address")
-    hamburg_street_path = XML::XPath.new("offices/office[1]/address/street")
+    hamburg_address_path = XML::XXPath.new("offices/office[1]/address")
+    hamburg_street_path = XML::XXPath.new("offices/office[1]/address/street")
 
     assert_equal hamburg_street_path.first(@xml.root).text,
           @c.offices[0].address.street

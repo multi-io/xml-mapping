@@ -5,14 +5,14 @@ require 'rexml/document'
 
 module XML
 
-  class XPathError < RuntimeError
+  class XXPathError < RuntimeError
   end
 
   # Instances of this class hold (in a pre-compiled form) an XPath
   # pattern. You call instance methods like +each+, +first+, +all+,
   # <tt>create_new</tt> on instances of this class to apply the
   # pattern to REXML elements.
-  class XPath
+  class XXPath
 
     # create and compile a new XPath. _xpathstr_ is the string
     # representation (XPath pattern) of the path
@@ -114,7 +114,7 @@ module XML
     end
 
     # the first sub-node of _node_ that matches this XPath. If nothing
-    # matches, raise XPathError unless :allow_nil=>true was provided.
+    # matches, raise XXPathError unless :allow_nil=>true was provided.
     #
     # If :ensure_created=>true is provided, first() ensures that a
     # match exists in _node_, creating one if none existed before.
@@ -127,7 +127,7 @@ module XML
         if options[:allow_nil]
           nil
         else
-          raise XPathError, "path not found: #{@xpathstr}"
+          raise XXPathError, "path not found: #{@xpathstr}"
         end
       else
         a[0]
@@ -176,7 +176,7 @@ module XML
       # etc. (or manually setting unspecified=false)
       #
       # This is mixed into the REXML::Element and
-      # XML::XPath::Accessors::Attribute classes.
+      # XML::XXPath::Accessors::Attribute classes.
       module UnspecifiednessSupport
 
         def unspecified?
@@ -327,7 +327,7 @@ module XML
       def self.create_subnode_by_name_and_index(node,create_new,name,index)
         name_matches = subnodes_by_name_singlesrc(node,name)
         if create_new and (name_matches.size >= index)
-          raise XPathError, "XPath (#{@xpathstr}): #{name}[#{index}]: create_new and element already exists"
+          raise XXPathError, "XPath (#{@xpathstr}): #{name}[#{index}]: create_new and element already exists"
         end
         newnode = name_matches[0]
         (index-name_matches.size).times do
@@ -338,7 +338,7 @@ module XML
 
       def self.create_subnode_by_attr_name(node,create_new,name)
         if create_new and node.attributes[name]
-          raise XPathError, "XPath (#{@xpathstr}): @#{name}: create_new and attribute already exists"
+          raise XXPathError, "XPath (#{@xpathstr}): @#{name}: create_new and attribute already exists"
         end
         Attribute.new(node,name,true)
       end

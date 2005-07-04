@@ -1,4 +1,4 @@
-- XML::XPath: generalize foo[@x='bar'] to foo[<any XPath
+- XML::XXPath: generalize foo[@x='bar'] to foo[<any XPath
   expression>='bar'] (unless create/create_new implementation proves
   to be too difficult, but I don't think it will...)
 
@@ -19,9 +19,9 @@
   implementable for some more complicated XPaths -- raise meaningful
   exceptions in those cases.
 
-- XML::XPath/XML::Mapping: add XML text nodes (the sub-node of an
+- XML::XXPath/XML::Mapping: add XML text nodes (the sub-node of an
   element node that contains that element's text) first-class to
-  XML::XPath. Use it for things like text_node :contents, "text()".
+  XML::XXPath. Use it for things like text_node :contents, "text()".
 
   Along those lines: promote XPath node "unspecifiedness" from an
   attribute to a REXML node object of "unspecified" class that's

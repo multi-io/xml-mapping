@@ -254,11 +254,11 @@ XML tree (in this case, this would be the XML tree rooted at the
 from). We'll later have to read/store the year, month, and day values
 from <tt>path+"/year"</tt>, <tt>path+"/month"</tt>, and
 <tt>path+"/day"</tt>, respectively, so we create (and precompile)
-three corresponding XPath expressions using XML::XPath.new and store
-them into member variables of the node. XML::XPath is an XPath
+three corresponding XPath expressions using XML::XXPath.new and store
+them into member variables of the node. XML::XXPath is an XPath
 implementation that is bundled with xml-mapping. It is very
 incomplete, but it supports writing (not just reading) of XML nodes,
-which is needed to support writing data back to XML. The XML::XPath
+which is needed to support writing data back to XML. The XML::XXPath
 library is explained in more detail below.
 
 The +extract_attr_value+ method is called whenever an instance of the
@@ -275,17 +275,17 @@ expressions created at initialization to _xml_
 (e.g. <tt>@y_path.first(xml)</tt>). An expression
 _xpath_expr_.first(_xml_) returns (as a REXML element) the first
 sub-element of _xml_ that matches _xpath_expr_, or raises
-XML::XPathError if there was no such element. We apply REXML's _text_
+XML::XXPathError if there was no such element. We apply REXML's _text_
 method to the returned element to get out the element's text, convert
 it to integer, and supply it to the constructor of the +Time+ object
 to be returned. (as a side note, if an XPath expression matches XML
-attributes, XML::XPath methods like _first_ will return "Attribute"
+attributes, XML::XXPath methods like _first_ will return "Attribute"
 nodes that behave similarly to REXML::Element nodes, including
-messages like _name_ and _text_ (XML::XPath extends REXML to support
+messages like _name_ and _text_ (XML::XXPath extends REXML to support
 this because REXML's Attribute class is too incompatible), so this
 would've worked also if our XPath expressions named XML attributes,
 not elements). The +default_when_xpath_err+ thing calls the supplied
-block and returns its value, but maps the exception XML::XPathError to
+block and returns its value, but maps the exception XML::XXPathError to
 the mentioned XML::Mapping::SingleAttributeNode::NoAttrValueSet (any
 other exceptions fall through unchanged). As said above,
 XML::Mapping::NoAttrValueSet is then caught by our superclass
@@ -293,7 +293,7 @@ XML::Mapping::NoAttrValueSet is then caught by our superclass
 it was provided. So you should just wrap +default_when_xpath_err+
 around any applications of XPath expressions whose non-presence in the
 XML you want to be considered a non-presence of the attribute you're
-trying to extract. (XML::XPath is designed to know knothing about
+trying to extract. (XML::XXPath is designed to know knothing about
 XML::Mapping, so it doesn't raise
 XML::Mapping::SingleAttributeNode::NoAttrValueSet directly)
 
@@ -313,7 +313,7 @@ if the attribute had been set to its default value. In our
 implementation we grab the year, month and day values from _value_
 (which must be a +Time+), and store it into the sub-elements of _xml_
 identified by XPath expressions <tt>@y_path</tt>, <tt>@m_path</tt> and
-<tt>@d_path</tt>, respectively. We do this by calling XML::XPath#first
+<tt>@d_path</tt>, respectively. We do this by calling XML::XXPath#first
 with an additional parameter <tt>:ensure_created=>true</tt>. An
 expression _xpath_expr_.first(_xml_,:ensure_created=>true) works just
 like _xpath_expr_.first(_xml_) if _xpath_expr_ was already present in
@@ -323,10 +323,10 @@ documentation of the XPath interpreter.
 
 === Element order in created XML documents
 
-As just said, XML::XPath, when used to create new XML nodes, generally
+As just said, XML::XXPath, when used to create new XML nodes, generally
 appends those nodes to the end of the list of subnodes of the node the
 xpath expression was applied to. All xml-mapping nodes that come with
-xml-mapping use XML::XPath when writing data to XML, and therefore
+xml-mapping use XML::XXPath when writing data to XML, and therefore
 also append their data to the XML data written by preceding nodes (the
 nodes are invoked in the order of their definition). This means that,
 generally, your output data will appear in the XML document in the
@@ -342,9 +342,9 @@ _before_ the sequence of <tt><Item></tt> elements in the output XML.
 
 == XPath interpreter
 
-XML::XPath is an XPath parser. It is used in xml-mapping node type
+XML::XXPath is an XPath parser. It is used in xml-mapping node type
 definitions, but can just as well be utilized stand-alone (it does
-not depend on xml-mapping). XML::XPath is very incomplete and probably
+not depend on xml-mapping). XML::XXPath is very incomplete and probably
 will always be (it only supports path elements of types _elt_name_,
 @_attr_name_, _elt_name_[@_attr_name_=_attr_value_],
 _elt_name_[_index_], and *), but it should be reasonably efficient
@@ -372,10 +372,9 @@ supports write access. For example, if you create the path
     </bar>
   </foo>
 
-XML::XPath is explained in more detail in the reference documentation.
+XML::XXPath is explained in more detail in the reference documentation.
 
 
 == License
 
-xml-mapping is released under the GNU Lesser General Public License
-(LGPL). See the LICENSE file for details.
+Ruby's.

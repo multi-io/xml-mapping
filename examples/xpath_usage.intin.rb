@@ -1,7 +1,7 @@
 #:invisible:
 $:.unshift "../lib" #<=
 #:visible:
-require 'xml/xpath'
+require 'xml/xxpath'
 
 d=REXML::Document.new <<EOS
   <foo>
@@ -22,7 +22,7 @@ EOS
 
 
 ####read access
-path=XML::XPath.new("/foo/bar[2]/baz")
+path=XML::XXPath.new("/foo/bar[2]/baz")
 
 ## path.all(document) gives all elements matching path in document
 path.all(d)#<=
@@ -34,11 +34,11 @@ path.each(d){|elt| puts elt.text}#<=
 path.first(d)#<=
 
 ## no match here (only three "baz" elements)
-path2=XML::XPath.new("/foo/bar[2]/baz[4]")
+path2=XML::XXPath.new("/foo/bar[2]/baz[4]")
 path2.all(d)#<=
 
 #:handle_exceptions:
-## "first" raises XML::XPathError in such cases...
+## "first" raises XML::XXPathError in such cases...
 path2.first(d)#<=
 #:no_exceptions:
 
@@ -46,6 +46,6 @@ path2.first(d)#<=
 path2.first(d,:allow_nil=>true)#<=
 
 ##attribute nodes can also be returned
-keysPath=XML::XPath.new("/foo/*/*/@key")
+keysPath=XML::XXPath.new("/foo/*/*/@key")
 
 keysPath.all(d).map{|attr|attr.text}#<=

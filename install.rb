@@ -25,7 +25,7 @@ end
 # files to install in library path
 files = %w-
 xml/mapping.rb
-xml/xpath.rb
+xml/xxpath.rb
 xml/mapping/base.rb
 xml/mapping/standard_nodes.rb
 xml/mapping/version.rb

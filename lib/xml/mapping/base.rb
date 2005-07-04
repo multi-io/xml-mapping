@@ -2,7 +2,7 @@
 #  Copyright (C) 2004,2005 Olaf Klischat
 
 require 'rexml/document'
-require "xml/xpath"
+require "xml/xxpath"
 
 module XML
 
@@ -63,9 +63,9 @@ module XML
   # As you may have noticed from the example, the node factory methods
   # generally use XPath expressions to specify locations in the mapped
   # XML document. To make this work, XML::Mapping relies on
-  # XML::XPath, which implements a subset of XPath, but also provides
+  # XML::XXPath, which implements a subset of XPath, but also provides
   # write access, which is needed by the node types to support writing
-  # data back to XML. Both XML::Mapping and XML::XPath use REXML
+  # data back to XML. Both XML::Mapping and XML::XXPath use REXML
   # (http://www.germane-software.com/software/rexml/) to represent XML
   # elements/documents in memory.
   module Mapping
@@ -239,7 +239,7 @@ module XML
       # state of an instance of this node's @owner is to be read from
       # an XML node. _obj_ is the instance, _xml_ is the element (a
       # REXML::Element). The node must read "its" data from _xml_
-      # (using XML::XPath or any other means) and store it to the
+      # (using XML::XXPath or any other means) and store it to the
       # corresponding parts (attributes etc.) of _obj_'s state.
       def xml_to_obj(obj,xml)
         raise "abstract method called"
@@ -249,7 +249,7 @@ module XML
       # into an XML node. _obj_ is the instance, _xml_ is the element
       # (a REXML::Element). The node must extract "its" data from
       # _obj_ and store it to the corresponding parts (sub-elements,
-      # attributes etc.) of _xml_ (using XML::XPath or any other
+      # attributes etc.) of _xml_ (using XML::XXPath or any other
       # means).
       def obj_to_xml(obj,xml)
         raise "abstract method called"
@@ -340,7 +340,7 @@ module XML
       # not set in the XML and, consequently, the default value should
       # be set in the object being created, or an Exception be raised
       # if no default value was specified.
-      class NoAttrValueSet < XPathError
+      class NoAttrValueSet < XXPathError
       end
 
       def xml_to_obj(obj,xml)  # :nodoc:
@@ -374,7 +374,7 @@ module XML
           end
         else
           if value == nil
-            raise XML::MappingError, "no value, and no default value, for attribute #{@attrname}"
+            raise XML::MappingError, "no value, and no default value, for attribute: #{@attrname}"
           end
           set_attr_value(xml, value)
         end
@@ -391,15 +391,15 @@ module XML
       end
       # utility method to be used by implementations of
       # #extract_attr_value. Calls the supplied block, catching
-      # XML::XPathError and mapping it to NoAttrValueSet. This is for
+      # XML::XXPathError and mapping it to NoAttrValueSet. This is for
       # the common case that an implementation considers an attribute
       # value not to be present in the XML if some specific sub-path
       # does not exist.
       def default_when_xpath_err # :yields:
         begin
           yield
-        rescue XML::XPathError => err
-          raise NoAttrValueSet, "Attribute #{@attrname} not set (XPathError: #{err})"
+        rescue XML::XXPathError => err
+          raise NoAttrValueSet, "Attribute #{@attrname} not set (XXPathError: #{err})"
         end
       end
     end

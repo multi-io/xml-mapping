@@ -1,18 +1,18 @@
-= XML-XPATH
+= XML-XXPATH
 
 == Overview, Motivation
 
-Xml-xpath is an (incomplete) XPath interpreter that is at the moment
+Xml-xxpath is an (incomplete) XPath interpreter that is at the moment
 bundled with xml-mapping. It is built on top of REXML. xml-mapping
-uses xml-xpath extensively for implementing its node types -- see the
+uses xml-xxpath extensively for implementing its node types -- see the
 README file and the reference documentation (and the source code) for
-details. xml-xpath, however, does not depend on xml-mapping at all,
+details. xml-xxpath, however, does not depend on xml-mapping at all,
 and is useful in its own right -- maybe I'll later distribute it as a
-seperate library instead of bundling it. xml-xpath's XPath support is
+seperate library instead of bundling it. xml-xxpath's XPath support is
 vastly incomplete (see below), but, in addition to the normal
 reading/matching functionality found in other XPath implementations
 (i.e. "find all elements in a given XML document matching a given
-XPath expression"), xml-xpath supports <i>write access</i>. For
+XPath expression"), xml-xxpath supports <i>write access</i>. For
 example, when writing the XPath expression
 "/foo/bar[3]/baz[@key='hiho']" to the XML document
 
@@ -37,15 +37,15 @@ example, when writing the XPath expression
 This feature is used by xml-mapping when writing (marshalling) Ruby
 objects to XML, and is actually the reason why I couldn't just use any
 of the existing XPath implementations, e.g. the one that comes with
-REXML. Also, the whole xml-xpath implementation is just 300 lines of
-Ruby code, it is quite fast (paths are precompiled), and xml-xpath
+REXML. Also, the whole xml-xxpath implementation is just 300 lines of
+Ruby code, it is quite fast (paths are precompiled), and xml-xxpath
 returns matched elements in the order they appeared in the source
-document -- I've heard REXML::XPath doesn't do that :)
+document -- I've heard REXML::XXPath doesn't do that :)
 
 Some basic knowledge of XPath is helpful for reading this document (I
 don't know very much either).
 
-At the moment, xml-xpath understands XPath expressions of the form
+At the moment, xml-xxpath understands XPath expressions of the form
 [<tt>/</tt>]_pathelement_<tt>/</tt>_pathelement_<tt>/</tt>..., where
 each _pathelement_ must be one of these:
 
@@ -63,7 +63,7 @@ each _pathelement_ must be one of these:
 
 == Usage
 
-Xml-xpath defines the class XML::XPath. An instance of that class
+Xml-xxpath defines the class XML::XXPath. An instance of that class
 wraps an XPath expression, the string representation of which must be
 supplied when constructing the instance. You then call instance
 methods like _first_, _all_ or <i>create_new</i> on the instance,
@@ -81,7 +81,7 @@ The objects supplied to the <tt>all()</tt>, <tt>first()</tt>, and
 support messages like <tt>elements</tt>, <tt>attributes</tt> etc
 (instances of REXML::Element and its subclasses do this). The calls
 return the found elements as instances of REXML::Element or
-XML::XPath::Accessors::Attribute. The latter is a wrapper around
+XML::XXPath::Accessors::Attribute. The latter is a wrapper around
 attribute nodes that is largely call-compatible to
 REXML::Element. This is so you can write things like
 <tt>path.each{|node|puts node.text}</tt> without having to
@@ -153,19 +153,23 @@ Examples:
 
 What is created when the Path "*" is to be created inside an empty XML
 element? The name of the element to be created isn't known, but still
-some element must be created. The answer is that xml-xpath creates a
+some element must be created. The answer is that xml-xxpath creates a
 special "unspecified" element whose name must be set by the caller
 afterwards:
 
   :include: xpath_pathological.intout
 
 The "newelt" object in the last example is an ordinary
-REXML::Element. xml-xpath mixes the "unspecified" attribute into that
-class, as well as into the XML::XPath::Accessors::Attribute class
+REXML::Element. xml-xxpath mixes the "unspecified" attribute into that
+class, as well as into the XML::XXPath::Accessors::Attribute class
 mentioned above.
 
 
 == Implentation notes
 
 <tt>doc/xpath_impl_notes.txt</tt> contains some documentation on the
-implementation of xml-xpath.
+implementation of xml-xxpath.
+
+== License
+
+Ruby's.

@@ -2,9 +2,9 @@ require 'xml/mapping/base'
 
 class TimeNode < XML::Mapping::SingleAttributeNode
   def initialize_impl(path)
-    @y_path = XML::XPath.new(path+"/year")
-    @m_path = XML::XPath.new(path+"/month")
-    @d_path = XML::XPath.new(path+"/day")
+    @y_path = XML::XXPath.new(path+"/year")
+    @m_path = XML::XXPath.new(path+"/month")
+    @d_path = XML::XXPath.new(path+"/day")
   end
 
   def extract_attr_value(xml)

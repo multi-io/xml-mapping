@@ -23,7 +23,7 @@ module XML
       # factory function) is the XPath expression that locates the
       # mapped node in the XML.
       def initialize_impl(path)
-        @path = XML::XPath.new(path)
+        @path = XML::XXPath.new(path)
       end
       def extract_attr_value(xml) # :nodoc:
         default_when_xpath_err{ @path.first(xml).text }
@@ -43,7 +43,7 @@ module XML
     # an Integer or Float attribute.
     class NumericNode < SingleAttributeNode
       def initialize_impl(path)
-        @path = XML::XPath.new(path)
+        @path = XML::XXPath.new(path)
       end
       def extract_attr_value(xml) # :nodoc:
         txt = default_when_xpath_err{ @path.first(xml).text }
@@ -142,7 +142,7 @@ module XML
       # the location of the subtree.
       def initialize_impl(path)
         super
-	@path = XML::XPath.new(path)
+	@path = XML::XXPath.new(path)
       end
       def extract_attr_value(xml) # :nodoc:
         @options[:unmarshaller].call(default_when_xpath_err{@path.first(xml)})
@@ -169,7 +169,7 @@ module XML
     class BooleanNode < SingleAttributeNode
       # Initializer.
       def initialize_impl(path,true_value,false_value)
-        @path = XML::XPath.new(path)
+        @path = XML::XXPath.new(path)
         @true_value = true_value; @false_value = false_value
       end
       def extract_attr_value(xml) # :nodoc:
@@ -249,9 +249,9 @@ module XML
       # "Real" initializer.
       def do_initialize(base_path,per_arrelement_path)
 	per_arrelement_path=per_arrelement_path[1..-1] if per_arrelement_path[0]==?/
-	@base_path = XML::XPath.new(base_path)
-	@per_arrelement_path = XML::XPath.new(per_arrelement_path)
-	@reader_path = XML::XPath.new(base_path+"/"+per_arrelement_path)
+	@base_path = XML::XXPath.new(base_path)
+	@per_arrelement_path = XML::XXPath.new(per_arrelement_path)
+	@reader_path = XML::XXPath.new(base_path+"/"+per_arrelement_path)
       end
       def extract_attr_value(xml) # :nodoc:
         result = []
@@ -314,10 +314,10 @@ module XML
       # "Real" initializer.
       def do_initialize(base_path,per_hashelement_path,key_path)
 	per_hashelement_path=per_hashelement_path[1..-1] if per_hashelement_path[0]==?/
-	@base_path = XML::XPath.new(base_path)
-	@per_hashelement_path = XML::XPath.new(per_hashelement_path)
-	@key_path = XML::XPath.new(key_path)
-	@reader_path = XML::XPath.new(base_path+"/"+per_hashelement_path)
+	@base_path = XML::XXPath.new(base_path)
+	@per_hashelement_path = XML::XXPath.new(per_hashelement_path)
+	@key_path = XML::XXPath.new(key_path)
+	@reader_path = XML::XXPath.new(base_path+"/"+per_hashelement_path)
       end
       def extract_attr_value(xml) # :nodoc:
         result = {}

@@ -3,7 +3,7 @@
 At the lowest level, the "Accessors" sub-module contains reader and
 creator functions that correspond to the various types of path
 elements (_elt_name_, @_attr_name_,
-_elt_name_[@_attr_name_='_attr_value_'] etc.) that xml-xpath
+_elt_name_[@_attr_name_='_attr_value_'] etc.) that xml-xxpath
 supports. A reader function gets an array of nodes and the search
 parameters corresponding to its path element type (e.g. _elt_name_,
 _attr_name_, _attr_value_) and returns an array with all matching

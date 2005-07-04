@@ -1,7 +1,7 @@
 #:invisible:
 $:.unshift "../lib" #<=
 #:visible:
-require 'xml/xpath'
+require 'xml/xxpath'
 
 d=REXML::Document.new <<EOS
   <foo>
@@ -14,17 +14,17 @@ d=REXML::Document.new <<EOS
   </foo>
 EOS
 
-XML::XPath.new("/foo/bar").all(d)#<=
+XML::XXPath.new("/foo/bar").all(d)#<=
 
-XML::XPath.new("/bar").all(d)#<=
+XML::XXPath.new("/bar").all(d)#<=
 
-XML::XPath.new("/foo/bar").all(d.root)#<=
+XML::XXPath.new("/foo/bar").all(d.root)#<=
 
-XML::XPath.new("/bar").all(d.root)#<=
+XML::XXPath.new("/bar").all(d.root)#<=
 
 
-firstelt = XML::XPath.new("/foo/bar/first").first(d)#<=
+firstelt = XML::XXPath.new("/foo/bar/first").first(d)#<=
 
-XML::XPath.new("/first/second").all(firstelt)#<=
+XML::XXPath.new("/first/second").all(firstelt)#<=
 
-XML::XPath.new("/second").all(firstelt)#<=
+XML::XXPath.new("/second").all(firstelt)#<=

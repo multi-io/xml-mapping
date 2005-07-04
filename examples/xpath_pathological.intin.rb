@@ -1,7 +1,7 @@
 #:invisible:
 $:.unshift "../lib" #<=
 #:visible:
-require 'xml/xpath'
+require 'xml/xxpath'
 
 d=REXML::Document.new <<EOS
   <foo>
@@ -14,14 +14,14 @@ EOS
 rootelt=d.root
 
 
-XML::XPath.new("*").all(rootelt)#<=
+XML::XXPath.new("*").all(rootelt)#<=
 ### ok
 
-XML::XPath.new("bar/*").first(rootelt, :allow_nil=>true)#<=
+XML::XXPath.new("bar/*").first(rootelt, :allow_nil=>true)#<=
 ### ok, nothing there
 
 ### the same call with :ensure_created=>true
-newelt = XML::XPath.new("bar/*").first(rootelt, :ensure_created=>true)#<=
+newelt = XML::XXPath.new("bar/*").first(rootelt, :ensure_created=>true)#<=
 
 #:invisible_retval:
 d.write($stdout,2)#<=

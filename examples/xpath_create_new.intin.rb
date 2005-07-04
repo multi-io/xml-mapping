@@ -1,7 +1,7 @@
 #:invisible:
 $:.unshift "../lib" #<=
 #:visible:
-require 'xml/xpath'
+require 'xml/xxpath'
 
 d=REXML::Document.new <<EOS
   <foo>
@@ -16,7 +16,7 @@ EOS
 rootelt=d.root
 
 #:invisible_retval:
-path1=XML::XPath.new("/bar/baz[@key='work']")
+path1=XML::XXPath.new("/bar/baz[@key='work']")
 
 #:visible_retval:
 path1.create_new(rootelt)#<=
@@ -36,10 +36,10 @@ d.write($stdout,2)#<=
 
 #:visible_retval:
 ## get reference to 1st "baz" element
-firstbazelt=XML::XPath.new("/bar/baz").first(rootelt)#<=
+firstbazelt=XML::XXPath.new("/bar/baz").first(rootelt)#<=
 
 #:invisible_retval:
-path2=XML::XPath.new("@key2")
+path2=XML::XXPath.new("@key2")
 
 #:visible_retval:
 path2.create_new(firstbazelt)#<=
@@ -63,7 +63,7 @@ d.write($stdout,2)#<=
 
 ### create_new the same path as in the ensure_created example
 #:visible_retval:
-baz6elt=XML::XPath.new("/bar/baz[6]").create_new(rootelt)#<=
+baz6elt=XML::XXPath.new("/bar/baz[6]").create_new(rootelt)#<=
 #:invisible_retval:
 d.write($stdout,2)#<=
 ### ok, new "bar" element and 6th "baz" element inside it created
@@ -71,7 +71,7 @@ d.write($stdout,2)#<=
 
 #:visible_retval:
 #:handle_exceptions:
-XML::XPath.new("baz[6]").create_new(baz6elt.parent)#<=
+XML::XXPath.new("baz[6]").create_new(baz6elt.parent)#<=
 #:no_exceptions:
 #:invisible_retval:
 ### yep, baz[6] already existed and thus couldn't be created once
@@ -79,7 +79,7 @@ XML::XPath.new("baz[6]").create_new(baz6elt.parent)#<=
 
 ### but of course...
 #:visible_retval:
-XML::XPath.new("/bar/baz[6]").create_new(rootelt)#<=
+XML::XXPath.new("/bar/baz[6]").create_new(rootelt)#<=
 #:invisible_retval:
 d.write($stdout,2)#<=
 ### this works because *all* path elements are newly created
