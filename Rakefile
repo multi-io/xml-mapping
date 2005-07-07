@@ -28,7 +28,7 @@ class Rake::GemPackageTask
 end
 
 
-FILES_RDOC_EXTRA=%w{README README_XPATH doc/xpath_impl_notes.txt}
+FILES_RDOC_EXTRA=%w{README README_XPATH TODO.txt doc/xpath_impl_notes.txt}
 
 
 desc "Default Task"
