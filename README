@@ -5,6 +5,12 @@ semi-automatically map Ruby objects to XML trees and vice versa. It is
 easy to use and has a modular design that allows for easy extension of
 its functionality.
 
+== Download
+
+For downloading the latest version, CVS repository access etc. go to:
+
+http://rubyforge.org/projects/xml-mapping/
+
 == Example
 
 (example document stolen + extended from
