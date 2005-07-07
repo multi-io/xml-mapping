@@ -29,6 +29,17 @@ end
 
 
 FILES_RDOC_EXTRA=%w{README README_XPATH TODO.txt doc/xpath_impl_notes.txt}
+FILES_RDOC_INCLUDES=%w{examples/company.xml
+                       examples/company.rb
+                       examples/company_usage.intout
+                       examples/order_usage.intout
+                       examples/time_augm.intout
+                       examples/xpath_usage.intout
+                       examples/xpath_ensure_created.intout
+                       examples/xpath_create_new.intout
+                       examples/xpath_pathological.intout
+                       examples/xpath_docvsroot.intout
+                       examples/order_signature_enhanced_usage.intout}
 
 
 desc "Default Task"
@@ -58,18 +69,7 @@ Rake::RDocTask.new { |rdoc|
   # additional file dependencies for the rdoc task
   #   this somewhat of a black art because RDocTask doesn't document the
   #   prerequisite of its rdoc task (<rdoc_dir>/index.html)
-  file rdoc.rdoc_target => ['examples/company.xml',
-                            'examples/company.rb',
-                            #'examples/company_usage.intout',
-                            'examples/order_usage.intout',
-                            'examples/time_augm.intout',
-                            'examples/xpath_usage.intout',
-                            'examples/xpath_ensure_created.intout',
-                            'examples/xpath_create_new.intout',
-                            'examples/xpath_pathological.intout',
-                            'examples/xpath_docvsroot.intout',
-                            'examples/order_signature_enhanced_usage.intout'
-                           ]
+  file rdoc.rdoc_target => FILES_RDOC_INCLUDES
   file "#{rdoc.rdoc_dir}/index.html" => FileList.new("examples/**/*.rb")
 }
 
@@ -160,11 +160,18 @@ spec = Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.summary =
     "An easy to use, extensible library for mapping Ruby objects to XML and back. Includes an XPath interpreter."
-  s.files = Dir.glob("{lib,examples,test}/**/*").delete_if do |item|
+
+  # Rubygems' RDoc support is incomplete... Can't seem to find a way
+  # to set the start page, or a set of files that should be includable
+  # but not processed by rdoc directly
+  s.files += FILES_RDOC_EXTRA
+  s.files += Dir.glob("{lib,examples,test}/**/*").delete_if do |item|
     item.include?("CVS") || item =~ /~$/
   end
-  s.files += %w{LICENSE Rakefile}
-  s.files += FILES_RDOC_EXTRA
+  s.files += %w{LICENSE Rakefile install.rb}
+  s.extra_rdoc_files = FILES_RDOC_EXTRA
+  s.rdoc_options += %w{--include examples}
+
   s.require_path = 'lib'
   s.autorequire = 'xml/mapping'
 

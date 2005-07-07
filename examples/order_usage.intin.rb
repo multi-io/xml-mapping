@@ -1,5 +1,9 @@
 #:invisible:
 $:.unshift "../lib"
+begin
+  Object.send(:remove_const, "Address")  # name clash with company_usage...
+rescue
+end
 require 'order' #<=
 #:visible:
 ####read access

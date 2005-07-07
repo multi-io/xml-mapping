@@ -1,5 +1,9 @@
 #:invisible:
 $:.unshift "../lib"
+begin
+  Object.send(:remove_const, "Address")  # name clash with order_usage...
+rescue
+end
 require 'company' #<=
 #:visible:
 c = Company.load_from_file('company.xml') #<=
