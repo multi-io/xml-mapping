@@ -79,7 +79,7 @@ correspond to the XML elements yielded by the XPath
 "Signed-By/Signature". Each element will be of class +Signature+ (each
 array element is created from the corresponding XML element by just
 calling <tt>Signature.load_from_xml(the_xml_element)</tt>). The reason
-why the path "Signed-By/Signature" is provieded in two arguments
+why the path "Signed-By/Signature" is provided in two arguments
 instead of just one combined one becomes apparent when marshalling the
 array (along with the surrounding object) back into a sequence of XML
 elements. When that happens, "Signed-By" names the common base element
@@ -96,8 +96,8 @@ that are included in the xml-mapping library.
 
 === Default values
 
-For each node you may define a _default value_ which will be set if
-there was no value defined for the attribute in the XML source.
+For each node you may define a <it>default value</it> which will be
+set if there was no value defined for the attribute in the XML source.
 
 From the example:
 
@@ -224,9 +224,9 @@ the mapping class declaration to look like this:
 
 (i.e. a new "time_node" declaration was added).
 
-We want this +signed_on+ call to define an attribute named +signed_on+
-which holds the date value from the XML in an instance of class
-+Time+.
+We want this +time_node+ call to define an attribute named +signed_on+
+which holds the date value from the XML document in an instance of
+class +Time+.
 
 This node type can be defined with this piece of code:
 
@@ -237,10 +237,11 @@ library. The name of the node factory method ("time_node") is
 automatically derived from the class name of the node type
 ("TimeNode").
 
-There will be one instance of the node type per mapping class (not per
-mapping class instance). That instance will be created by the node
-factory method (+time_node+); there's no need to instantiate the node
-type directly. Whenever an instance of the mapping class needs to be
+There will be one instance of the node type +TimeNode+ per mapping
+class (not per mapping class instance). That instance will be created
+by the node factory method (+time_node+); there's no need to
+instantiate the node type directly. Whenever an instance of the
+mapping class (+Signature+ in the example) needs to be
 marshalled/unmarshalled to/from XML, +set_attr_value+
 resp. +extract_attr_value+ will be called on the node type instance
 ("node" for short).  The node factory method places the node into the
@@ -256,9 +257,9 @@ argument <tt>"signed-on"</tt> gets passed to our +initialize_impl+
 method as parameter _path_. We'll interpret it as an XPath expression
 that locates the time value relative to the parent mapping object's
 XML tree (in this case, this would be the XML tree rooted at the
-+<Signature>+ element, i.e. the tree the +Signature+ instance was read
-from). We'll later have to read/store the year, month, and day values
-from <tt>path+"/year"</tt>, <tt>path+"/month"</tt>, and
+<tt><Signature></tt> element, i.e. the tree the +Signature+ instance
+was read from). We'll later have to read/store the year, month, and
+day values from <tt>path+"/year"</tt>, <tt>path+"/month"</tt>, and
 <tt>path+"/day"</tt>, respectively, so we create (and precompile)
 three corresponding XPath expressions using XML::XXPath.new and store
 them into member variables of the node. XML::XXPath is an XPath
@@ -268,81 +269,83 @@ which is needed to support writing data back to XML. The XML::XXPath
 library is explained in more detail below.
 
 The +extract_attr_value+ method is called whenever an instance of the
-class the node belongs to (+Signature+ in the example) is being
-created from an XML tree. The parameter _xml_ is that tree (again,
-this is the tree rooted at the +<Signature>+ element in this
-example). The method implementation is expected to extract the
+mapping class the node belongs to (+Signature+ in the example) is
+being created from an XML tree. The parameter _xml_ is that tree
+(again, this is the tree rooted at the <tt><Signature></tt> element in
+this example). The method implementation is expected to extract the
 attribute's value from _xml_ and return it, or raise
 XML::Mapping::SingleAttributeNode::NoAttrValueSet if the attribute was
-"unset" in the XML (so the default value should be put in place if it
-was defined), or raise any other exception to signal an error and
-abort the whole process. In our implementation, we apply the xpath
-expressions created at initialization to _xml_
-(e.g. <tt>@y_path.first(xml)</tt>). An expression
-_xpath_expr_.first(_xml_) returns (as a REXML element) the first
-sub-element of _xml_ that matches _xpath_expr_, or raises
+"unset" in the XML (this exception tells the framework that the
+default value should be put in place if it was defined), or raise any
+other exception to signal an error and abort the whole process. In our
+implementation, we apply the xpath expressions created during
+initialization to _xml_ (e.g. <tt>@y_path.first(xml)</tt>). An
+expression _xpath_expr_.first(_xml_) returns (as a REXML element) the
+first sub-element of _xml_ that matches _xpath_expr_, or raises
 XML::XXPathError if there was no such element. We apply REXML's _text_
 method to the returned element to get out the element's text, convert
 it to integer, and supply it to the constructor of the +Time+ object
-to be returned. (as a side note, if an XPath expression matches XML
-attributes, XML::XXPath methods like _first_ will return "Attribute"
-nodes that behave similarly to REXML::Element nodes, including
-messages like _name_ and _text_ (XML::XXPath extends REXML to support
-this because REXML's Attribute class is too incompatible), so this
-would've worked also if our XPath expressions named XML attributes,
-not elements). The +default_when_xpath_err+ thing calls the supplied
-block and returns its value, but maps the exception XML::XXPathError to
-the mentioned XML::Mapping::SingleAttributeNode::NoAttrValueSet (any
-other exceptions fall through unchanged). As said above,
-XML::Mapping::NoAttrValueSet is then caught by our superclass
-(XML::Mapping::SingleAttributeNode), and the default value is set if
-it was provided. So you should just wrap +default_when_xpath_err+
-around any applications of XPath expressions whose non-presence in the
-XML you want to be considered a non-presence of the attribute you're
-trying to extract. (XML::XXPath is designed to know knothing about
-XML::Mapping, so it doesn't raise
+to be returned. As a side note, if an XPath expression matches XML
+attributes, XML::XXPath methods like _first_ will return
+XML::XXPath::Accessors::Attribute nodes that behave similarly to
+REXML::Element nodes, including support for messages like _name_ and
+_text_, so this would've worked also if our XPath expressions referred
+to XML attributes, not elements. The +default_when_xpath_err+ thing
+calls the supplied block and returns its value, but maps the exception
+XML::XXPathError to the mentioned
+XML::Mapping::SingleAttributeNode::NoAttrValueSet (any other
+exceptions fall through unchanged). As said above,
+XML::Mapping::NoAttrValueSet is caught the framework (more precisely,
+by our superclass XML::Mapping::SingleAttributeNode), and the default
+value is set if it was provided. So you should just wrap
++default_when_xpath_err+ around any applications of XPath expressions
+whose non-presence in the XML you want to be considered a non-presence
+of the attribute you're trying to extract. (XML::XXPath is designed to
+know knothing about XML::Mapping, so it doesn't raise
 XML::Mapping::SingleAttributeNode::NoAttrValueSet directly)
 
 The +set_attr_value+ method is called whenever an instance of the
-class the node belongs to (+Signature+ in the example) is being stored
-into an XML tree. The _xml_ parameter is the XML tree (a REXML element
-node; here this is again the tree rooted at the +<Signature>+
-element); _value_ is the current value of the attribute. _xml_ will
-most probably be "half-populated" by the time this method is called --
-the framework calls the +set_attr_value+ methods of all nodes of a
-mapping class in the order of their definition, letting each node fill
-its "bit" into _xml_. The method implementation is expected to write
-_value_ into (the correct sub-elements of) _xml_, or raise an
-exception to signal an error and abort the whole process. No default
-value handling is done here; +set_attr_value+ won't be called at all
-if the attribute had been set to its default value. In our
-implementation we grab the year, month and day values from _value_
-(which must be a +Time+), and store it into the sub-elements of _xml_
-identified by XPath expressions <tt>@y_path</tt>, <tt>@m_path</tt> and
-<tt>@d_path</tt>, respectively. We do this by calling XML::XXPath#first
-with an additional parameter <tt>:ensure_created=>true</tt>. An
-expression _xpath_expr_.first(_xml_,:ensure_created=>true) works just
-like _xpath_expr_.first(_xml_) if _xpath_expr_ was already present in
-_xml_. If it was not, it is created (preferable at the end of _xml_'s
+mapping class the node belongs to (+Signature+ in the example) is
+being stored into an XML tree. The _xml_ parameter is the XML tree (a
+REXML element node; here this is again the tree rooted at the
+<tt><Signature></tt> element); _value_ is the current value of the
+attribute. _xml_ will most probably be "half-populated" by the time
+this method is called -- the framework calls the +set_attr_value+
+methods of all nodes of a mapping class in the order of their
+definition, letting each node fill its "bit" into _xml_. The method
+implementation is expected to write _value_ into (the correct
+sub-elements of) _xml_, or raise an exception to signal an error and
+abort the whole process. No default value handling is done here;
++set_attr_value+ won't be called at all if the attribute had been set
+to its default value. In our implementation we grab the year, month
+and day values from _value_ (which must be a +Time+), and store it
+into the sub-elements of _xml_ identified by XPath expressions
+<tt>@y_path</tt>, <tt>@m_path</tt> and <tt>@d_path</tt>,
+respectively. We do this by calling XML::XXPath#first with an
+additional parameter <tt>:ensure_created=>true</tt>. An expression
+_xpath_expr_.first(_xml_,:ensure_created=>true) works just like
+_xpath_expr_.first(_xml_) if _xpath_expr_ was already present in
+_xml_. If it was not, it is created (preferably at the end of _xml_'s
 list of sub-nodes), and returned. See below for a more detailed
 documentation of the XPath interpreter.
 
 === Element order in created XML documents
 
-As just said, XML::XXPath, when used to create new XML nodes, generally
-appends those nodes to the end of the list of subnodes of the node the
-xpath expression was applied to. All xml-mapping nodes that come with
-xml-mapping use XML::XXPath when writing data to XML, and therefore
-also append their data to the XML data written by preceding nodes (the
-nodes are invoked in the order of their definition). This means that,
-generally, your output data will appear in the XML document in the
-same order in which the corresponding xml-mapping node definitions
-appeared in the mapping class (unless you used XPath expressions like
-foo[number] which explicitly dictate a fixed position in the sequence
-of XML nodes). For instance, in the example from the beginning of this
-document, if we put the <tt>:signatures</tt> node _before_ the
-<tt>:items</tt> node, the <tt><Signed-By></tt> element will appear
-_before_ the sequence of <tt><Item></tt> elements in the output XML.
+As just said, XML::XXPath, when used to create new XML nodes,
+generally appends those nodes to the end of the list of subnodes of
+the node the xpath expression was applied to. All xml-mapping nodes
+that come with xml-mapping use XML::XXPath when writing data to XML,
+and therefore also append their data to the XML data written by
+preceding nodes (the nodes are invoked in the order of their
+definition). This means that, generally, your output data will appear
+in the XML document in the same order in which the corresponding
+xml-mapping node definitions appeared in the mapping class (unless you
+used XPath expressions like foo[number] which explicitly dictate a
+fixed position in the sequence of XML nodes). For instance, in the
++Order+ class from the example at the beginning of this document, if
+we put the <tt>:signatures</tt> node _before_ the <tt>:items</tt>
+node, the <tt><Signed-By></tt> element will appear _before_ the
+sequence of <tt><Item></tt> elements in the output XML.
 
 
 
@@ -378,7 +381,8 @@ supports write access. For example, if you create the path
     </bar>
   </foo>
 
-XML::XXPath is explained in more detail in the reference documentation.
+XML::XXPath is explained in more detail in the reference documentation
+and the README_XPATH file.
 
 
 == License

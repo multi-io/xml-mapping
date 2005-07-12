@@ -8,12 +8,17 @@ uses xml-xxpath extensively for implementing its node types -- see the
 README file and the reference documentation (and the source code) for
 details. xml-xxpath, however, does not depend on xml-mapping at all,
 and is useful in its own right -- maybe I'll later distribute it as a
-seperate library instead of bundling it. xml-xxpath's XPath support is
-vastly incomplete (see below), but, in addition to the normal
-reading/matching functionality found in other XPath implementations
-(i.e. "find all elements in a given XML document matching a given
-XPath expression"), xml-xxpath supports <i>write access</i>. For
-example, when writing the XPath expression
+seperate library instead of bundling it. For the time being, if you
+want to use this XPath implementation stand-alone, you can just rip
+the file <tt>lib/xml/xxpath.rb</tt> out of the xml-mapping
+distribution and use it on its own (it does not depend on anything
+else).
+
+xml-xxpath's XPath support is vastly incomplete (see below), but, in
+addition to the normal reading/matching functionality found in other
+XPath implementations (i.e. "find all elements in a given XML document
+matching a given XPath expression"), xml-xxpath supports <i>write
+access</i>. For example, when writing the XPath expression
 "/foo/bar[3]/baz[@key='hiho']" to the XML document
 
   <foo>
@@ -40,7 +45,7 @@ of the existing XPath implementations, e.g. the one that comes with
 REXML. Also, the whole xml-xxpath implementation is just 300 lines of
 Ruby code, it is quite fast (paths are precompiled), and xml-xxpath
 returns matched elements in the order they appeared in the source
-document -- I've heard REXML::XXPath doesn't do that :)
+document -- I've heard REXML::XPath doesn't do that :)
 
 Some basic knowledge of XPath is helpful for reading this document (I
 don't know very much either).
@@ -115,7 +120,7 @@ against the +firstelt+ element in the example *must not* start with
 
 === Write Access
 
-You may pass a <tt>:ensure_created=>true</tt> option argument to
+You may pass an <tt>:ensure_created=>true</tt> option argument to
 _path_.first(_elt_)/_path_.all(_elt_) calls to make sure that _path_
 exists inside the passed XML element _elt_. If it existed before,
 nothing changes, and the call behaves just as it would without the
