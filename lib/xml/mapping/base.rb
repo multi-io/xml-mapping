@@ -481,8 +481,8 @@ module XML
       end
 
 
-      # array of all nodes types defined in this class, in the order
-      # of their definition
+      # array of all nodes defined in this class, in the order of
+      # their definition
       def xml_mapping_nodes
         @xml_mapping_nodes ||= []
       end
@@ -543,7 +543,7 @@ module XML
     # "polymorphic" load function. Turns the XML tree _xml_ into an
     # object, which is returned. The class of the object is
     # automatically determined from the root element name of _xml_
-    # using XML::Mapping::class_for_root_elt_name.
+    # using XML::Mapping.class_for_root_elt_name.
     def self.load_object_from_xml(xml)
       unless c = class_for_root_elt_name(xml.name)
         raise MappingError, "no mapping class for root element name #{xml.name}"

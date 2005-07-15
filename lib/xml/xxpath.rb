@@ -221,9 +221,8 @@ module XML
         include UnspecifiednessSupport
       end
 
-      # attribute node, half-way compatible
-      # with REXML's Element.
-      # REXML doesn't provide one...
+      # attribute node, more or less call-compatible with REXML's
+      # Element.  REXML's Attribute class doesn't provide this...
       #
       # The all/first calls return instances of this class if they
       # matched an attribute node.

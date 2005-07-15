@@ -38,8 +38,9 @@ them, include additional modules in them, derive them from other
 classes, derive other classes from them etc.pp.
 
 An instance of a mapping class can be created from/converted into an
-XML node by means of instance methods like XML::Mapping.load_from_xml,
-XML::Mapping#save_to_xml, XML::Mapping.load_from_file,
+XML node by means of methods like
+XML::Mapping::ClassMethods.load_from_xml, XML::Mapping#save_to_xml,
+XML::Mapping::ClassMethods.load_from_file,
 XML::Mapping#save_to_file. Special class methods like "text_node",
 "array_node" etc., called "node factory methods", may be called from
 the body of the class definition to define instance attributes that
@@ -96,8 +97,8 @@ that are included in the xml-mapping library.
 
 === Default values
 
-For each node you may define a <it>default value</it> which will be
-set if there was no value defined for the attribute in the XML source.
+For each node you may define a <i>default value</i> which will be set
+if there was no value defined for the attribute in the XML source.
 
 From the example:
 
@@ -238,18 +239,15 @@ automatically derived from the class name of the node type
 ("TimeNode").
 
 There will be one instance of the node type +TimeNode+ per mapping
-class (not per mapping class instance). That instance will be created
-by the node factory method (+time_node+); there's no need to
-instantiate the node type directly. Whenever an instance of the
-mapping class (+Signature+ in the example) needs to be
-marshalled/unmarshalled to/from XML, +set_attr_value+
-resp. +extract_attr_value+ will be called on the node type instance
-("node" for short).  The node factory method places the node into the
-mapping class; the @owner attribute of the node is set to reference
-the mapping class. The node factory method passes its arguments (in
-the example, that would be <tt>:signed_on, "signed-on",
-:default_value=>Time.now</tt>) to the node's initializer. TimeNode's
-parent class XML::Mapping::SingleAttributeNode already handles the
+class (not per mapping class instance). That instance (the "node" for
+short) will be created by the node factory method (+time_node+);
+there's no need to instantiate the node type directly. The node
+factory method places the node into the mapping class; the @owner
+attribute of the node is set to reference the mapping class. The node
+factory method passes its arguments (in the example, that would be
+<tt>:signed_on, "signed-on", :default_value=>Time.now</tt>) to the
+node's initializer. TimeNode's parent class
+XML::Mapping::SingleAttributeNode already handles the
 <tt>:signed_on</tt> and <tt>:default_value=>Time.now</tt> arguments --
 <tt>:signed_on</tt> is stored into <tt>@attrname</tt>, and the default
 value declarations will be described in a moment. The remaining
@@ -295,13 +293,14 @@ calls the supplied block and returns its value, but maps the exception
 XML::XXPathError to the mentioned
 XML::Mapping::SingleAttributeNode::NoAttrValueSet (any other
 exceptions fall through unchanged). As said above,
-XML::Mapping::NoAttrValueSet is caught the framework (more precisely,
-by our superclass XML::Mapping::SingleAttributeNode), and the default
-value is set if it was provided. So you should just wrap
-+default_when_xpath_err+ around any applications of XPath expressions
-whose non-presence in the XML you want to be considered a non-presence
-of the attribute you're trying to extract. (XML::XXPath is designed to
-know knothing about XML::Mapping, so it doesn't raise
+XML::Mapping::SingleAttributeNode::NoAttrValueSet is caught by the
+framework (more precisely, by our superclass
+XML::Mapping::SingleAttributeNode), and the default value is set if it
+was provided. So you should just wrap +default_when_xpath_err+ around
+any applications of XPath expressions whose non-presence in the XML
+you want to be considered a non-presence of the attribute you're
+trying to extract. (XML::XXPath is designed to know knothing about
+XML::Mapping, so it doesn't raise
 XML::Mapping::SingleAttributeNode::NoAttrValueSet directly)
 
 The +set_attr_value+ method is called whenever an instance of the

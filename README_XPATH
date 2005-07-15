@@ -146,12 +146,17 @@ Examples:
 Alternatively, you may pass a <tt>:create_new=>true</tt> option
 argument or call <tt>create_new</tt> (_path_.create_new(_elt_) is
 equivalent to _path_.first(_elt_,:create_new=>true)). In that case, a
-new node in created in _elt_ for each path element of _path_ (or an
+new node is created in _elt_ for each path element of _path_ (or an
 exception raised if that wasn't possible for any path element).
 
 Examples:
 
   :include: xpath_create_new.intout
+
+This feature is used in xml-mapping by node types like
+XML::Mapping::ArrayNode, which must create a new instance of the
+"per-array element path" for each element of the array to be stored in
+an XML tree.
 
 
 === Pathological Cases
