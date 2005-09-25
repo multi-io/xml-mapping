@@ -81,14 +81,16 @@ module XML
     def self.append_features(base) #:nodoc:
       super
       base.extend(ClassMethods)
-      Classes_w_default_rootelt_names[base.default_root_element_name] = base
+      Classes_w_default_rootelt_names[base.default_root_element_name] = [base,:_default]  #TODO: ...
     end
 
 
-    # Finds the mapping class corresponding to the given XML root
-    # element name. This is the inverse operation to
+    # Finds the mapping class and mapping name corresponding to the
+    # given XML root element name. This is the inverse operation to
     # <class>.root_element_name (see
     # XML::Mapping::ClassMethods.root_element_name).
+    #
+    # returns [class,mapping]
     def self.class_for_root_elt_name(name)
       # TODO: implement Hash read-only instead of this
       # interface
@@ -97,7 +99,7 @@ module XML
     end
 
 
-    def initialize_xml_mapping  #:nodoc:
+    def initialize_xml_mapping(options={:mapping=>:_default})  #:nodoc:
       self.class.all_xml_mapping_nodes.each do |node|
         node.obj_initializing(self)
       end
@@ -119,19 +121,19 @@ module XML
     # object's class are processed (i.e. have their
     # #xml_to_obj method called) in the order of their definition
     # inside the class, then #post_load is called.
-    def fill_from_xml(xml)
-      pre_load(xml)
-      self.class.all_xml_mapping_nodes.each do |node|
+    def fill_from_xml(xml, options={:mapping=>:_default})
+      pre_load xml, :mapping=>options[:mapping]
+      self.class.all_xml_mapping_nodes(:mapping=>options[:mapping]).each do |node|
         node.xml_to_obj self, xml
       end
-      post_load
+      post_load :mapping=>options[:mapping]
     end
 
     # This method is called immediately before _self_ is filled from
     # an xml source. _xml_ is the source REXML::Element.
     #
     # The default implementation of this method is empty.
-    def pre_load(xml)
+    def pre_load(xml, options={:mapping=>:_default})
     end
 
     
@@ -143,7 +145,7 @@ module XML
     # exception to abandon the whole loading process.
     #
     # The default implementation of this method is empty.
-    def post_load
+    def post_load(options={:mapping=>:_default})
     end
 
 
@@ -152,8 +154,8 @@ module XML
     # (i.e. have their
     # #obj_to_xml method called) in the order of their definition
     # inside the class.
-    def fill_into_xml(xml)
-      self.class.all_xml_mapping_nodes.each do |node|
+    def fill_into_xml(xml, options={:mapping=>:_default})
+      self.class.all_xml_mapping_nodes(:mapping=>options[:mapping]).each do |node|
         node.obj_to_xml self,xml
       end
     end
@@ -163,10 +165,10 @@ module XML
     #
     # This method calls #pre_save, then #fill_into_xml, then
     # #post_save.
-    def save_to_xml
-      xml = pre_save
-      fill_into_xml(xml)
-      post_save(xml)
+    def save_to_xml(options={:mapping=>:_default})
+      xml = pre_save :mapping=>options[:mapping]
+      fill_into_xml xml, :mapping=>options[:mapping]
+      post_save xml, :mapping=>options[:mapping]
       xml
     end
 
@@ -181,22 +183,22 @@ module XML
     # class name, with capital letters converted to lowercase and
     # preceded by a dash, e.g. "MySampleClass" becomes
     # "my-sample-class".
-    def pre_save
-      REXML::Element.new(self.class.root_element_name)
+    def pre_save(options={:mapping=>:_default})
+      REXML::Element.new(self.class.root_element_name(:mapping=>options[:mapping]))
     end
 
     # This method is called immediately after _self_'s state has been
     # filled into an XML element.
     #
     # The default implementation does nothing.
-    def post_save(xml)
+    def post_save(xml, options={:mapping=>:_default})
     end
 
 
     # Save _self_'s state as XML into the file named _filename_.
     # The XML is obtained by calling #save_to_xml.
-    def save_to_file(filename)
-      xml = save_to_xml
+    def save_to_file(filename, options={:mapping=>:_default})
+      xml = save_to_xml :mapping=>options[:mapping]
       File.open(filename,"w") do |f|
         xml.write(f,2)
       end
@@ -254,10 +256,10 @@ module XML
       def obj_to_xml(obj,xml)
         raise "abstract method called"
       end
-      # Called when a new instance is being initialized. _obj_ is the
-      # instance. You may set up initial values for the attributes
-      # this node is responsible for here. Default implementation is
-      # empty.
+      # Called when a new instance of the mapping class this node
+      # belongs to is being initialized. _obj_ is the instance. You
+      # may set up initial values for the attributes this node is
+      # responsible for here. Default implementation is empty.
       def obj_initializing(obj)
       end
     end
@@ -463,9 +465,9 @@ module XML
 
       # Create a new instance of this class from the XML contained in
       # the file named _filename_. Calls load_from_xml internally.
-      def load_from_file(filename)
+      def load_from_file(filename, options={:mapping=>:_default})
         xml = REXML::Document.new(File.new(filename))
-        load_from_xml(xml.root)
+        load_from_xml xml.root, :mapping=>options[:mapping]
       end
 
       # Create a new instance of this class from the XML contained in
@@ -473,35 +475,34 @@ module XML
       #
       # Allocates a new object, then calls fill_from_xml(_xml_) on
       # it.
-      def load_from_xml(xml)
+      def load_from_xml(xml, options={:mapping=>:_default})
         obj = self.allocate
-        obj.initialize_xml_mapping
-        obj.fill_from_xml(xml)
+        obj.initialize_xml_mapping :mapping=>options[:mapping]
+        obj.fill_from_xml xml, :mapping=>options[:mapping]
         obj
       end
 
 
       # array of all nodes defined in this class, in the order of
       # their definition
-      def xml_mapping_nodes
-        @xml_mapping_nodes ||= []
+      def xml_mapping_nodes(options={:mapping=>:_default})
+        (@xml_mapping_nodes ||= {}) [options[:mapping]] ||= []
       end
 
 
-      # enumeration of all nodes types in effect when
-      # marshalling/unmarshalling this class, that is, node types
-      # defined for this class as well as for its superclasses.  The
-      # node types are returned in the order of their definition,
-      # starting with the topmost superclass that has node types
-      # defined.
-      def all_xml_mapping_nodes
+      # enumeration of all nodes in effect when
+      # marshalling/unmarshalling this class, that is, nodes defined
+      # for this class as well as for its superclasses.  The nodes are
+      # returned in the order of their definition, starting with the
+      # topmost superclass that has nodes defined.
+      def all_xml_mapping_nodes(options={:mapping=>:_default})
         # TODO: we could return a dynamic Enumerable here, or cache
         # the array...
         result = []
         if superclass and superclass.respond_to?(:all_xml_mapping_nodes)
-          result += superclass.all_xml_mapping_nodes
+          result += superclass.all_xml_mapping_nodes :mapping=>options[:mapping]
         end
-        result += xml_mapping_nodes
+        result += xml_mapping_nodes :mapping=>options[:mapping]
       end
 
 
@@ -514,17 +515,21 @@ module XML
       # returns the #default_root_element_name; you may call this
       # method with an argument to set the root element name to
       # something other than the default.
-      def root_element_name(name=nil)
+      def root_element_name(name=nil, options={:mapping=>:_default})
+        if Hash===name    # ugly...
+          options=name; name=nil
+        end
+        @root_element_names ||= {}
         if name
           Classes_w_nondefault_rootelt_names.delete(root_element_name)
           Classes_w_default_rootelt_names.delete(root_element_name)
           Classes_w_default_rootelt_names.delete(name)
 
-          @root_element_name = name
+          @root_element_names[options[:mapping]] = name
 
-          Classes_w_nondefault_rootelt_names[name]=self
+          Classes_w_nondefault_rootelt_names[name] = [self,options[:mapping]]
         end
-        @root_element_name || default_root_element_name
+        @root_element_names[options[:mapping]] || default_root_element_name
       end
 
 
@@ -541,21 +546,23 @@ module XML
 
 
     # "polymorphic" load function. Turns the XML tree _xml_ into an
-    # object, which is returned. The class of the object is
-    # automatically determined from the root element name of _xml_
-    # using XML::Mapping.class_for_root_elt_name.
+    # object, which is returned. The class of the object and the
+    # mapping to be used for unmarshalling are automatically
+    # determined from the root element name of _xml_ using
+    # XML::Mapping.class_for_root_elt_name.
     def self.load_object_from_xml(xml)
-      unless c = class_for_root_elt_name(xml.name)
+      c,mapping = class_for_root_elt_name(xml.name)
+      unless c
         raise MappingError, "no mapping class for root element name #{xml.name}"
       end
-      c.load_from_xml(xml)
+      c.load_from_xml xml, :mapping=>mapping
     end
 
     # Like load_object_from_xml, but loads from the XML file named by
     # _filename_.
     def self.load_object_from_file(filename)
       xml = REXML::Document.new(File.new(filename))
-      load_object_from_xml(xml.root)
+      load_object_from_xml xml.root
     end
 
   end
