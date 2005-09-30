@@ -2,7 +2,7 @@ require File.dirname(__FILE__)+"/tests_init"
 
 require 'test/unit'
 require 'documents_folders'
-require 'multiple_mappings'
+require 'bookmarks'
 require 'yaml'
 
 class XmlMappingAdvancedTest < Test::Unit::TestCase
