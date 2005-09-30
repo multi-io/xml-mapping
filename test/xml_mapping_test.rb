@@ -113,8 +113,11 @@ class XmlMappingTest < Test::Unit::TestCase
     assert_equal @c, XML::Mapping.load_object_from_xml(@xml.root)
 
     # white-box tests
-    assert_equal [["my-test", Company]], XML::Mapping::Classes_w_nondefault_rootelt_names.sort
-    assert_equal [["address", Address], ["customer", Customer], ["office", Office]],
+    assert_equal [["my-test", {:_default=>Company}]], XML::Mapping::Classes_w_nondefault_rootelt_names.sort
+    assert_equal [["address", {:_default=>Address}],
+                  ["company", {}],
+                  ["customer", {:_default=>Customer}],
+                  ["office", {:_default=>Office}]],
           XML::Mapping::Classes_w_default_rootelt_names.sort
   end
 

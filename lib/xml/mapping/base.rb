@@ -81,23 +81,33 @@ module XML
     def self.append_features(base) #:nodoc:
       super
       base.extend(ClassMethods)
-      Classes_w_default_rootelt_names[base.default_root_element_name] = [base,:_default]  #TODO: ...
+      (Classes_w_default_rootelt_names[base.default_root_element_name] ||= {})[:_default] = base
+              #TODO: ...
     end
 
 
-    # Finds the mapping class and mapping name corresponding to the
-    # given XML root element name. This is the inverse operation to
+    # Finds the mapping class corresponding to the given XML root
+    # element name and mapping name. This is the inverse operation to
     # <class>.root_element_name (see
     # XML::Mapping::ClassMethods.root_element_name).
-    #
-    # returns [class,mapping]
-    def self.class_for_root_elt_name(name)
+    def self.class_for_root_elt_name(name, options={:mapping=>:_default})
       # TODO: implement Hash read-only instead of this
       # interface
-      Classes_w_nondefault_rootelt_names[name] ||
-        Classes_w_default_rootelt_names[name]
+      (Classes_w_nondefault_rootelt_names[name] || {})[options[:mapping]] ||
+        (Classes_w_default_rootelt_names[name] || {})[options[:mapping]]
     end
 
+    # Finds a mapping class and mapping name corresponding to the
+    # given XML root element name. There may be more than one
+    # (class,mapping) tuple for a given root element name -- in that
+    # case, one of them is selected arbitrarily.
+    #
+    # returns [class,mapping]
+    def self.class_and_mapping_for_root_elt_name(name)
+      (Classes_w_nondefault_rootelt_names[name] || {}).each_pair{|mapping,clazz| return [clazz,mapping] }
+      (Classes_w_default_rootelt_names[name] || {}).each_pair{|mapping,clazz| return [clazz,mapping] }
+      nil
+    end
 
     def initialize_xml_mapping(options={:mapping=>:_default})  #:nodoc:
       self.class.all_xml_mapping_nodes.each do |node|
@@ -521,13 +531,13 @@ module XML
         end
         @root_element_names ||= {}
         if name
-          Classes_w_nondefault_rootelt_names.delete(root_element_name)
-          Classes_w_default_rootelt_names.delete(root_element_name)
-          Classes_w_default_rootelt_names.delete(name)
+          (Classes_w_nondefault_rootelt_names[root_element_name] || {}).delete options[:mapping]
+          (Classes_w_default_rootelt_names[root_element_name] || {}).delete options[:mapping]
+          (Classes_w_default_rootelt_names[name] || {}).delete options[:mapping]
 
           @root_element_names[options[:mapping]] = name
 
-          Classes_w_nondefault_rootelt_names[name] = [self,options[:mapping]]
+          (Classes_w_nondefault_rootelt_names[name] ||= {})[options[:mapping]] = self
         end
         @root_element_names[options[:mapping]] || default_root_element_name
       end
@@ -551,7 +561,7 @@ module XML
     # determined from the root element name of _xml_ using
     # XML::Mapping.class_for_root_elt_name.
     def self.load_object_from_xml(xml)
-      c,mapping = class_for_root_elt_name(xml.name)
+      c,mapping = class_and_mapping_for_root_elt_name(xml.name)
       unless c
         raise MappingError, "no mapping class for root element name #{xml.name}"
       end
