@@ -243,9 +243,15 @@ module XML
       # Intializer, to be called from descendant classes. _owner_ is
       # the mapping class this node is being defined in. It'll be
       # stored in _@owner_.
-      def initialize(owner)
+      def initialize(owner,*args)
         @owner = owner
-        owner.xml_mapping_nodes << self
+        if Hash===args[-1]
+          @options = args[-1]
+        else
+          @options={}
+        end
+        @mapping = @options[:mapping] || :_default
+        owner.xml_mapping_nodes(:mapping=>@mapping) << self
       end
       # This is called by the XML unmarshalling machinery when the
       # state of an instance of this node's @owner is to be read from
@@ -328,14 +334,11 @@ module XML
       # expression locating the XML sub-element this text node refers
       # to; TextNode.initialize_impl stores it into @path.
       def initialize(owner,attrname,*args)
-        super(owner)
+        super(owner,*args)
         @attrname = attrname
         owner.add_accessor attrname
         if Hash===args[-1]
-          @options = args[-1]
           args = args[0..-2]
-        else
-          @options={}
         end
         if @options[:optional] and not(@options.has_key?(:default_value))
           @options[:default_value] = nil

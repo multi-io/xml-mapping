@@ -16,9 +16,6 @@
 
     - multi-attribute nodes
 
-- XML::Mapping: Move @options hash functionality from
-  SingleAttributeNode to Node.
-
 - XML::Mapping/default attribute values: Update documentation, digest
   "nil" issues...
 
