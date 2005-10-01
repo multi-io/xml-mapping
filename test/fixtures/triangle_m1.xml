@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<triangle name="tri1" >
+  <pt1>
+    <x> 3 </x>
+    <y> 0 </y>
+  </pt1>
+  <pt2>
+    <x> 2 </x>
+    <y> 4 </y>
+  </pt2>
+  <pt3>
+    <x> 0 </x>
+    <y> 1 </y>
+  </pt3>
+  <color>green</color>
+</triangle>
