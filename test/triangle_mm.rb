@@ -21,14 +21,6 @@ class Triangle
   def initialize(name,color,p1,p2,p3)
     @name,@color,@p1,@p2,@p3 = name,color,p1,p2,p3
   end
-
-  def ==(other)
-    color==other.color and
-      name==other.name and
-      p1==other.p1 and
-      p2==other.p2 and
-      p3==other.p3
-  end
 end
 
 
@@ -40,9 +32,5 @@ class Point
 
   def initialize(x,y)
     @x,@y = x,y
-  end
-
-  def ==(other)
-    x==other.x and y==other.y
   end
 end

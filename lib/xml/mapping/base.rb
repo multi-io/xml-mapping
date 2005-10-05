@@ -70,31 +70,49 @@ module XML
   # elements/documents in memory.
   module Mapping
 
-    # can't really use class variables for these because they must be
+    # classes for a given root elt name and mapping name (nested map
+    # from root element name to mapping name to array of classes)
+    #
+    # can't really use a class variable for this because it must be
     # shared by all class methods mixed into classes by including
     # Mapping. See
     # http://user.cs.tu-berlin.de/~klischat/mydocs/ruby/mixin_class_methods_global_state.txt.html
     # for a more detailed discussion.
-    Classes_w_default_rootelt_names = {}     #:nodoc:
-    Classes_w_nondefault_rootelt_names = {}  #:nodoc:
+    Classes_by_rootelt_names = {}  #:nodoc:
+    class << Classes_by_rootelt_names
+      def create_classes_for rootelt_name, mapping
+        (self[rootelt_name] ||= {})[mapping] ||= []
+      end
+      def classes_for rootelt_name, mapping
+        (self[rootelt_name] || {})[mapping] || []
+      end
+      def remove_class rootelt_name, mapping, clazz
+        classes_for(rootelt_name, mapping).delete clazz
+      end
+      def ensure_exists rootelt_name, mapping, clazz
+        clazzes = create_classes_for(rootelt_name, mapping)
+        clazzes << clazz unless clazzes.include? clazz
+      end
+    end
+
 
     def self.append_features(base) #:nodoc:
       super
       base.extend(ClassMethods)
-      (Classes_w_default_rootelt_names[base.default_root_element_name] ||= {})[:_default] = base
-              #TODO: ...
+      Classes_by_rootelt_names.create_classes_for(base.default_root_element_name, :_default) << base
     end
 
-
-    # Finds the mapping class corresponding to the given XML root
-    # element name and mapping name. This is the inverse operation to
+    # Finds a mapping class corresponding to the given XML root
+    # element name and mapping name. There may be more than one such class --
+    # in that case, the most recently defined one is returned
+    #
+    # This is the inverse operation to
     # <class>.root_element_name (see
     # XML::Mapping::ClassMethods.root_element_name).
     def self.class_for_root_elt_name(name, options={:mapping=>:_default})
       # TODO: implement Hash read-only instead of this
       # interface
-      (Classes_w_nondefault_rootelt_names[name] || {})[options[:mapping]] ||
-        (Classes_w_default_rootelt_names[name] || {})[options[:mapping]]
+      Classes_by_rootelt_names.classes_for(name, options[:mapping])[-1]
     end
 
     # Finds a mapping class and mapping name corresponding to the
@@ -104,8 +122,7 @@ module XML
     #
     # returns [class,mapping]
     def self.class_and_mapping_for_root_elt_name(name)
-      (Classes_w_nondefault_rootelt_names[name] || {}).each_pair{|mapping,clazz| return [clazz,mapping] }
-      (Classes_w_default_rootelt_names[name] || {}).each_pair{|mapping,clazz| return [clazz,mapping] }
+      (Classes_by_rootelt_names[name] || {}).each_pair{|mapping,classes| return [classes[0],mapping] }
       nil
     end
 
@@ -252,6 +269,7 @@ module XML
         end
         @mapping = @options[:mapping] || :_default
         owner.xml_mapping_nodes(:mapping=>@mapping) << self
+        XML::Mapping::Classes_by_rootelt_names.ensure_exists owner.root_element_name, @mapping, owner
       end
       # This is called by the XML unmarshalling machinery when the
       # state of an instance of this node's @owner is to be read from
@@ -534,13 +552,9 @@ module XML
         end
         @root_element_names ||= {}
         if name
-          (Classes_w_nondefault_rootelt_names[root_element_name] || {}).delete options[:mapping]
-          (Classes_w_default_rootelt_names[root_element_name] || {}).delete options[:mapping]
-          (Classes_w_default_rootelt_names[name] || {}).delete options[:mapping]
-
+          Classes_by_rootelt_names.remove_class root_element_name, options[:mapping], self
           @root_element_names[options[:mapping]] = name
-
-          (Classes_w_nondefault_rootelt_names[name] ||= {})[options[:mapping]] = self
+          Classes_by_rootelt_names.create_classes_for(name, options[:mapping]) << self
         end
         @root_element_names[options[:mapping]] || default_root_element_name
       end
@@ -563,19 +577,23 @@ module XML
     # mapping to be used for unmarshalling are automatically
     # determined from the root element name of _xml_ using
     # XML::Mapping.class_for_root_elt_name.
-    def self.load_object_from_xml(xml)
-      c,mapping = class_and_mapping_for_root_elt_name(xml.name)
+    def self.load_object_from_xml(xml,options={:mapping=>nil})
+      if mapping = options[:mapping]
+        c = class_for_root_elt_name xml.name, :mapping=>mapping
+      else
+        c,mapping = class_and_mapping_for_root_elt_name(xml.name)
+      end
       unless c
-        raise MappingError, "no mapping class for root element name #{xml.name}"
+        raise MappingError, "no mapping class for root element name/mapping #{xml.name}/#{mapping}"
       end
       c.load_from_xml xml, :mapping=>mapping
     end
 
     # Like load_object_from_xml, but loads from the XML file named by
     # _filename_.
-    def self.load_object_from_file(filename)
+    def self.load_object_from_file(filename,options={:mapping=>nil})
       xml = REXML::Document.new(File.new(filename))
-      load_object_from_xml xml.root
+      load_object_from_xml xml.root, options
     end
 
   end

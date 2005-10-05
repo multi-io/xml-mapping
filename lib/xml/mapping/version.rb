@@ -3,6 +3,6 @@
 
 module XML
   module Mapping
-    VERSION = '0.8'
+    VERSION = '0.9'
   end
 end

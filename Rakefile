@@ -48,6 +48,7 @@ task :default => [ :test ]
 Rake::TestTask.new(:test) { |t|
   t.test_files = ["test/all_tests.rb"]
   t.verbose = true
+#  t.loader = :testrb
 }
 
 # runs tests only if sources have changed since last succesful run of
