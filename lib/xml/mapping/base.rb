@@ -100,6 +100,7 @@ module XML
       super
       base.extend(ClassMethods)
       Classes_by_rootelt_names.create_classes_for(base.default_root_element_name, :_default) << base
+      base.initializing_xml_mapping
     end
 
     # Finds a mapping class corresponding to the given XML root
@@ -267,7 +268,7 @@ module XML
         else
           @options={}
         end
-        @mapping = @options[:mapping] || :_default
+        @mapping = @options[:mapping] || owner.default_mapping
         owner.xml_mapping_nodes(:mapping=>@mapping) << self
         XML::Mapping::Classes_by_rootelt_names.ensure_exists owner.root_element_name, @mapping, owner
       end
@@ -475,7 +476,29 @@ module XML
     # The instance methods of this module are automatically added as
     # class methods to a class that includes XML::Mapping.
     module ClassMethods
-    #ClassMethods = Module.new do  # this is the alterbative -- but see above for peculiarities
+    #ClassMethods = Module.new do  # this is the alternative -- but see above for peculiarities
+
+      # called on a class when it is being made a mapping class
+      # (i.e. immediately after XML::Mapping was included in it)
+      def initializing_xml_mapping  #:nodoc:
+        use_mapping :_default
+      end
+
+      # Make _mapping_ the mapping to be used by default in future
+      # node declarations in this class. The default can be
+      # overwritten on a per-node basis by passing a :mapping option
+      # parameter to the node factory method
+      #
+      # The initial default mapping in a mapping class is :_default
+      def use_mapping mapping
+        @default_mapping = mapping
+      end
+
+      # return the current default mapping (:_default initially, or
+      # the value set with the latest call to use_mapping)
+      def default_mapping
+        @default_mapping
+      end
 
       # Add getter and setter methods for a new attribute named _name_
       # to this class. This is a convenience method intended to be
@@ -516,7 +539,7 @@ module XML
 
       # array of all nodes defined in this class, in the order of
       # their definition
-      def xml_mapping_nodes(options={:mapping=>:_default})
+      def xml_mapping_nodes(options={:mapping=>@default_mapping})
         (@xml_mapping_nodes ||= {}) [options[:mapping]] ||= []
       end
 
@@ -526,7 +549,7 @@ module XML
       # for this class as well as for its superclasses.  The nodes are
       # returned in the order of their definition, starting with the
       # topmost superclass that has nodes defined.
-      def all_xml_mapping_nodes(options={:mapping=>:_default})
+      def all_xml_mapping_nodes(options={:mapping=>@default_mapping})
         # TODO: we could return a dynamic Enumerable here, or cache
         # the array...
         result = []
@@ -546,7 +569,7 @@ module XML
       # returns the #default_root_element_name; you may call this
       # method with an argument to set the root element name to
       # something other than the default.
-      def root_element_name(name=nil, options={:mapping=>:_default})
+      def root_element_name(name=nil, options={:mapping=>@default_mapping})
         if Hash===name    # ugly...
           options=name; name=nil
         end
