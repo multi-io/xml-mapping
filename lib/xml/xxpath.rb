@@ -187,8 +187,11 @@ module XML
           @xml_xpath_unspecified = x
         end
 
-        def self.included(mod)
-          mod.module_eval <<-EOS
+        def self.append_features(base)
+          return if base.included_modules.include? self # avoid aliasing methods more than once
+                                                        # (would lead to infinite recursion)
+          super
+          base.module_eval <<-EOS
             alias_method :_text_orig, :text
             alias_method :_textis_orig, :text=
             def text
