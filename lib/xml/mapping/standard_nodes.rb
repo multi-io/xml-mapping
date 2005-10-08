@@ -90,31 +90,33 @@ module XML
       # If both :class and :marshaller/:unmarshaller arguments are
       # supplied, the latter take precedence.
       def initialize_impl(*args)
+        @sub_mapping = @options[:sub_mapping] || @mapping
+
         if @options[:class]
           unless @options[:marshaller]
             @options[:marshaller] = proc {|xml,value|
-              value.fill_into_xml(xml)
+              value.fill_into_xml xml, :mapping=>@sub_mapping
             }
           end
           unless @options[:unmarshaller]
             @options[:unmarshaller] = proc {|xml|
-              @options[:class].load_from_xml(xml)
+              @options[:class].load_from_xml xml, :mapping=>@sub_mapping
             }
           end
         end
 
         unless @options[:marshaller]
           @options[:marshaller] = proc {|xml,value|
-            value.fill_into_xml(xml)
+            value.fill_into_xml xml, :mapping=>@sub_mapping
             if xml.unspecified?
-              xml.name = value.class.root_element_name
+              xml.name = value.class.root_element_name :mapping=>@sub_mapping
               xml.unspecified = false
             end
           }
         end
         unless @options[:unmarshaller]
           @options[:unmarshaller] = proc {|xml|
-            XML::Mapping.load_object_from_xml(xml)
+            XML::Mapping.load_object_from_xml xml, :mapping=>@sub_mapping
           }
         end
       end
