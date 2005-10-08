@@ -7,6 +7,11 @@ require 'yaml'
 
 class XmlMappingAdvancedTest < Test::Unit::TestCase
   def setup
+    $".delete "documents_folders.rb"
+    $".delete "bookmarks.rb"
+    require 'documents_folders'
+    require 'bookmarks'
+
     @f_xml = REXML::Document.new(File.new(File.dirname(__FILE__) + "/fixtures/documents_folders2.xml"))
     @f = XML::Mapping.load_object_from_xml(@f_xml.root)
 
