@@ -3,6 +3,8 @@ require File.dirname(__FILE__)+"/tests_init"
 require 'test/unit'
 require 'triangle_mm'
 
+require 'xml/xxpath_methods'
+
 module XML::Mapping
   def ==(other)
     Marshal.dump(self) == Marshal.dump(other)
@@ -45,6 +47,16 @@ class MultipleMappingsTest < Test::Unit::TestCase
     assert_equal t, t1
     assert_equal t, t2
     assert_equal t1, t2
+  end
+
+
+  def test_write
+    t1=XML::Mapping.load_object_from_file File.dirname(__FILE__) + "/fixtures/triangle_m1.xml", :mapping=>:m1
+    m1xml = t1.save_to_xml :mapping=>:m1
+    m2xml = t1.save_to_xml :mapping=>:m2
+
+    assert_equal t1.name, m1xml.first('@name').text
+    # TODO: more tests...
   end
 
 end
