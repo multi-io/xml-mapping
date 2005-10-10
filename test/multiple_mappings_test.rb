@@ -5,12 +5,6 @@ require 'triangle_mm'
 
 require 'xml/xxpath_methods'
 
-module XML::Mapping
-  def ==(other)
-    Marshal.dump(self) == Marshal.dump(other)
-  end
-end
-
 class MultipleMappingsTest < Test::Unit::TestCase
   def setup
     # need to undo mapping class definitions that may have been
@@ -39,6 +33,8 @@ class MultipleMappingsTest < Test::Unit::TestCase
     assert_equal t, t1
     assert_equal t, t2
     assert_equal t1, t2
+    assert_equal "default description", t2.descr
+    assert_nil t1.descr
     assert_not_equal Triangle.allocate, t
 
     # using default mapping should produce empty objects
@@ -115,6 +111,10 @@ class MultipleMappingsTest < Test::Unit::TestCase
     end
     m1xml.name = "triangle"
     assert_equal t1, XML::Mapping.load_object_from_xml(m1xml, :mapping=>:m1)
+  end
+
+
+  def test_node_initialization
   end
 
 end

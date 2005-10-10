@@ -127,9 +127,9 @@ module XML
       nil
     end
 
-    def initialize_xml_mapping(options={:mapping=>:_default})  #:nodoc:
-      self.class.all_xml_mapping_nodes.each do |node|
-        node.obj_initializing(self)
+    def initialize_xml_mapping(options={:mapping=>nil})  #:nodoc:
+      self.class.all_xml_mapping_nodes(:mapping=>options[:mapping]).each do |node|
+        node.obj_initializing(self,options[:mapping])
       end
     end
 
@@ -292,10 +292,18 @@ module XML
         raise "abstract method called"
       end
       # Called when a new instance of the mapping class this node
-      # belongs to is being initialized. _obj_ is the instance. You
-      # may set up initial values for the attributes this node is
+      # belongs to is being initialized. _obj_ is the
+      # instance. _mapping_ is the mapping the initialization is
+      # happening with, if any: If the instance is being initialized
+      # as part of e.g. <tt>Class.load_from_file(name,
+      # :mapping=>:some_mapping</tt> or any other call that specifies
+      # a mapping, that mapping will be passed to this method. If the
+      # instance is being initialized normally with
+      # <tt>Class.new</tt>, _mapping_ is nil here.
+      #
+      # You may set up initial values for the attributes this node is
       # responsible for here. Default implementation is empty.
-      def obj_initializing(obj)
+      def obj_initializing(obj,mapping)
       end
     end
 
@@ -418,8 +426,8 @@ module XML
       def set_attr_value(xml, value)
         raise "abstract method called"
       end
-      def obj_initializing(obj)  # :nodoc:
-        if @options.has_key? :default_value
+      def obj_initializing(obj,mapping)  # :nodoc:
+        if @options.has_key?(:default_value) and (mapping==nil || mapping==@mapping)
           obj.send :"#{@attrname}=", @options[:default_value]
         end
       end
@@ -492,6 +500,9 @@ module XML
       # The initial default mapping in a mapping class is :_default
       def use_mapping mapping
         @default_mapping = mapping
+        (@xml_mapping_nodes ||= {}) [mapping] ||= []  # create empty mapping node list if
+                                                      # there wasn't one before so future calls
+                                                      # to load/save_xml etc. w/ this mapping don't raise
       end
 
       # return the current default mapping (:_default initially, or
@@ -538,9 +549,18 @@ module XML
 
 
       # array of all nodes defined in this class, in the order of
-      # their definition
-      def xml_mapping_nodes(options={:mapping=>@default_mapping})
-        (@xml_mapping_nodes ||= {}) [options[:mapping]] ||= []
+      # their definition. Option :create specifies whether or not an
+      # empty array should be created and returned if there was none
+      # before (if not, an exception is raised)
+      def xml_mapping_nodes(options={:mapping=>:_default,:create=>true})
+        mapping = options[:mapping] || @default_mapping
+        create = options[:create] || true
+        if create
+          (@xml_mapping_nodes ||= {}) [mapping] ||= []
+        else
+          (@xml_mapping_nodes ||= {}) [mapping] ||
+            raise(MappingError, "undefined mapping: #{mapping.inspect}")
+        end
       end
 
 
@@ -549,14 +569,14 @@ module XML
       # for this class as well as for its superclasses.  The nodes are
       # returned in the order of their definition, starting with the
       # topmost superclass that has nodes defined.
-      def all_xml_mapping_nodes(options={:mapping=>@default_mapping})
+      def all_xml_mapping_nodes(options={:mapping=>:_default,:create=>true})
         # TODO: we could return a dynamic Enumerable here, or cache
         # the array...
         result = []
         if superclass and superclass.respond_to?(:all_xml_mapping_nodes)
-          result += superclass.all_xml_mapping_nodes :mapping=>options[:mapping]
+          result += superclass.all_xml_mapping_nodes options
         end
-        result += xml_mapping_nodes :mapping=>options[:mapping]
+        result += xml_mapping_nodes options
       end
 
 
@@ -607,7 +627,7 @@ module XML
         c,mapping = class_and_mapping_for_root_elt_name(xml.name)
       end
       unless c
-        raise MappingError, "no mapping class for root element name/mapping #{xml.name}/#{mapping}"
+        raise MappingError, "no mapping class for root element name #{xml.name}, mapping #{mapping.inspect}"
       end
       c.load_from_xml xml, :mapping=>mapping
     end
