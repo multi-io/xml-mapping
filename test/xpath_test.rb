@@ -43,6 +43,15 @@ class XPathTest < Test::Unit::TestCase
   end
 
 
+  def test_read_bythisnode
+    assert_equal [@d.root], XML::XXPath.new(".").all(@d.root)
+    assert_equal @d.root.elements.to_a("foo"), XML::XXPath.new("foo/.").all(@d.root)
+    assert_equal @d.root.elements.to_a("foo"), XML::XXPath.new("foo/./././.").all(@d.root)
+    assert_equal @d.root.elements.to_a("foo")[0], XML::XXPath.new("foo/.").first(@d.root)
+    assert_equal @d.root.elements.to_a("foo")[0], XML::XXPath.new("foo/./././.").first(@d.root)
+  end
+
+
   def test_read_byattr
     assert_equal [@d.root.elements[3]], XML::XXPath.new("foo[@key='xy']").all(@d.root)
     assert_equal [], XML::XXPath.new("foo[@key='notthere']").all(@d.root)
@@ -158,6 +167,21 @@ class XPathTest < Test::Unit::TestCase
   end
 
 
+  def test_write_bythisnode
+    s1 = @d.elements[1].elements.size
+    s2 = @d.elements[1].elements[1].elements.size
+    node = XML::XXPath.new("foo/././.").first(@d.root, :ensure_created=>true)
+    assert_equal @d.elements[1].elements[1], node
+
+    node = XML::XXPath.new("foo/new1/././.").first(@d.root, :ensure_created=>true)
+    assert_equal "new1", node.name
+    assert node.attributes.empty?
+    assert_equal @d.elements[1].elements[1].elements[1], node
+    assert_equal s1, @d.elements[1].elements.size
+    assert_equal s2+1, @d.elements[1].elements[1].elements.size
+  end
+
+
   def test_create_new_byname
     s1 = @d.elements[1].elements.size
     s2 = @d.elements[1].elements[1].elements.size
@@ -255,6 +279,19 @@ class XPathTest < Test::Unit::TestCase
     assert_equal @d.root.elements[5], node2
     assert_equal @d.root.elements[6], node3
     assert_not_equal @d.root.elements[5], node1
+  end
+
+
+  def test_create_new_bythisnode
+    s1 = @d.elements[1].elements.size
+    s2 = @d.elements[1].elements[1].elements.size
+    startnode = @d.elements[1].elements[1]
+    assert_raises(XML::XXPathError) {
+      node1 = XML::XXPath.new("new1/.").create_new(startnode)
+    }
+    assert_raises(XML::XXPathError) {
+      node2 = XML::XXPath.new("new1/././.").first(startnode, :create_new=>true)
+    }
   end
 
 

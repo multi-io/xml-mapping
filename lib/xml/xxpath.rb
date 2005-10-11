@@ -89,6 +89,19 @@ module XML
               prev_reader.call(next_nodes)
             end
           }
+        when '.'
+          @creator_procs << curr_creator = proc {|node,create_new|
+            prev_creator.call(Accessors.create_subnode_by_thisnode(node,create_new),
+                              create_new)
+          }
+          @reader_proc = proc {|nodes|
+            next_nodes = Accessors.subnodes_by_thisnode(nodes)
+            if (next_nodes == [])
+              throw :not_found, [nodes,curr_creator]
+            else
+              prev_reader.call(next_nodes)
+            end
+          }
         else
           name = part
           @creator_procs << curr_creator = proc {|node,create_new|
@@ -268,7 +281,7 @@ module XML
 
       # read accessors
 
-      for things in %w{name name_and_attr name_and_index attr_name all} do
+      for things in %w{name name_and_attr name_and_index attr_name all thisnode} do
         self.module_eval <<-EOS
           def self.subnodes_by_#{things}(nodes, *args)
             nodes.map{|node| subnodes_by_#{things}_singlesrc(node,*args)}.flatten
@@ -301,6 +314,10 @@ module XML
 
       def self.subnodes_by_all_singlesrc(node)
         node.elements.to_a
+      end
+
+      def self.subnodes_by_thisnode_singlesrc(node)
+        [node]
       end
 
 
@@ -348,6 +365,13 @@ module XML
       def self.create_subnode_by_all(node,create_new)
         node = node.elements.add
         node.unspecified = true
+        node
+      end
+
+      def self.create_subnode_by_thisnode(node,create_new)
+        if create_new
+          raise XXPathError, "XPath (#{@xpathstr}): .: create_new and attribute already exists"
+        end
         node
       end
     end
