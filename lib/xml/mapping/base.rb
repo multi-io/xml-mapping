@@ -150,6 +150,8 @@ module XML
     # #xml_to_obj method called) in the order of their definition
     # inside the class, then #post_load is called.
     def fill_from_xml(xml, options={:mapping=>:_default})
+      raise(MappingError, "undefined mapping: #{options[:mapping].inspect}") \
+        unless self.class.xml_mapping_nodes_hash.has_key?(options[:mapping])
       pre_load xml, :mapping=>options[:mapping]
       self.class.all_xml_mapping_nodes(:mapping=>options[:mapping]).each do |node|
         node.xml_to_obj self, xml
@@ -486,10 +488,14 @@ module XML
     module ClassMethods
     #ClassMethods = Module.new do  # this is the alternative -- but see above for peculiarities
 
+      def xml_mapping_nodes_hash    #:nodoc:
+        @xml_mapping_nodes ||= {}
+      end
+
       # called on a class when it is being made a mapping class
       # (i.e. immediately after XML::Mapping was included in it)
       def initializing_xml_mapping  #:nodoc:
-        use_mapping :_default
+        @default_mapping = :_default
       end
 
       # Make _mapping_ the mapping to be used by default in future
@@ -500,9 +506,9 @@ module XML
       # The initial default mapping in a mapping class is :_default
       def use_mapping mapping
         @default_mapping = mapping
-        (@xml_mapping_nodes ||= {}) [mapping] ||= []  # create empty mapping node list if
-                                                      # there wasn't one before so future calls
-                                                      # to load/save_xml etc. w/ this mapping don't raise
+        xml_mapping_nodes_hash[mapping] ||= []  # create empty mapping node list if
+                                                # there wasn't one before so future calls
+                                                # to load/save_xml etc. w/ this mapping don't raise
       end
 
       # return the current default mapping (:_default initially, or
@@ -541,6 +547,8 @@ module XML
       # Allocates a new object, then calls fill_from_xml(_xml_) on
       # it.
       def load_from_xml(xml, options={:mapping=>:_default})
+        raise(MappingError, "undefined mapping: #{options[:mapping].inspect}") \
+          unless xml_mapping_nodes_hash.has_key?(options[:mapping])
         obj = self.allocate
         obj.initialize_xml_mapping :mapping=>options[:mapping]
         obj.fill_from_xml xml, :mapping=>options[:mapping]
@@ -551,14 +559,19 @@ module XML
       # array of all nodes defined in this class, in the order of
       # their definition. Option :create specifies whether or not an
       # empty array should be created and returned if there was none
-      # before (if not, an exception is raised)
-      def xml_mapping_nodes(options={:mapping=>:_default,:create=>true})
+      # before (if not, an exception is raised). :mapping specifies
+      # the mapping the returned nodes must have been defined in; nil
+      # means return all nodes regardless of their mapping
+      def xml_mapping_nodes(options={:mapping=>nil,:create=>true})
+        if nil==options[:mapping]
+          return xml_mapping_nodes_hash.values.inject([]){|a1,a2|a1+a2}
+        end
         mapping = options[:mapping] || @default_mapping
         create = options[:create] || true
         if create
-          (@xml_mapping_nodes ||= {}) [mapping] ||= []
+          xml_mapping_nodes_hash[mapping] ||= []
         else
-          (@xml_mapping_nodes ||= {}) [mapping] ||
+          xml_mapping_nodes_hash[mapping] ||
             raise(MappingError, "undefined mapping: #{mapping.inspect}")
         end
       end
@@ -568,7 +581,8 @@ module XML
       # marshalling/unmarshalling this class, that is, nodes defined
       # for this class as well as for its superclasses.  The nodes are
       # returned in the order of their definition, starting with the
-      # topmost superclass that has nodes defined.
+      # topmost superclass that has nodes defined. keyword arguments
+      # are the same as for #xml_mapping_nodes.
       def all_xml_mapping_nodes(options={:mapping=>:_default,:create=>true})
         # TODO: we could return a dynamic Enumerable here, or cache
         # the array...

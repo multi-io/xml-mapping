@@ -37,7 +37,17 @@ class MultipleMappingsTest < Test::Unit::TestCase
     assert_nil t1.descr
     assert_not_equal Triangle.allocate, t
 
-    # using default mapping should produce empty objects
+    # loading with default mapping should raise an exception because
+    # the default mapping was never used yet
+    assert_raises(XML::MappingError) do
+      Triangle.load_from_file(File.dirname(__FILE__) + "/fixtures/triangle_m1.xml")
+    end
+    assert_raises(XML::MappingError) do
+      Triangle.load_from_file(File.dirname(__FILE__) + "/fixtures/triangle_m2.xml")
+    end
+
+    # after using it once, we get empty objects
+    Triangle.class_eval "use_mapping :_default"
     assert_equal Triangle.allocate,
                  Triangle.load_from_file(File.dirname(__FILE__) + "/fixtures/triangle_m1.xml")
     assert_equal Triangle.allocate,
