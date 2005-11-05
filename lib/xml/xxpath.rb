@@ -2,6 +2,8 @@
 #  Copyright (C) 2004,2005 Olaf Klischat
 
 require 'rexml/document'
+require 'xml/rexml_ext'
+require 'xml/xxpath/steps'
 
 module XML
 
@@ -18,105 +20,55 @@ module XML
     # representation (XPath pattern) of the path
     def initialize(xpathstr)
       @xpathstr = xpathstr  # for error messages
-
-      xpathstr=xpathstr[1..-1] if xpathstr[0]==?/
-
-      # TODO: avoid code duplications
-      #    maybe: build & create the procs using eval
+      
+      xpathstr='/'+xpathstr if xpathstr[0] != ?/
 
       @creator_procs = [ proc{|node,create_new| node} ]
       @reader_proc = proc {|nodes| nodes}
-      xpathstr.split('/').reverse.each do |part|
+      
+      part=nil; part_expected=true
+      xpathstr.split(/(\/+)/)[1..-1].reverse.each do |x|
+        if part_expected
+          part=x
+          part_expected = false
+          next
+        end
+        part_expected = true
+        axis = case x
+               when '/'
+                 :child
+               when '//'
+                 :descendant
+               else
+                 raise XXPathError, "XPath (#{xpathstr}): unknown axis: #{x}"
+               end
+        axis=:self if axis==:child and part=='.'   # TODO: verify
+
         prev_creator = @creator_procs[-1]
         prev_reader = @reader_proc
-        case part
-        when /^(.*?)\[@(.*?)='(.*?)'\]$/
-          name,attr_name,attr_value = [$1,$2,$3]
-          @creator_procs << curr_creator = proc {|node,create_new|
-            prev_creator.call(Accessors.create_subnode_by_name_and_attr(node,create_new,
-                                                                        name,attr_name,attr_value),
-                              create_new)
-          }
-          @reader_proc = proc {|nodes|
-            next_nodes = Accessors.subnodes_by_name_and_attr(nodes,
-                                                             name,attr_name,attr_value)
-            if (next_nodes == [])
-              throw :not_found, [nodes,curr_creator]
-            else
-              prev_reader.call(next_nodes)
-            end
-          }
-        when /^(.*?)\[(.*?)\]$/
-          name,index = [$1,$2.to_i]
-          @creator_procs << curr_creator = proc {|node,create_new|
-            prev_creator.call(Accessors.create_subnode_by_name_and_index(node,create_new,
-                                                                         name,index),
-                              create_new)
-          }
-          @reader_proc = proc {|nodes|
-            next_nodes = Accessors.subnodes_by_name_and_index(nodes,
-                                                              name,index)
-            if (next_nodes == [])
-              throw :not_found, [nodes,curr_creator]
-            else
-              prev_reader.call(next_nodes)
-            end
-          }
-        when /^@(.*)$/
-          name = $1
-          @creator_procs << curr_creator = proc {|node,create_new|
-            prev_creator.call(Accessors.create_subnode_by_attr_name(node,create_new,name),
-                              create_new)
-          }
-          @reader_proc = proc {|nodes|
-            next_nodes = Accessors.subnodes_by_attr_name(nodes,name)
-            if (next_nodes == [])
-              throw :not_found, [nodes,curr_creator]
-            else
-              prev_reader.call(next_nodes)
-            end
-          }
-        when '*'
-          @creator_procs << curr_creator = proc {|node,create_new|
-            prev_creator.call(Accessors.create_subnode_by_all(node,create_new),
-                              create_new)
-          }
-          @reader_proc = proc {|nodes|
-            next_nodes = Accessors.subnodes_by_all(nodes)
-            if (next_nodes == [])
-              throw :not_found, [nodes,curr_creator]
-            else
-              prev_reader.call(next_nodes)
-            end
-          }
-        when '.'
-          @creator_procs << curr_creator = proc {|node,create_new|
-            prev_creator.call(Accessors.create_subnode_by_thisnode(node,create_new),
-                              create_new)
-          }
-          @reader_proc = proc {|nodes|
-            next_nodes = Accessors.subnodes_by_thisnode(nodes)
-            if (next_nodes == [])
-              throw :not_found, [nodes,curr_creator]
-            else
-              prev_reader.call(next_nodes)
-            end
-          }
-        else
-          name = part
-          @creator_procs << curr_creator = proc {|node,create_new|
-            prev_creator.call(Accessors.create_subnode_by_name(node,create_new,name),
-                              create_new)
-          }
-          @reader_proc = proc {|nodes|
-            next_nodes = Accessors.subnodes_by_name(nodes,name)
-            if (next_nodes == [])
-              throw :not_found, [nodes,curr_creator]
-            else
-              prev_reader.call(next_nodes)
-            end
-          }
-        end
+        step = Step.compile(part)
+        @creator_procs << curr_creator = proc {|node,create_new|
+          raise "can't create axis: #{axis}" unless axis==:child or axis==:self
+          prev_creator.call(step.create_on(node,create_new),
+                            create_new)
+        }
+        @reader_proc = proc {|nodes|
+          next_nodes = []
+          each_on_axis(axis,nodes) do |subnode|
+            next_nodes << subnode if step.matches(subnode)
+          end
+          if (next_nodes == [])
+            throw :not_found, [nodes,curr_creator]
+          else
+            prev_reader.call(next_nodes)
+          end
+        }
+
+        # TODO: move proc creation to the Step class as well, providing the
+        #  above implementations as default and giving Step subclasses the
+        #  possibility to provide their own, thereby improving performance (atm
+        #  XXPath with the child ("/") is probably significantly slower than
+        #  it was in xml-mapping 0.8)
       end
     end
 
@@ -181,198 +133,15 @@ module XML
     end
 
 
-    module Accessors  #:nodoc:
+    private
 
-      # we need a boolean "unspecified?" attribute for XML nodes --
-      # paths like "*" oder (somewhen) "foo|bar" create "unspecified"
-      # nodes that the user must then "specify" by setting their text
-      # etc. (or manually setting unspecified=false)
-      #
-      # This is mixed into the REXML::Element and
-      # XML::XXPath::Accessors::Attribute classes.
-      module UnspecifiednessSupport
-
-        def unspecified?
-          @xml_xpath_unspecified ||= false
-        end
-
-        def unspecified=(x)
-          @xml_xpath_unspecified = x
-        end
-
-        def self.append_features(base)
-          return if base.included_modules.include? self # avoid aliasing methods more than once
-                                                        # (would lead to infinite recursion)
-          super
-          base.module_eval <<-EOS
-            alias_method :_text_orig, :text
-            alias_method :_textis_orig, :text=
-            def text
-              # we're suffering from the "fragile base class"
-              # phenomenon here -- we don't know whether the
-              # implementation of the class we get mixed into always
-              # calls text (instead of just accessing @text or so)
-              if unspecified?
-                "[UNSPECIFIED]"
-              else
-                _text_orig
-              end
-            end
-            def text=(x)
-              _textis_orig(x)
-              self.unspecified=false
-            end
-
-            alias_method :_nameis_orig, :name=
-            def name=(x)
-              _nameis_orig(x)
-              self.unspecified=false
-            end
-          EOS
-        end
-
-      end
-
-      class REXML::Element              #:nodoc:
-        include UnspecifiednessSupport
-      end
-
-      # attribute node, more or less call-compatible with REXML's
-      # Element.  REXML's Attribute class doesn't provide this...
-      #
-      # The all/first calls return instances of this class if they
-      # matched an attribute node.
-      class Attribute
-        attr_reader :parent, :name
-        attr_writer :name
-
-        def initialize(parent,name)
-          @parent,@name = parent,name
-        end
-
-        def self.new(parent,name,create)
-          if parent.attributes[name]
-            super(parent,name)
-          else
-            if create
-              parent.attributes[name] = "[unset]"
-              super(parent,name)
-            else
-              nil
-            end
+    def each_on_axis(axis,nodes,&block)  #:nodoc:
+      nodes.each do |node|
+        if node.respond_to? :each_on_axis
+          node.each_on_axis(axis) do |subnode|
+            block.call(subnode)
           end
         end
-
-        # the value of the attribute.
-        def text
-          parent.attributes[@name]
-        end
-
-        def text=(x)
-          parent.attributes[@name] = x
-        end
-
-        def ==(other)
-          other.kind_of?(Attribute) and other.parent==parent and other.name==name
-        end
-
-        include UnspecifiednessSupport
-      end
-
-      # read accessors
-
-      for things in %w{name name_and_attr name_and_index attr_name all thisnode} do
-        self.module_eval <<-EOS
-          def self.subnodes_by_#{things}(nodes, *args)
-            nodes.map{|node| subnodes_by_#{things}_singlesrc(node,*args)}.flatten
-          end
-        EOS
-      end
-
-      def self.subnodes_by_name_singlesrc(node,name)
-        node.elements.select{|elt| elt.name==name}
-      end
-
-      def self.subnodes_by_name_and_attr_singlesrc(node,name,attr_name,attr_value)
-        node.elements.select{|elt| elt.name==name and elt.attributes[attr_name]==attr_value}
-      end
-
-      def self.subnodes_by_name_and_index_singlesrc(node,name,index)
-        index-=1
-        byname=subnodes_by_name_singlesrc(node,name)
-        if index>=byname.size
-          []
-        else
-          [byname[index]]
-        end
-      end
-
-      def self.subnodes_by_attr_name_singlesrc(node,name)
-        attr=Attribute.new(node,name,false)
-        if attr then [attr] else [] end
-      end
-
-      def self.subnodes_by_all_singlesrc(node)
-        node.elements.to_a
-      end
-
-      def self.subnodes_by_thisnode_singlesrc(node)
-        [node]
-      end
-
-
-      # write accessors
-
-      #  precondition: unless create_new, we know that a node with
-      #    exactly the requested attributes doesn't exist yet (else we
-      #    wouldn't have been called)
-      def self.create_subnode_by_name(node,create_new,name)
-        node.elements.add name
-      end
-
-      def self.create_subnode_by_name_and_attr(node,create_new,name,attr_name,attr_value)
-        if create_new
-          newnode = node.elements.add(name)
-        else
-          newnode = subnodes_by_name_singlesrc(node,name)[0]
-          if not(newnode) or newnode.attributes[attr_name]
-            newnode = node.elements.add(name)
-          end
-        end
-        newnode.attributes[attr_name]=attr_value
-        newnode
-      end
-
-      def self.create_subnode_by_name_and_index(node,create_new,name,index)
-        name_matches = subnodes_by_name_singlesrc(node,name)
-        if create_new and (name_matches.size >= index)
-          raise XXPathError, "XPath (#{@xpathstr}): #{name}[#{index}]: create_new and element already exists"
-        end
-        newnode = name_matches[0]
-        (index-name_matches.size).times do
-          newnode = node.elements.add name
-        end
-        newnode
-      end
-
-      def self.create_subnode_by_attr_name(node,create_new,name)
-        if create_new and node.attributes[name]
-          raise XXPathError, "XPath (#{@xpathstr}): @#{name}: create_new and attribute already exists"
-        end
-        Attribute.new(node,name,true)
-      end
-
-      def self.create_subnode_by_all(node,create_new)
-        node = node.elements.add
-        node.unspecified = true
-        node
-      end
-
-      def self.create_subnode_by_thisnode(node,create_new)
-        if create_new
-          raise XXPathError, "XPath (#{@xpathstr}): .: create_new and attribute already exists"
-        end
-        node
       end
     end
   end

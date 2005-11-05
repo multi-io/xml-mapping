@@ -17,6 +17,24 @@ class XPathTest < Test::Unit::TestCase
       <foo key='xy'>
         y
         <u/>
+        <bar barkey='hello'>
+          bar2
+          <bar barkey='hello'>
+            bar3
+          </bar>
+          <quux barkey='hello'>
+            quux1
+          </quux>
+          <bar>
+            bar4
+          </bar>
+          <foo>
+            z
+            <bar>
+              bar5
+            </bar>
+          </foo>
+        </bar>
       </foo>
     </bla>
     EOS
@@ -88,6 +106,27 @@ class XPathTest < Test::Unit::TestCase
     assert_equal [], XML::XXPath.new("notthere[2]/u").all(@d.root)
     assert_equal [], XML::XXPath.new("foo[3]/u").all(@d.root)
   end
+
+
+  def test_read_descendant
+    assert_equal ["bar1","bar2","bar3","bar4","bar5"],
+                 XML::XXPath.new("//bar").all(@d.root).map{|node|node.text.strip}
+    assert_equal ["bar2","bar3"],
+                 XML::XXPath.new("//bar[@barkey='hello']").all(@d.root).map{|node|node.text.strip}
+    assert_equal ["bar2","bar5"],
+                 XML::XXPath.new("//foo/bar").all(@d.root).map{|node|node.text.strip}
+    assert_equal ["bar3","bar4"],
+                 XML::XXPath.new("//bar/bar").all(@d.root).map{|node|node.text.strip}
+    assert_equal ["bar2","bar3","bar4","bar5"],
+                 XML::XXPath.new("foo//bar").all(@d.root).map{|node|node.text.strip}
+    assert_equal ["bar2","bar3","bar4","bar5","bar5"],
+                 XML::XXPath.new("//foo//bar").all(@d.root).map{|node|node.text.strip}
+    assert_equal ["z"],
+                 XML::XXPath.new("//bar//foo").all(@d.root).map{|node|node.text.strip}
+    assert_equal ["bar2","bar3","quux1"],
+                 XML::XXPath.new("//@barkey").all(@d.root).map{|node|node.parent.text.strip}
+  end
+  
 
   def test_read_first
     assert_equal @d.root.elements[3].elements[1], XML::XXPath.new("foo[2]/u").first(@d.root)
