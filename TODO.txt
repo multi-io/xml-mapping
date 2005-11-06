@@ -1,8 +1,5 @@
-- XML::XXPath: provide "//..." paths (match anywhere in the
-  sub-hierarchy) and allow them in node path expressions. Paths
-  containing "//" are decidedly read-only. Raise meaningful exceptions
-  if the user tries to convert a Ruby object containing such nodes to
-  XML
+- XML::XXPath: avoid duplicates in path.all(node) result arrays when
+  using the descendants ("//") axis
 
 - XML::XXPath: generalize foo[@x='bar'] to foo[<any XPath
   expression>='bar'] (unless create/create_new implementation proves
