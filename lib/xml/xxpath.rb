@@ -48,7 +48,7 @@ module XML
         prev_reader = @reader_proc
         step = Step.compile(part)
         @creator_procs << curr_creator = proc {|node,create_new|
-          raise "can't create axis: #{axis}" unless axis==:child or axis==:self
+          raise XXPathError, "can't create axis: #{axis}" unless axis==:child or axis==:self
           prev_creator.call(step.create_on(node,create_new),
                             create_new)
         }

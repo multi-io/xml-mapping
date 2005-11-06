@@ -206,6 +206,23 @@ class XPathTest < Test::Unit::TestCase
   end
 
 
+  def test_write_descendant
+    assert_equal @d.root.elements[3].elements[2].elements[2],
+                 node1 = XML::XXPath.new("//bar[@barkey='hello']//quux").first(@d.root,:ensure_created=>true)
+    node1 = XML::XXPath.new("//bar[@barkey='hello']/hiho").first(@d.root,:ensure_created=>true)
+    assert_equal "hiho", node1.name
+    assert_equal @d.root.elements[3].elements[2], node1.parent
+
+    node1 = XML::XXPath.new("/foo//quux/new").first(@d.root,:ensure_created=>true)
+    assert_equal "new", node1.name
+    assert_equal @d.root.elements[3].elements[2].elements[2], node1.parent
+
+    assert_raises(XML::XXPathError) {
+      XML::XXPath.new("//bar[@barkey='hello']//new2").first(@d.root,:ensure_created=>true)
+    }
+  end
+
+
   def test_write_bythisnode
     s1 = @d.elements[1].elements.size
     s2 = @d.elements[1].elements[1].elements.size
