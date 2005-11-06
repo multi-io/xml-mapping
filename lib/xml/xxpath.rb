@@ -44,31 +44,9 @@ module XML
                end
         axis=:self if axis==:child and part=='.'   # TODO: verify
 
-        prev_creator = @creator_procs[-1]
-        prev_reader = @reader_proc
-        step = Step.compile(part)
-        @creator_procs << curr_creator = proc {|node,create_new|
-          raise XXPathError, "can't create axis: #{axis}" unless axis==:child or axis==:self
-          prev_creator.call(step.create_on(node,create_new),
-                            create_new)
-        }
-        @reader_proc = proc {|nodes|
-          next_nodes = []
-          each_on_axis(axis,nodes) do |subnode|
-            next_nodes << subnode if step.matches(subnode)
-          end
-          if (next_nodes == [])
-            throw :not_found, [nodes,curr_creator]
-          else
-            prev_reader.call(next_nodes)
-          end
-        }
-
-        # TODO: move proc creation to the Step class as well, providing the
-        #  above implementations as default and giving Step subclasses the
-        #  possibility to provide their own, thereby improving performance (atm
-        #  XXPath with the child ("/") is probably significantly slower than
-        #  it was in xml-mapping 0.8)
+        step = Step.compile(axis,part)
+        @creator_procs << step.creator(@creator_procs[-1])
+        @reader_proc = step.reader(@reader_proc, @creator_procs[-1])
       end
     end
 
@@ -132,18 +110,6 @@ module XML
       first(base_node,:create_new=>true)
     end
 
-
-    private
-
-    def each_on_axis(axis,nodes,&block)  #:nodoc:
-      nodes.each do |node|
-        if node.respond_to? :each_on_axis
-          node.each_on_axis(axis) do |subnode|
-            block.call(subnode)
-          end
-        end
-      end
-    end
   end
 
 end

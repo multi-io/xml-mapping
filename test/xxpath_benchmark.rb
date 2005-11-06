@@ -90,13 +90,11 @@ path_by_name = XML::XXPath.new("foo/bar/foo/bar")
 path_by_idx = XML::XXPath.new("foo/bar[5]")    # "bar6"
 path_by_idx_idx = XML::XXPath.new("foo/bar[3]/bar[4]")    # "bar4-6"
 path_by_attr_idx = XML::XXPath.new("foo/bar[@barkey='subtree']/bar[4]")    # "bar4-6"
-path_by_attr = XML::XXPath.new("@rootkey")    # "rootkeyval"
-path_by_attr2 = XML::XXPath.new("@key")    # "xy"
+path_by_attr = XML::XXPath.new("@key")    # "xy"
 
 rootelt = d.root
 foo2elt = rootelt.elements[3]
-res5 = path_by_attr.first(rootelt)
-res1=res2=res3=res4=res5=res6=nil
+res1=res2=res3=res4=res5=nil
 count=100
 print "(#{count} runs)\n"
 bmbm(12) do |x|
@@ -104,8 +102,7 @@ bmbm(12) do |x|
   x.report("by_idx") { count.times { res2 = path_by_idx.first(rootelt) } }
   x.report("by_idx_idx") { count.times { res3 = path_by_idx_idx.first(rootelt) } }
   x.report("by_attr_idx") { count.times { res4 = path_by_attr_idx.first(rootelt) } }
-  x.report("path_by_attr") { count.times { res5 = path_by_attr.first(rootelt) } }
-  x.report("path_by_attr2") { count.times { res6 = path_by_attr2.first(foo2elt) } }
+  x.report("path_by_attr") { (count*4).times { res5 = path_by_attr.first(foo2elt) } }
 end
 
 
@@ -117,5 +114,4 @@ assert_equal "bar4-2", res1.text.strip
 assert_equal "bar6", res2.text.strip
 assert_equal "bar4-6", res3.text.strip
 assert_equal "bar4-6", res4.text.strip
-assert_equal "rootkeyval", res5.text.strip
-assert_equal "xy", res6.text.strip
+assert_equal "xy", res5.text.strip

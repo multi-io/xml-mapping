@@ -1,28 +1,92 @@
 module XML
   class XXPath
 
-    class Step
+    # base class for XPath "steps". Steps contain an "axis" (e.g.
+    # "/", "//", i.e. the "child" resp. "descendants" axis), and
+    # a "node matcher" like "foo" or "@bar" or "foo[@bar='baz']", i.e. they
+    # match some XML nodes and don't match others (e.g. "foo[@bar='baz']"
+    # macthes all XML element nodes named "foo" that contain an attribute
+    # with name "bar" and value "baz").
+    #
+    # Steps can find out whether they match a given XML node
+    # (Step#matches(node)), and they know how to create a matchingnode
+    # on a given base node (Step#create_on(node,create_new)).
+    class Step #:nodoc:
       def self.inherited(subclass)
         (@subclasses||=[]) << subclass
       end
 
-      def self.compile string
+      # create and return an instance of the right Step subclass for
+      # axis _axis_ (:child or :descendant atm.) and node matcher _string_
+      def self.compile axis, string
         (@subclasses||=[]).each do |sc|
-          obj = sc.compile string
+          obj = sc.compile axis, string
           return obj if obj
         end
         raise XXPathError, "can't compile XPath step: #{string}"
       end
+
+      def initialize axis
+        @axis = axis
+      end
+
+      # return a proc that takes a list of nodes, finds all sub-nodes
+      # that are reachable from one of those nodes via _self_'s axis
+      # and match (Step#matches) _self_'s node matcher, and calls
+      # _prev_reader_ on them (and returns the result).  When the proc
+      # doesn't find any such nodes, it throws <tt>:not_found,
+      # [nodes,creator_from_here]</tt>.
+      #
+      # Needed for compiling whole XPath expressions for reading.
+      #
+      # <tt>Step</tt> itself provides a generic default
+      # implementation, subclasses may provide specialized
+      # implementations for better performance.
+      def reader(prev_reader,creator_from_here)
+        proc {|nodes|
+          next_nodes = []
+          nodes.each do |node|
+            if node.respond_to? :each_on_axis
+              node.each_on_axis(@axis) do |subnode|
+                next_nodes << subnode if self.matches(subnode)
+              end
+            end
+          end
+          if (next_nodes.empty?)
+            throw :not_found, [nodes,creator_from_here]
+          else
+            prev_reader.call(next_nodes)
+          end
+        }
+      end
+
+      # return a proc that takes a node, creates a sub-node matching
+      # _self_ on it, and then calls _prev_creator_ on that and
+      # returns the result.
+      #
+      # Needed for compiling whole XPath expressions for writing.
+      #
+      # <tt>Step</tt> itself provides a generic default
+      # implementation, subclasses may provide specialized
+      # implementations for better performance.
+      def creator(prev_creator)
+        proc {|node,create_new|
+          raise XXPathError, "can't create axis: #{@axis}" unless @axis==:child or @axis==:self
+          prev_creator.call(self.create_on(node,create_new),
+                            create_new)
+        }
+      end
     end
 
 
-    class NameAndAttrStep < Step
-      def self.compile string
+    class NameAndAttrStep < Step #:nodoc:
+      def self.compile axis, string
         /^(.*?)\[@(.*?)='(.*?)'\]$/ === string or return nil
-        self.new $1,$2,$3
+        self.new axis,$1,$2,$3
       end
 
-      def initialize(name,attr_name,attr_value)
+      def initialize(axis,name,attr_name,attr_value)
+        super(axis)
         @name,@attr_name,@attr_value = name,attr_name,attr_value
       end
 
@@ -45,13 +109,14 @@ module XML
     end
 
 
-    class NameAndIndexStep < Step
-      def self.compile string
+    class NameAndIndexStep < Step #:nodoc:
+      def self.compile axis, string
         /^(.*?)\[(\d+)\]$/ === string or return nil
-        self.new $1,$2.to_i
+        self.new axis,$1,$2.to_i
       end
 
-      def initialize(name,index)
+      def initialize(axis,name,index)
+        super(axis)
         @name,@index = name,index
       end
 
@@ -71,16 +136,37 @@ module XML
         end
         newnode
       end
+
+      def reader(prev_reader,creator_from_here)
+        if @axis==:child
+          index = @index - 1
+          proc {|nodes|
+            next_nodes = []
+            nodes.each do |node|
+              byname=node.elements.select{|elt| elt.name==@name}
+              next_nodes << byname[index] if index<byname.size
+            end
+            if (next_nodes.empty?)
+              throw :not_found, [nodes,creator_from_here]
+            else
+              prev_reader.call(next_nodes)
+            end
+          }
+        else
+          super(prev_reader,creator_from_here)
+        end
+      end
     end
 
 
-    class AttrNameStep < Step
-      def self.compile string
+    class AttrNameStep < Step #:nodoc:
+      def self.compile axis, string
         /^@(.*)$/ === string or return nil
-        self.new $1
+        self.new axis,$1
       end
 
-      def initialize(attr_name)
+      def initialize(axis,attr_name)
+        super(axis)
         @attr_name = attr_name
       end
 
@@ -94,13 +180,32 @@ module XML
         end
         XML::XXPath::Accessors::Attribute.new(node,@attr_name,true)
       end
+
+      def reader(prev_reader,creator_from_here)
+        if @axis==:child
+          proc {|nodes|
+            next_nodes = []
+            nodes.each do |node|
+              attr=XML::XXPath::Accessors::Attribute.new(node,@attr_name,false)
+              next_nodes << attr if attr
+            end
+            if (next_nodes.empty?)
+              throw :not_found, [nodes,creator_from_here]
+            else
+              prev_reader.call(next_nodes)
+            end
+          }
+        else
+          super(prev_reader,creator_from_here)
+        end
+      end
     end
 
 
-    class AllElementsStep < Step
-      def self.compile string
+    class AllElementsStep < Step #:nodoc:
+      def self.compile axis, string
         '*'==string or return nil
-        self.new
+        self.new axis
       end
 
       def matches node
@@ -115,10 +220,10 @@ module XML
     end
 
 
-    class ThisNodeStep < Step
-      def self.compile string
+    class ThisNodeStep < Step #:nodoc:
+      def self.compile axis, string
         '.'==string or return nil
-        self.new
+        self.new axis
       end
 
       def matches node
@@ -134,12 +239,13 @@ module XML
     end
 
 
-    class NameStep < Step
-      def self.compile string
-        self.new string
+    class NameStep < Step #:nodoc:
+      def self.compile axis, string
+        self.new axis,string
       end
 
-      def initialize(name)
+      def initialize(axis,name)
+        super(axis)
         @name = name
       end
 
