@@ -12,3 +12,4 @@ XML::Mapping.add_node_class XML::Mapping::ObjectNode
 XML::Mapping.add_node_class XML::Mapping::BooleanNode
 XML::Mapping.add_node_class XML::Mapping::ArrayNode
 XML::Mapping.add_node_class XML::Mapping::HashNode
+XML::Mapping.add_node_class XML::Mapping::ChoiceNode

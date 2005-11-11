@@ -340,6 +340,52 @@ module XML
       end
     end
 
+
+    class ChoiceNode < Node
+
+      def initialize(owner,*args)
+        super(owner,*args)
+        args=args[0..-2] if Hash===args[-1]  # TODO: contains knowledge about superclass internals...
+        @choices = []
+        path=nil
+        args.each do |arg|
+          next if [:if,:then,:elsif].include? arg
+          if path.nil?
+            path = (if [:else,:default].include? arg
+                      :else
+                    else
+                      XML::XXPath.new arg
+                    end)
+          else
+            raise XML::MappingError, "node expected, found: #{arg.inspect}" unless Node===arg
+            @choices << [path,arg]
+            path=nil
+          end
+        end
+
+        raise XML::MappingError, "node missing at end of argument list" unless path.nil?
+        raise XML::MappingError, "no choices were supplied" if @choices.empty?
+      end
+
+      def xml_to_obj(obj,xml)
+        @choices.each do |path,node|
+          if path==:else or not(path.all(xml).empty?)
+            node.xml_to_obj(obj,xml)
+            return
+          end
+        end
+        raise XML::MappingError, "no choice matched in: #{xml}"
+      end
+
+      def obj_to_xml(obj,xml)
+        @choices[0][1].obj_to_xml(obj,xml)
+      end
+
+      def obj_initializing(obj,mapping)
+        @choices[0][1].obj_initializing(obj,mapping)
+      end
+    end
+
   end
 
 end
