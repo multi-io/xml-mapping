@@ -4,6 +4,7 @@ require 'xml/mapping'
 class Address; end
 class Office; end
 class Customer; end
+class Thing; end
 
 
 class Company
@@ -21,6 +22,7 @@ class Company
   text_node :ent3, "arrtest/entry[3]"
 
   array_node :stuff, "stuff", "*"
+  array_node :things, "stuff2", "thing", :class=>Thing
 end
 
 
@@ -51,4 +53,13 @@ class Customer
 
   text_node :uid, "@uid"
   text_node :name, "name"
+end
+
+
+class Thing
+  include XML::Mapping
+
+  choice_node 'name',  (text_node :name, 'name'),
+              '@name', (text_node :name, '@name'),
+              :else,   (text_node :name, '.')
 end

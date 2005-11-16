@@ -82,4 +82,13 @@
         </address>
       </office>
     </stuff>
+
+    <stuff2>
+      <thing name="name1"/>
+      <thing>
+        <name>name2</name>
+      </thing>
+      <thing>name3</thing>
+      <thing name="name4-attr">name4-inline<name>name4-elt</name></thing>
+    </stuff2>
 </company>

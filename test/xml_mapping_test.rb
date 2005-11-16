@@ -2,6 +2,7 @@ require File.dirname(__FILE__)+"/tests_init"
 
 require 'test/unit'
 require 'company'
+require 'xml/xxpath_methods'
 
 module XML::Mapping
   def ==(other)
@@ -51,7 +52,17 @@ class XmlMappingTest < Test::Unit::TestCase
       assert_equal exp, @c.customers[ckey].uid
     end
   end
-  
+
+
+  def test_getter_choice_node
+    assert_equal 4, @c.things.size
+    assert_equal "name1", @c.things[0].name
+    assert_equal "name2", @c.things[1].name
+    assert_equal "name3", @c.things[2].name
+    assert_equal "name4-elt", @c.things[3].name
+  end
+
+
   def test_getter_array_node
     assert_equal ["pencils", "weapons of mass destruction"],
           @c.offices.map{|o|o.speciality}
@@ -83,6 +94,17 @@ class XmlMappingTest < Test::Unit::TestCase
     xml=@c.save_to_xml
     assert_equal @c.offices[0].classified,
            XML::XXPath.new("offices/office[1]/classified").first(xml).text == "yes"
+  end
+
+
+  def test_setter_choice_node
+    xml=@c.save_to_xml
+    thingselts = xml.all("stuff2/thing")
+    assert_equal @c.things.size, thingselts.size
+    assert_equal @c.things[0].name, thingselts[0].first("name").text
+    assert_equal @c.things[1].name, thingselts[1].first("name").text
+    assert_equal @c.things[2].name, thingselts[2].first("name").text
+    assert_equal @c.things[3].name, thingselts[3].first("name").text
   end
 
 

@@ -359,6 +359,14 @@ module XML
           else
             raise XML::MappingError, "node expected, found: #{arg.inspect}" unless Node===arg
             @choices << [path,arg]
+
+            # undo what the node factory fcn did -- ugly ugly!  would
+            # need some way to lazy-evaluate arg (a proc would be
+            # simple but ugly for the user), and then use some
+            # mechanism (a flag with dynamic scope probably) to tell
+            # the node factory fcn not to add the node to the
+            # xml_mapping_nodes
+            @owner.xml_mapping_nodes(:mapping=>@mapping).delete arg 
             path=nil
           end
         end
