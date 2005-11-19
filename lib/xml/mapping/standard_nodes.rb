@@ -122,6 +122,8 @@ module XML
       end
     end
 
+    require 'xml/mapping/core_classes_mapping'
+
     # Node factory function synopsis:
     # 
     #   object_node :_attrname_, _path_ [, :default_value=>_obj_]
@@ -382,11 +384,18 @@ module XML
             return
           end
         end
-        raise XML::MappingError, "no choice matched in: #{xml}"
+        raise XML::MappingError, "xml_to_obj: no choice matched in: #{xml}"
       end
 
       def obj_to_xml(obj,xml)
-        @choices[0][1].obj_to_xml(obj,xml)
+        @choices.each do |path,node|
+          if node.is_present_in obj
+            node.obj_to_xml(obj,xml)
+            return
+          end
+        end
+        # @choices[0][1].obj_to_xml(obj,xml)
+        raise XML::MappingError, "obj_to_xml: no choice present in object: #{obj.inspect}"
       end
 
       def obj_initializing(obj,mapping)

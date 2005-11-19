@@ -95,7 +95,7 @@ path_by_attr = XML::XXPath.new("@key")    # "xy"
 rootelt = d.root
 foo2elt = rootelt.elements[3]
 res1=res2=res3=res4=res5=nil
-count=100
+count=500
 print "(#{count} runs)\n"
 bmbm(12) do |x|
   x.report("by_name") { count.times { res1 = path_by_name.first(rootelt) } }

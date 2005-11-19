@@ -23,6 +23,8 @@ class XmlMappingTest < Test::Unit::TestCase
     Object.send(:remove_const, "Address")
     Object.send(:remove_const, "Office")
     Object.send(:remove_const, "Customer")
+    Object.send(:remove_const, "Thing")
+    Object.send(:remove_const, "Names1")
     $".delete "company.rb"
     $:.unshift File.dirname(__FILE__)  # test/unit may have undone this (see test/unit/collector/dir.rb)
     require 'company'
@@ -60,6 +62,27 @@ class XmlMappingTest < Test::Unit::TestCase
     assert_equal "name2", @c.things[1].name
     assert_equal "name3", @c.things[2].name
     assert_equal "name4-elt", @c.things[3].name
+  end
+
+
+  def test_getter_choice_node_multiple_attrs
+    d = REXML::Document.new <<-EOS
+    <names1>
+      <names>
+        <name>multi1</name>
+        <name>multi2</name>
+      </names>
+      <name>single</name>
+    </names1>
+    EOS
+    n1 = Names1.load_from_xml d.root
+    assert_equal "single", n1.name
+    assert_nil n1.names
+
+    d.root.delete_element "name"
+    n1 = Names1.load_from_xml d.root
+    assert_nil n1.name
+    assert_equal ["multi1","multi2"], n1.names
   end
 
 
@@ -105,6 +128,24 @@ class XmlMappingTest < Test::Unit::TestCase
     assert_equal @c.things[1].name, thingselts[1].first("name").text
     assert_equal @c.things[2].name, thingselts[2].first("name").text
     assert_equal @c.things[3].name, thingselts[3].first("name").text
+  end
+
+
+  def test_setter_choice_node_multiple_attrs
+    n1 = Names1.new
+    assert_raises(XML::MappingError) {
+      n1.save_to_xml   # no choice present in n1
+    }
+
+    n1.names = ["multi1","multi2"]
+    xml = n1.save_to_xml
+    assert_equal n1.names, xml.all("names/name").map{|elt|elt.text}
+    assert_nil xml.first("name", :allow_nil=>true)
+
+    n1.name = "foo"
+    xml = n1.save_to_xml
+    assert_equal [], xml.all("names/name").map{|elt|elt.text}
+    assert_equal n1.name, xml.first("name", :allow_nil=>true).text
   end
 
 

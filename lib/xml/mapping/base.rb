@@ -307,6 +307,14 @@ module XML
       # responsible for here. Default implementation is empty.
       def obj_initializing(obj,mapping)
       end
+      # tell whether this node's data is present in _obj_ (when this
+      # method is called, _obj_ will be an instance of the mapping
+      # class this node was defined in). This method is currently used
+      # only by ChoiceNode when writing data back to XML. See
+      # ChoiceNode#obj_to_xml.
+      def is_present_in obj
+        true
+      end
     end
 
 
@@ -445,6 +453,11 @@ module XML
         rescue XML::XXPathError => err
           raise NoAttrValueSet, "Attribute #{@attrname} not set (XXPathError: #{err})"
         end
+      end
+      # (overridden) returns true if and only if the value of this
+      # node's attribute in _obj_ is non-nil.
+      def is_present_in obj
+        nil != obj.send(:"#{@attrname}")
       end
     end
 

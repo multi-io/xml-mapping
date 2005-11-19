@@ -63,3 +63,11 @@ class Thing
               '@name', (text_node :name, '@name'),
               :else,   (text_node :name, '.')
 end
+
+
+class Names1
+  include XML::Mapping
+
+  choice_node :if,    'name',       :then, (text_node :name, 'name'),
+              :elsif, 'names/name', :then, (array_node :names, 'names', 'name', :class=>String)
+end
