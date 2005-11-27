@@ -213,9 +213,9 @@ module XML
       end
 
       def create_on(node,create_new)
-        node = node.elements.add
-        node.unspecified = true
-        node
+        newnode = node.elements.add
+        newnode.unspecified = true
+        newnode
       end
     end
 
@@ -235,6 +235,32 @@ module XML
           raise XXPathError, "XPath: .: create_new and attribute already exists"
         end
         node
+      end
+    end
+
+
+    class AlternativeNamesStep < Step #:nodoc:
+      def self.compile axis, string
+        if string=~/\|/
+          self.new axis, string.split('|')
+        else
+          nil
+        end
+      end
+
+      def initialize(axis,names)
+        super(axis)
+        @names = names
+      end
+
+      def matches node
+        node.class==REXML::Element and @names.inject(false){|prev,name| prev or node.name==name}
+      end
+
+      def create_on(node,create_new)
+        newnode = node.elements.add
+        newnode.unspecified = true
+        newnode
       end
     end
 

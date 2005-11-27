@@ -108,6 +108,12 @@ class XPathTest < Test::Unit::TestCase
   end
 
 
+  def test_read_alternative_names
+    assert_equal ["bar3","quux1","bar4"],
+                 XML::XXPath.new("foo/bar/bar|quux").all(@d.root).map{|node|node.text.strip}
+  end
+
+
   def test_read_descendant
     assert_equal ["bar1","bar2","bar3","bar4","bar5"],
                  XML::XXPath.new("//bar").all(@d.root).map{|node|node.text.strip}
@@ -203,6 +209,15 @@ class XPathTest < Test::Unit::TestCase
     assert_equal 5, @d.root.elements.size
     assert_equal @d.root.elements[5], node4
     assert_equal 'foo42', node4.attributes['blubb']
+  end
+
+
+  def test_write_alternative_names
+    node = XML::XXPath.new("foo/bar/bar|quux").first(@d.root,:ensure_created=>true)
+    assert_equal XML::XXPath.new("foo/bar/bar").first(@d.root), node
+
+    node = XML::XXPath.new("foo/bar/bar|quux").create_new(@d.root)
+    assert node.unspecified?
   end
 
 
