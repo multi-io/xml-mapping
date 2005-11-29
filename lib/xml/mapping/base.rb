@@ -127,17 +127,38 @@ module XML
       nil
     end
 
-    def initialize_xml_mapping(options={:mapping=>nil})  #:nodoc:
+    # Xml-mapping-specific initializer.
+    #
+    # This will be called when a new instance is being initialized
+    # from an XML source, as well as after calling _class_._new_(args)
+    # (for the latter case to work, you'll have to make sure you call
+    # the inherited _initialize_ method)
+    #
+    # The :mapping keyword argument gives the mapping the instance is
+    # being initialized with. The is non-nil only when the instance is
+    # being initialized from an XML source (:mapping will contain the
+    # :mapping argument passed (explicitly or implicitly) to the
+    # load_from_... method).
+    #
+    # When the instance is being initialized because _class_._new_ was
+    # called, the :mapping argument is set to nil to show that the
+    # object is being initialized with respect to no specific mapping.
+    #
+    # The default implementation of this method calls
+    # obj_initializing(self) on all nodes. You may overwrite this
+    # method to do your own initialization stuff; make sure to call
+    # +super+ in that case.
+    def initialize_xml_mapping(options={:mapping=>nil})
       self.class.all_xml_mapping_nodes(:mapping=>options[:mapping]).each do |node|
         node.obj_initializing(self,options[:mapping])
       end
     end
 
-    # private :initialize_xml_mapping
-
-    # Initializer. Calls obj_initializing(self) on all nodes. You
-    # should call this using +super+ in your mapping classes to
-    # inherit this behaviour.
+    # Initializer. Called (by Class#new) after _self_ was created
+    # using _new_. Not called when _self_ was created from an XML source
+    # using load_from_file/load_from_xml (see #initialize_xml_mapping).
+    #
+    # XML::Mapping's implementation calls #initialize_xml_mapping.
     def initialize(*args)
       initialize_xml_mapping
     end
