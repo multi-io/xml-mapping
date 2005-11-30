@@ -23,6 +23,8 @@ class Company
 
   array_node :stuff, "stuff", "*"
   array_node :things, "stuff2", "thing", :class=>Thing
+
+  object_node :test_default_value_identity, "dummy", :default_value => ["default"]
 end
 
 

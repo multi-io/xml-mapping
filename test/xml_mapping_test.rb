@@ -230,6 +230,25 @@ class XmlMappingTest < Test::Unit::TestCase
   end
 
 
+  def test_default_value_identity_on_initialize
+    c = Company.new
+    assert_equal ["default"], c.test_default_value_identity
+    c.test_default_value_identity << "foo"
+
+    c2 = Company.new
+    assert_equal ["default"], c2.test_default_value_identity
+  end
+
+
+  def test_default_value_identity_on_load
+    assert_equal ["default"], @c.test_default_value_identity
+    @c.test_default_value_identity << "bar"
+
+    c2 = Company.load_from_file(File.dirname(__FILE__) + "/fixtures/company1.xml")
+    assert_equal ["default"], c2.test_default_value_identity
+  end
+
+
   def test_polymorphic_node
     assert_equal 3, @c.stuff.size
     assert_equal 'Saddam Hussein', @c.stuff[0].name

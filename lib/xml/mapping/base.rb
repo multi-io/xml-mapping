@@ -423,7 +423,11 @@ module XML
           unless @options.has_key? :default_value
             raise XML::MappingError, "no value, and no default value: #{err}"
           end
-          obj.send :"#{@attrname}=", @options[:default_value]
+          begin
+            obj.send :"#{@attrname}=", @options[:default_value].clone
+          rescue
+            obj.send :"#{@attrname}=", @options[:default_value]
+          end
         end
       end
 
@@ -459,7 +463,11 @@ module XML
       end
       def obj_initializing(obj,mapping)  # :nodoc:
         if @options.has_key?(:default_value) and (mapping==nil || mapping==@mapping)
-          obj.send :"#{@attrname}=", @options[:default_value]
+          begin
+            obj.send :"#{@attrname}=", @options[:default_value].clone
+          rescue
+            obj.send :"#{@attrname}=", @options[:default_value]
+          end
         end
       end
       # utility method to be used by implementations of
