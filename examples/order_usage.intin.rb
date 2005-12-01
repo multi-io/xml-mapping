@@ -4,7 +4,12 @@ begin
   Object.send(:remove_const, "Address")  # name clash with company_usage...
 rescue
 end
-require 'order' #<=
+require 'order'
+
+require 'xml/xxpath_methods'
+
+require 'test/unit/assertions'
+include Test::Unit::Assertions  #<=
 #:visible:
 ####read access
 o=Order.load_from_file("order.xml") #<=
@@ -20,6 +25,17 @@ o.signatures[2].position #<=
 
 o.total_price #<=
 
+#:invisible:
+assert_equal "12343-AHSHE-314159", o.reference
+assert_equal "Jean Smith", o.client.name
+assert_equal "San Francisco", o.client.work_address.city
+assert_equal "San Mateo", o.client.home_address.city
+assert_equal %w{RF-0001 RF-0034 RF-3341}, o.items.keys.sort
+assert_equal ['John Doe','Jill Smith','Miles O\'Brien'], o.signatures.map{|s|s.name}
+assert_equal 2575, (10 * o.total_price).round
+#<=
+#:visible:
+
 ####write access
 o.client.name="James T. Kirk"
 o.items['RF-4711'] = Item.new
@@ -34,8 +50,17 @@ o.signatures << s
 xml=o.save_to_xml #convert to REXML node; there's also o.save_to_file(name) #<=
 #:invisible_retval:
 xml.write($stdout,2) #<=
-#:visible_retval:
 
+#:invisible:
+assert_equal %w{RF-0001 RF-0034 RF-3341 RF-4711}, xml.all("Item/@reference").map{|x|x.text}.sort
+assert_equal ['John Doe','Jill Smith','Miles O\'Brien','Harry Smith'],
+             xml.all("Signed-By/Signature/Name").map{|x|x.text}
+#<=
+#:visible:
+
+
+#<=
+#:visible_retval:
 ####Starting a new order from scratch
 o = Order.new #<=
 ## attributes with default values (here: signatures) are set
@@ -65,9 +90,9 @@ o.items['XY-42'].unit_price = 299.95
 #:invisible_retval:
 o.save_to_xml.write($stdout,2)
 #<=
-#:visible_retval:
+
 
 ## the root element name when saving an object to XML will by default
 ## be derived from the class name (in this example, "Order" became
 ## "order"). This can be overridden on a per-class basis; see
-## XML::Mapping::ClassMethods#root_element_namefor details.
+## XML::Mapping::ClassMethods#root_element_name for details.
