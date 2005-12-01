@@ -1,10 +1,12 @@
 # -*- ruby -*-
 # adapted from active_record's Rakefile
 
+require 'build_lib/rdoc_ext'
+
 require 'rubygems'
 require 'rake'
 require 'rake/testtask'
-require 'rake/rdoctask'
+require 'build_lib/my_rdoctask'
 require 'rake/packagetask'
 require 'rake/gempackagetask'
 #require 'rake/contrib/rubyforgepublisher'
@@ -14,10 +16,6 @@ require File.dirname(__FILE__)+"/lib/xml/mapping/version"
 
 
 # yeah -- it's just stupid that these are private
-
-class Rake::RDocTask
-  public :rdoc_target
-end
 
 class Rake::PackageTask
   public :tgz_file, :zip_file
@@ -32,14 +30,24 @@ FILES_RDOC_EXTRA=%w{README README_XPATH TODO.txt doc/xpath_impl_notes.txt}
 FILES_RDOC_INCLUDES=%w{examples/company.xml
                        examples/company.rb
                        examples/company_usage.intout
+                       examples/order.xml
+                       examples/order.rb
                        examples/order_usage.intout
+                       examples/stringarray_usage.intout
+                       examples/stringarray.xml
+                       examples/documents_folders_usage.intout
+                       examples/documents_folders.xml
+                       examples/time_node_w_marshallers.intout
+                       examples/time_node_w_marshallers.xml
                        examples/time_augm.intout
                        examples/xpath_usage.intout
                        examples/xpath_ensure_created.intout
                        examples/xpath_create_new.intout
                        examples/xpath_pathological.intout
                        examples/xpath_docvsroot.intout
-                       examples/order_signature_enhanced_usage.intout}
+                       examples/order_signature_enhanced_usage.intout
+                       examples/order_signature_enhanced.xml
+                      }
 
 
 desc "Default Task"
@@ -60,10 +68,10 @@ end
 
 
 
-Rake::RDocTask.new { |rdoc|
+MyRDocTask.new { |rdoc|
   rdoc.rdoc_dir = 'doc/api'
   rdoc.title    = "XML::Mapping -- Simple, extensible Ruby-to-XML (and back) mapper"
-  rdoc.options << '--line-numbers --inline-source --accessor cattr_accessor=object --include examples'
+  rdoc.options += %w{--line-numbers --inline-source --accessor cattr_accessor=object --include examples}
   rdoc.rdoc_files.include(*FILES_RDOC_EXTRA)
   rdoc.rdoc_files.include('lib/**/*.rb')
 
@@ -140,19 +148,16 @@ end
 
 # have to add additional prerequisites manually because it appears
 # that rules can only define a single prerequisite :-\
-for f in %w{examples/company_usage
-            examples/order_usage
-            examples/order_signature_enhanced_usage
-            examples/time_augm
-            examples/xpath_usage
-            examples/xpath_ensure_created
-            examples/xpath_create_new
-            examples/xpath_pathological
-            examples/xpath_docvsroot} do
-  file "#{f}.intout" => ["#{f}.intin.rb", 'examples/company.xml']
-  file "#{f}.intout" => FileList.new("lib/**/*.rb")
-  file "#{f}.intout" => FileList.new("examples/**/*.rb")
+FILES_RDOC_INCLUDES.select{|f|f=~/.intout$/}.each do |f|
+  file f => FileList.new("lib/**/*.rb")
+  file f => FileList.new("examples/**/*.rb")
 end
+
+file 'examples/company_usage.intout' => ['examples/company.xml']
+file 'examples/documents_folders_usage.intout' => ['examples/documents_folders.xml']
+file 'examples/order_signature_enhanced_usage.intout' => ['examples/order_signature_enhanced.xml']
+file 'examples/order_usage.intout' => ['examples/order.xml']
+file 'examples/stringarray_usage.intout' => ['examples/stringarray.xml']
 
 
 spec = Gem::Specification.new do |s|
