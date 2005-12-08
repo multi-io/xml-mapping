@@ -23,7 +23,17 @@ end
 class Folder <Entry
   include XML::Mapping
 
-  array_node :entries, "entries", "*"
+  array_node :entries, "document|folder", :default_value=>[]
+
+  def [](name)
+    entries.select{|e|e.name==name}[0]
+  end
+
+  def append(name,entry)
+    entries << entry
+    entry.name = name
+    entry
+  end
 
   def ==(other)
     Folder===other and

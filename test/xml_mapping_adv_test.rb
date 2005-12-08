@@ -7,6 +7,12 @@ require 'yaml'
 
 class XmlMappingAdvancedTest < Test::Unit::TestCase
   def setup
+    XML::Mapping.module_eval <<-EOS
+      Classes_by_rootelt_names.clear
+    EOS
+    Object.send(:remove_const, "Document")
+    Object.send(:remove_const, "Folder")
+
     $".delete "documents_folders.rb"
     $".delete "bookmarks.rb"
     require 'documents_folders'
@@ -39,6 +45,30 @@ class XmlMappingAdvancedTest < Test::Unit::TestCase
     EOS
   end
 
+  def test_write_polymorphic_object
+    xml = @f.save_to_xml
+    assert_equal "folder", xml.name
+    assert_equal "home", xml.elements[1].text
+    assert_equal "document", xml.elements[2].name
+    assert_equal "folder", xml.elements[3].name
+    assert_equal "name", xml.elements[3].elements[1].name
+    assert_equal "folder", xml.elements[3].elements[2].name
+    assert_equal "foo bar baz", xml.elements[3].elements[2].elements[2].elements[2].text
+
+    @f.append "etc", Folder.new
+    @f["etc"].append "passwd", Document.new
+    @f["etc"]["passwd"].contents = "foo:x:2:2:/bin/sh"
+    @f["etc"].append "hosts", Document.new
+    @f["etc"]["hosts"].contents = "127.0.0.1 localhost"
+
+    xml = @f.save_to_xml
+
+    xmletc = xml.elements[4]
+    assert_equal "etc", xmletc.elements[1].text
+    assert_equal "document", xmletc.elements[2].name
+    assert_equal "passwd", xmletc.elements[2].elements[1].text
+    assert_equal "foo:x:2:2:/bin/sh", xmletc.elements[2].elements[2].text
+  end
 
   def test_read_bookmars1_2
      expected = BMFolder.new{|x|

@@ -4,7 +4,6 @@
 <folder>
   <name>home</name>
 
-  <entries>
     <document>
       <name>plan</name>
       <contents>
@@ -16,11 +15,9 @@
     <folder>
       <name>work</name>
 
-      <entries>
         <folder>
           <name>xml-mapping</name>
 
-          <entries>
             <document>
               <name>README</name>
               <contents>
@@ -34,7 +31,6 @@
                 rake away
               </contents>
             </document>
-          </entries>
         </folder>
 
         <document>
@@ -44,14 +40,12 @@
              4:00 PM appointment
           </contents>
         </document>
-      </entries>
     </folder>
 
 
     <folder>
       <name>books</name>
 
-      <entries>
         <document>
           <name>The Hitchhiker's Guide to the Galaxy</name>
           <contents>
@@ -64,8 +58,6 @@
             The Pragmatic Programmer's Guide
           </contents>
         </document>
-      </entries>
     </folder>
 
-  </entries>
 </folder>
