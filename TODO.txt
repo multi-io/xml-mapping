@@ -5,16 +5,40 @@
   expression>='bar'] (unless create/create_new implementation proves
   to be too difficult, but I don't think it will...)
 
-- XML::XXPath: provide "." path element
+- invent an XPath-like language for Ruby object trees (i.e. a language
+  that is to Ruby object trees what XPath is to XML trees). Use
+  expressions in that language as a generalization of "attribute
+  names" (e.g. the 1st parameter to single attribute node factory
+  methods). The language could more or less be Ruby itself, but the
+  write support could need some extra work...
 
 - documentation:
 
   - README:
 
-    - multi-attribute nodes
+    - 
 
-- XML::Mapping/default attribute values: Update documentation, digest
-  "nil" issues...
+    - multiple mappings per mapping class
+
+    - multi-attribute nodes, :writer/:reader (TODO: impl)
+
+      - using :writer/:reader in nodes other than Node to
+        shortcut/deactivate parts of their functionality
+
+    - new XML::XXPath features, incl. issues when writing (solution:
+      use :writer)
+
+    - document/show usage of default_when_xpath_err outside node type
+      implementations
+
+  - README_XPATH:
+
+    - mention new step types, new axes, xml/xpath_methods
+
+
+- XML::XXPath/XML::Mapping: support for XML namespaces in XML::XXPath
+  (match nodes with specific namespaces only) and XML::Mapping
+  (use_namespace etc.)
 
 - add streaming input/output to XML::Mapping, i.e. SAX-based input in
   addition to the current REXML/DOM - based one. Probably won't be
