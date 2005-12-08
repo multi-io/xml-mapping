@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<folder name="home">
+  <document name="plan">
+    <contents> inhale, exhale</contents>
+  </document>
+
+  <folder name="work">
+    <folder name="xml-mapping">
+      <document name="README">
+        <contents>foo bar baz</contents>
+      </document>
+    </folder>
+  </folder>
+
+</folder>
