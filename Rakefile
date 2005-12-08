@@ -40,6 +40,7 @@ FILES_RDOC_INCLUDES=%w{examples/company.xml
                        examples/time_node_w_marshallers.intout
                        examples/time_node_w_marshallers.xml
                        examples/time_augm.intout
+                       examples/time_augm_loading.intout
                        examples/xpath_usage.intout
                        examples/xpath_ensure_created.intout
                        examples/xpath_create_new.intout
@@ -47,6 +48,7 @@ FILES_RDOC_INCLUDES=%w{examples/company.xml
                        examples/xpath_docvsroot.intout
                        examples/order_signature_enhanced_usage.intout
                        examples/order_signature_enhanced.xml
+                       examples/person.intout
                       }
 
 

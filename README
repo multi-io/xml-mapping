@@ -16,6 +16,8 @@ http://rubyforge.org/projects/xml-mapping/
   - {Default Values}[aref:defaultvalues]
   - {Single-attribute Nodes with Sub-objects}[aref:subobjnodes]
   - {Attribute Handling Details, Augmenting Existing Classes}[aref:attrdefns]
+- {Other Nodes}[aref:onodes]
+- {Multiple Mappings per Class}[aref:mappings]
 - {Defining your own Node Types}[aref:definingnodes]
 - {XPath Interpreter}[aref:xpath]
 
@@ -339,26 +341,26 @@ the same thing using the XPath interpreter.
 
 It should be mentioned again that :marshaller/:unmarshaller procs are
 possible with all single-attribute nodes with sub-objects, i.e. with
-+object_node+, +array_node+, and +hash_node+. So, if you e.g. wanted
-to map a whole array of date values, you could use +array_node+ with
-the same :marshaller/:unmarshaller procs as above, for example:
++object_node+, +array_node+, and +hash_node+. So, if you wanted to map
+a whole array of date values, you could use +array_node+ with the same
+:marshaller/:unmarshaller procs as above, for example:
 
   array_node :birthdays, "birthdays", "birthday",
              :unmarshaller=> <as above>,
              :marshaller=> <as above>
 
-So, you see that :marshaller/:unmarshaller procs give you more
-flexibility, but they also mean more work because you essentially have
-to do all the work of marshalling/unmarshalling the sub-objects
+You can see that :marshaller/:unmarshaller procs give you more
+flexibility, but they also impose more work because you essentially
+have to do all the work of marshalling/unmarshalling the sub-objects
 yourself. If you find yourself copying and pasting
 marshaller/unmarshaller procs all over the place, you should instead
 define your own node type or mix the marshalling/unmarshalling
 capabilities into the +Time+ class itself. This is explained
-below[aref:definingnodes], and you'll see that it's not really much
-more work than writing :marshaller and :unmarshaller procs (you
-essentially just move the code from those procs into your own node
-type resp. into the +Time+ class), so you should not hesitate to do
-this.
+here[aref:attrdefns] and here[aref:definingnodes], and you'll see that
+it's not really much more work than writing :marshaller and
+:unmarshaller procs (you essentially just move the code from those
+procs into your own node type resp. into the +Time+ class), so you
+should not hesitate to do this.
 
 Another thing worth mentioning is that you don't have to specify
 *both* a :marshaller and an :unmarshaller simultaneously. You can as
@@ -420,23 +422,77 @@ implement the XML::Mapping stuff there, or even derive several such
 classes in order to define more than one XML mapping for one existing
 class.
 
-It should be mentioned that in the +Time+ example above, the setter
-methods (<tt>year=</tt>, <tt>month=</tt> etc.) didn't exist in +Time+
-(+Time+ objects are immutable), so xml-mapping defined its own setter
-methods that just set <tt>@year</tt>, <tt>@month</tt> etc., which is
-pretty useless for this case. So you can't really read +Time+ values
-back from an XML representation in this example. For that to work,
-you'd need functioning <tt>blah=(x)</tt> methods for each +blah+
-attribute that you want to define an XML mapping for.
+So you can convert +Time+ objects into XML trees. What about reading
+them back in from XML? All XML reading operations go through
+<tt><Class>.load_from_xml</tt>. The +load_from_xml+ class method
+inherited from XML::Mapping (see
+XML::Mapping::ClassMethods#load_from_xml) allocates a new instance of
+the class (+Time+), then calls +fill_from_xml+
+(i.e. XML::Mapping#fill_from_xml) on it. +fill_from_xml+ iterates over
+all our nodes in the order of their definition. For each node, its
+data (the <year>, or <month>, or <day> etc. element) is read from the
+XML source and then written to the +Time+ instance via the respective
+setter method (<tt>year=</tt>, <tt>month=</tt>, <tt>day=</tt>
+etc.). These methods didn't exist in +Time+ before (+Time+ objects are
+immutable), so xml-mapping defined its own, default setter methods
+that just set <tt>@year</tt>, <tt>@month</tt> etc. This is of course
+pretty useless because +Time+ objects don't hold their time in these
+variables, so the setter methods don't really change the time of the
++Time+ object. So we have to redefine +load_from_xml+ for the +Time+
+class:
+
+  :include: time_augm_loading.intout
+
+
+== {Other Nodes}[a:onodes]
+
+All nodes I've shown so far (node types text_node, numeric_node,
+boolean_node, object_node, array_node, and hash_node) were
+single-attribute nodes: The first parameter to the node factory method
+of such a node is an attribute name, and the attribute of that name is
+the only piece of the state of instances of the node's mapping class
+that gets read/written by the node.
+
+There is one node type distributed with xml-mapping that is not a
+single-attribute node: +choice_node+. It allows you to specify a
+sequence of pairs, each consisting of an XPath expression and a
+node. When reading in an XML source, the choice_node will invoke the
+node whose corresponding XPath expression was matched in the XML. When
+writing an object back to XML, the choice_node will invoke the first
+node whose data was "present" in the object (for single-attribute
+nodes, the data is considered "present" if the node's attribute is
+non-nil).
+
+As an example, consider a "Person" object where the name of the person
+should be
+
+  :include: person.intout
+
+
+== {Multiple Mappings per Class}[a:mappings]
+
 
 
 == {Defining your own Node Types}[a:definingnodes]
 
 It's easy to write additional node types and register them with the
-xml-mapping library. Let's say we want to extend the +Signature+ class
-from the example to include the time at which the signature was
-created. We want the new XML representation of such a signature to
-look like this:
+xml-mapping library.
+
+  Node
+   +-SingleAttributeNode
+   |  +-SubObjectBaseNode
+   |  |  +-ObjectNode
+   |  |  +-ArrayNode
+   |  |  +-HashNode
+   |  +-TextNode
+   |  +-NumericNode
+   |  +-BooleanNode
+   +-ChoiceNode
+
+
+Let's say we want to extend the +Signature+ class from the example to
+include the time at which the signature was created. We want the new
+XML representation of such a signature to look like this:
 
   :include: order_signature_enhanced.xml
 
