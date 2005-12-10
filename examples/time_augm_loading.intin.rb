@@ -34,11 +34,11 @@ require 'test/unit/assertions'
 include Test::Unit::Assertions
 
 t = Time.now
-nowxml = t.save_to_xml
+t2 = Time.load_from_xml(t.save_to_xml)
 
-assert_equal t.year, nowxml.first("year").text.to_i
-assert_equal t.month, nowxml.first("month").text.to_i
-assert_equal t.day, nowxml.first("mday").text.to_i
-assert_equal t.hour, nowxml.first("hours").text.to_i
-assert_equal t.min, nowxml.first("minutes").text.to_i
-assert_equal t.sec, nowxml.first("seconds").text.to_i
+assert_equal t.year, t2.year
+assert_equal t.month, t2.month
+assert_equal t.day, t2.day
+assert_equal t.hour, t2.hour
+assert_equal t.min, t2.min
+assert_equal t.sec, t2.sec

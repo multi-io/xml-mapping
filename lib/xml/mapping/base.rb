@@ -302,7 +302,12 @@ module XML
       # (using XML::XXPath or any other means) and store it to the
       # corresponding parts (attributes etc.) of _obj_'s state.
       def xml_to_obj(obj,xml)
-        raise "abstract method called"
+        if @options[:reader]
+          @options[:reader].call(obj,xml)
+          true
+        else
+          false
+        end
       end
       # This is called by the XML unmarshalling machinery when the
       # state of an instance of this node's @owner is to be stored
@@ -312,7 +317,12 @@ module XML
       # attributes etc.) of _xml_ (using XML::XXPath or any other
       # means).
       def obj_to_xml(obj,xml)
-        raise "abstract method called"
+        if @options[:writer]
+          @options[:writer].call(obj,xml)
+          true
+        else
+          false
+        end
       end
       # Called when a new instance of the mapping class this node
       # belongs to is being initialized. _obj_ is the
@@ -417,6 +427,7 @@ module XML
       end
 
       def xml_to_obj(obj,xml)  # :nodoc:
+        return true if super(obj,xml)
         begin
           obj.send :"#{@attrname}=", extract_attr_value(xml)
         rescue NoAttrValueSet => err
@@ -429,6 +440,7 @@ module XML
             obj.send :"#{@attrname}=", @options[:default_value]
           end
         end
+        true
       end
 
       # (to be overridden by subclasses) Extract and return the
@@ -444,6 +456,7 @@ module XML
         raise "abstract method called"
       end
       def obj_to_xml(obj,xml) # :nodoc:
+        return true if super(obj,xml)
         value = obj.send(:"#{@attrname}")
         if @options.has_key? :default_value
           unless value == @options[:default_value]
@@ -455,6 +468,7 @@ module XML
           end
           set_attr_value(xml, value)
         end
+        true
       end
       # (to be overridden by subclasses) Write _value_ into the
       # correct sub-nodes of _xml_.

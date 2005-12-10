@@ -73,3 +73,19 @@ class Names1
   choice_node :if,    'name',       :then, (text_node :name, 'name'),
               :elsif, 'names/name', :then, (array_node :names, 'names', 'name', :class=>String)
 end
+
+
+class ReaderTest
+  include XML::Mapping
+
+  attr_accessor :read
+
+  text_node :foo, "foo", :reader=>proc{|obj,xml| obj.read = 'hubba-bubba'}
+end
+
+
+class WriterTest
+  include XML::Mapping
+
+  text_node :foo, "foo", :writer=>proc{|obj,xml| e = xml.elements.add; e.name='quux'; e.text='dingdong' }
+end

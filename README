@@ -17,6 +17,7 @@ http://rubyforge.org/projects/xml-mapping/
   - {Single-attribute Nodes with Sub-objects}[aref:subobjnodes]
   - {Attribute Handling Details, Augmenting Existing Classes}[aref:attrdefns]
 - {Other Nodes}[aref:onodes]
+  - {Readers/Writers}[aref:readerswriters]
 - {Multiple Mappings per Class}[aref:mappings]
 - {Defining your own Node Types}[aref:definingnodes]
 - {XPath Interpreter}[aref:xpath]
@@ -82,7 +83,7 @@ an instance of the above +Address+ class is created from or converted
 to an XML tree, each of the four nodes in the class maps some parts of
 that XML tree to a single, specific attribute of the +Adress+
 instance. The name of that attribute is given in the first argument to
-the node factory function. Such a node is called a "single-attribute
+the node factory method. Such a node is called a "single-attribute
 node". All node types that come with xml-mapping except one
 (+choice_node+, which I'll talk about below) are single-attribute
 nodes.
@@ -199,7 +200,7 @@ examples :)
 
 The mentioned methods +load_from_xml+ and +fill_into_xml+ are the only
 methods classes must implement in order to be usable in the
-<tt>:class=></tt> keyword arguments to node factory functions. Mapping
+<tt>:class=></tt> keyword arguments to node factory methods. Mapping
 classes (i.e. classes that <tt>include XML::Mapping</tt>)
 automatically inherit those functions and can thus be readily used in
 <tt>:class=></tt> arguments, as shown for the +Signature+ class in the
@@ -260,9 +261,13 @@ element name of the corresponding XML tree. In this example, the root
 element name is either "document" or "folder". The mapping between
 root element names and class names is the one briefly described in
 example[aref:example] at the beginning of this document -- the
-unqualified class name is just "dashed", e.g. Foo::Bar::MyClass
-becomes "my-class"; and you may overwrite this on a per-class basis by
-calling <tt>root_element_name "the-new-name"</tt> in the class body.
+unqualified class name is just converted to lower case and "dashed",
+e.g. Foo::Bar::MyClass becomes "my-class"; and you may overwrite this
+on a per-class basis by calling <tt>root_element_name
+"the-new-name"</tt> in the class body. In our example, the root
+element name "document" leads to an instantiation of class +Document+,
+and the root element name "folder" leads to an instantiation of class
++Folder+.
 
 Incidentally, the last example shows that you can readily derive
 mapping classes from one another (as said before, you can also derive
@@ -294,14 +299,16 @@ representation of such a signature to look like this:
   :include: time_node_w_marshallers.xml
 
 So, a new "signed-on" element was added that holds the day, month, and
-year. In the +Signature+ instance, we want the date to be stored in an
-attribute named +signed_on+ of type +Time+ (that's Ruby's built-in
-+Time+ class). We could use +object_node+, but something like
+year. In the +Signature+ instance in Ruby, we want the date to be
+stored in an attribute named +signed_on+ of type +Time+ (that's Ruby's
+built-in +Time+ class).
+
+One could think of using +object_node+, but something like
 <tt>object_node :signed_on, "signed-on", :class=>Time</tt> won't work
 because +Time+ isn't a mapping class and doesn't define methods
 +load_from_xml+ and +fill_into_xml+ (we could easily define those
-though; we'll talk about that possibility
-later[aref:definingnodes]). The fastest, most ad-hoc way to achieve
+though; we'll talk about that possibility here[aref:attrdefns] and
+here[aref:definingnodes]). The fastest, most ad-hoc way to achieve
 what we want are :marshaller and :unmarshaller keyword arguments, like
 this:
 
@@ -370,8 +377,8 @@ specified marshaller (or unmarshaller) will be used when marshalling
 (resp. unmarshalling) the sub-objects, and the other passed argument
 (<tt>:class</tt> or none) will be employed when unmarshalling
 (resp. marshalling) the sub-objects. So, in effect, you can deactivate
-or "short-cut" some part of the builtin marshalling/unmarshalling
-functionality while retaining another part.
+or "short-cut" some part of the marshalling/unmarshalling
+functionality of a node type while retaining another part.
 
 
 
@@ -463,10 +470,68 @@ node whose data was "present" in the object (for single-attribute
 nodes, the data is considered "present" if the node's attribute is
 non-nil).
 
-As an example, consider a "Person" object where the name of the person
-should be
+As an example, consider "Person" objects where the name of a person in
+the XML representation should be stored alternatively in a sub-element
+named <tt><name></tt>, or an attribute named "name", or in the text of
+the <tt><person></tt> element itself. You can achieve this with
++choice_node+ like this:
 
   :include: person.intout
+
+Note that the symbols :if, :then, and :elsif (but not :else) in the
++choice_node+'s node factory method call are ignored; they may be
+sprinkled across the argument list at will (preferably the way shown
+above of course) to increase readability.
+
+The rest of the arguments specify the mentioned sequence of XPath
+expressions and corresponding nodes.
+
+When reading a +Person+ object from XML, the XPath expressions will be
+matched in sequence against the source XML tree until a match is found
+or the end of the argument list is reached. If the end is reached, an
+exception is raised. Otherwise, for the first XPath expression that
+matched, the corresponding node will be invoked (i.e. used to read
+actual data from the XML source into the +Person+ object). If you
+specify :else, :default, or :otherwise in place of an XPath
+expression, this is treated as an XPath expression that always
+matches. So you can use :else (or :default or :otherwise) for a
+"fallback" node that will be used if none of the other XPath
+expressions matched.
+
+When writing a +Person+ object back to XML, the first node in the
+sequence whose data is "present" in the source object will be invoked
+to write data from the object into the target XML tree (the XPath
+expressions are ignored). If there is no such node in the sequence, an
+exception is raised.
+
+For single-attribute nodes (like the +text_node+s in the +Person+
+example), the data is considered "present" in an object if the node's
+attribute in that object is non-nil. In the +Person+ object, all nodes
+in the +choice_node+ have the same attribute (+name+), so, in effect,
+the +save_to_xml+ call will raise an exception if the name of the
++Person+ object was nil, and otherwise the first alternative of the
++choice_node+ is invoked, so the name will always be written to a
+<tt><name></tt> sub-element.
+
+Of course the sub-nodes of a choice_node don't all have to map the
+same attribute; any node can be used (including further
+choice_nodes). As a (somewhat contrived) example, here's a mapping for
++Publication+ objects that have either a single author or several
+"contributors":
+
+  :include: publication.intout
+
+
+=== {Readers/Writers}[a:readerswriters]
+
+Finally, _all_ nodes support keyword arguments :reader and :writer
+which allow you to completely override the reading and/or writing
+functionality of the node with your own code. The :reader as well as
+the :writer argument must be a proc that takes two arguments: the Ruby
+object to be read/written (instance of the mapping class the node
+belongs to) and the XML tree to be written to/read from. The :reader
+proc is for reading (from the XML into the object), the :writer proc
+is for writing (from the object into the XML).
 
 
 == {Multiple Mappings per Class}[a:mappings]

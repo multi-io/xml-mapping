@@ -26,6 +26,7 @@ end
 files = %w-
 xml/mapping.rb
 xml/xxpath.rb
+xml/xxpath_methods.rb
 xml/mapping/base.rb
 xml/mapping/standard_nodes.rb
 xml/mapping/version.rb

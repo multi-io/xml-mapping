@@ -86,11 +86,44 @@ class XmlMappingTest < Test::Unit::TestCase
   end
 
 
+  def test_choice_node_presence
+    node = Thing.xml_mapping_nodes[0]
+    t = Thing.new
+    assert !(node.is_present_in t)
+    t.name = "Mary"
+    assert node.is_present_in t
+  end
+
+
   def test_getter_array_node
     assert_equal ["pencils", "weapons of mass destruction"],
           @c.offices.map{|o|o.speciality}
   end
-  
+
+
+  def test_reader
+    xml = REXML::Document.new('<test><foo>footext</foo></test>').root
+    r = ReaderTest.load_from_xml xml
+    assert_nil r.foo
+    assert_equal 'hubba-bubba', r.read
+
+    r.foo = 'foovalue'
+    xml2 = r.save_to_xml
+    assert_equal 'foovalue', xml2.first("foo").text
+  end
+
+
+  def test_writer
+    xml = REXML::Document.new('<test><foo>footext</foo></test>').root
+    w = WriterTest.load_from_xml xml
+    assert_equal 'footext', w.foo
+
+    w.foo = 'foovalue'
+    xml2 = w.save_to_xml
+    assert_equal 'dingdong', xml2.first("quux").text
+    assert_nil xml2.first("foo",:allow_nil=>true)
+  end
+
   
   def test_setter_text_node
     @c.ent2 = "lalala"

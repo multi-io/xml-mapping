@@ -13,6 +13,8 @@ class Person
               :else,  (text_node :name, '.')
 end
 
+### usage
+
 p1 = Person.load_from_xml(REXML::Document.new('<person name="Jim"/>').root)#<=
 
 p2 = Person.load_from_xml(REXML::Document.new('<person><name>James</name></person>').root)#<=
@@ -21,6 +23,8 @@ p3 = Person.load_from_xml(REXML::Document.new('<person>Suzy</person>').root)#<=
 
 
 #:invisible_retval:
+require 'test/unit/assertions'
+include Test::Unit::Assertions
 
 p1.save_to_xml.write($stdout)#<=
 

@@ -353,7 +353,7 @@ module XML
         args.each do |arg|
           next if [:if,:then,:elsif].include? arg
           if path.nil?
-            path = (if [:else,:default].include? arg
+            path = (if [:else,:default,:otherwise].include? arg
                       :else
                     else
                       XML::XXPath.new arg
@@ -378,20 +378,22 @@ module XML
       end
 
       def xml_to_obj(obj,xml)
+        return true if super(obj,xml)
         @choices.each do |path,node|
           if path==:else or not(path.all(xml).empty?)
             node.xml_to_obj(obj,xml)
-            return
+            return true
           end
         end
         raise XML::MappingError, "xml_to_obj: no choice matched in: #{xml}"
       end
 
       def obj_to_xml(obj,xml)
+        return true if super(obj,xml)
         @choices.each do |path,node|
           if node.is_present_in obj
             node.obj_to_xml(obj,xml)
-            return
+            return true
           end
         end
         # @choices[0][1].obj_to_xml(obj,xml)
@@ -400,6 +402,12 @@ module XML
 
       def obj_initializing(obj,mapping)
         @choices[0][1].obj_initializing(obj,mapping)
+      end
+
+      # (overridden) true if at least one of our nodes is_present_in
+      # obj.
+      def is_present_in obj
+        @choices.inject(false){|prev,(path,node)| prev or node.is_present_in(obj)}
       end
     end
 
