@@ -393,6 +393,7 @@ module XML
         @choices.each do |path,node|
           if node.is_present_in obj
             node.obj_to_xml(obj,xml)
+            path.first(xml, :ensure_created=>true)
             return true
           end
         end
