@@ -17,6 +17,7 @@ http://rubyforge.org/projects/xml-mapping/
   - {Single-attribute Nodes with Sub-objects}[aref:subobjnodes]
   - {Attribute Handling Details, Augmenting Existing Classes}[aref:attrdefns]
 - {Other Nodes}[aref:onodes]
+  - {choice_node}[aref:choice_node]
   - {Readers/Writers}[aref:readerswriters]
 - {Multiple Mappings per Class}[aref:mappings]
 - {Defining your own Node Types}[aref:definingnodes]
@@ -460,6 +461,8 @@ of such a node is an attribute name, and the attribute of that name is
 the only piece of the state of instances of the node's mapping class
 that gets read/written by the node.
 
+=== {choice_node}[a:choice_node]
+
 There is one node type distributed with xml-mapping that is not a
 single-attribute node: +choice_node+. It allows you to specify a
 sequence of pairs, each consisting of an XPath expression and a
@@ -470,56 +473,59 @@ node whose data was "present" in the object (for single-attribute
 nodes, the data is considered "present" if the node's attribute is
 non-nil).
 
-As an example, consider "Person" objects where the name of a person in
-the XML representation should be stored alternatively in a sub-element
-named <tt><name></tt>, or an attribute named "name", or in the text of
-the <tt><person></tt> element itself. You can achieve this with
-+choice_node+ like this:
+As a (somewhat contrived) example, here's a mapping for +Publication+
+objects that have either a single author (contained in an "author" XML
+attribute) or several "contributors" (contained in a sequence of
+"contr" XML elements):
 
-  :include: person.intout
+  :include: publication.intout
 
-Note that the symbols :if, :then, and :elsif (but not :else) in the
-+choice_node+'s node factory method call are ignored; they may be
-sprinkled across the argument list at will (preferably the way shown
-above of course) to increase readability.
+Note that the symbols :if, :then, and :elsif (but not :else -- see
+below) in the +choice_node+'s node factory method call are ignored;
+they may be sprinkled across the argument list at will (preferably the
+way shown above of course) to increase readability.
 
 The rest of the arguments specify the mentioned sequence of XPath
 expressions and corresponding nodes.
 
-When reading a +Person+ object from XML, the XPath expressions will be
-matched in sequence against the source XML tree until a match is found
-or the end of the argument list is reached. If the end is reached, an
-exception is raised. Otherwise, for the first XPath expression that
-matched, the corresponding node will be invoked (i.e. used to read
-actual data from the XML source into the +Person+ object). If you
-specify :else, :default, or :otherwise in place of an XPath
-expression, this is treated as an XPath expression that always
-matches. So you can use :else (or :default or :otherwise) for a
-"fallback" node that will be used if none of the other XPath
-expressions matched.
+When reading a +Publication+ object from XML, the XPath expressions
+from the choice_node will be matched in sequence against the source
+XML tree until a match is found or the end of the argument list is
+reached. If the end is reached, an exception is raised. Otherwise, for
+the first XPath expression that matched, the corresponding node will
+be invoked (i.e. used to read actual data from the XML source into the
++Person+ object). If you specify :else, :default, or :otherwise in
+place of an XPath expression, this is treated as an XPath expression
+that always matches. So you can use :else (or :default or :otherwise)
+for a "fallback" node that will be used if none of the other XPath
+expressions matched (an example for this follows).
 
-When writing a +Person+ object back to XML, the first node in the
+When writing a +Publication+ object back to XML, the first node in the
 sequence whose data is "present" in the source object will be invoked
-to write data from the object into the target XML tree (the XPath
-expressions are ignored). If there is no such node in the sequence, an
-exception is raised.
+to write data from the object into the target XML tree (and the
+corresponding XPath expression will be created in the XML tree if it
+doesn't exist already). If there is no such node in the sequence, an
+exception is raised. As said above, for single-attribute nodes, the
+node's data is considered "present" if the node's attribute is
+non-nil.  So, if you write a +Publication+ object to XML, and either
+the +author+ or the +contributors+ attribute of the object is set, it
+will be written; if both attributes are nil, an exception will be
+raised.
 
-For single-attribute nodes (like the +text_node+s in the +Person+
-example), the data is considered "present" in an object if the node's
-attribute in that object is non-nil. In the +Person+ object, all nodes
-in the +choice_node+ have the same attribute (+name+), so, in effect,
-the +save_to_xml+ call will raise an exception if the name of the
-+Person+ object was nil, and otherwise the first alternative of the
-+choice_node+ is invoked, so the name will always be written to a
-<tt><name></tt> sub-element.
+A frequent use case for choice_nodes will probably be object
+attributes that may be represented in multiple alternative ways in
+XML. As an example, consider "Person" objects where the name of the
+person should be stored alternatively in a sub-element named +name+,
+or an attribute named +name+, or in the text of the +person+ element
+itself. You can achieve this with +choice_node+ like this:
 
-Of course the sub-nodes of a choice_node don't all have to map the
-same attribute; any node can be used (including further
-choice_nodes). As a (somewhat contrived) example, here's a mapping for
-+Publication+ objects that have either a single author or several
-"contributors":
+  :include: person.intout
 
-  :include: publication.intout
+Here all sub-nodes of the choice_nodes are single-attribute nodes
+(text_nodes) with the same attribute (+name+). As you see, when
+writing persons to XML, the name is always stored in a <name>
+sub-element. Of course, this is because that alternative appears first
+in the choice_node.
 
 
 === {Readers/Writers}[a:readerswriters]
