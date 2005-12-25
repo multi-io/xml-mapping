@@ -49,6 +49,7 @@ FILES_RDOC_INCLUDES=%w{examples/company.xml
                        examples/order_signature_enhanced_usage.intout
                        examples/order_signature_enhanced.xml
                        examples/person.intout
+                       examples/publication.intout
                       }
 
 
