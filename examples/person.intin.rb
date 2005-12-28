@@ -23,9 +23,6 @@ p3 = Person.load_from_xml(REXML::Document.new('<person>Suzy</person>').root)#<=
 
 
 #:invisible_retval:
-require 'test/unit/assertions'
-include Test::Unit::Assertions
-
 p1.save_to_xml.write($stdout)#<=
 
 p2.save_to_xml.write($stdout)#<=
@@ -33,6 +30,9 @@ p2.save_to_xml.write($stdout)#<=
 p3.save_to_xml.write($stdout)#<=
 
 #:invisible:
+require 'test/unit/assertions'
+include Test::Unit::Assertions
+
 assert_equal "Jim", p1.name
 assert_equal "James", p2.name
 assert_equal "Suzy", p3.name

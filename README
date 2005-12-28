@@ -489,15 +489,16 @@ The rest of the arguments specify the mentioned sequence of XPath
 expressions and corresponding nodes.
 
 When reading a +Publication+ object from XML, the XPath expressions
-from the choice_node will be matched in sequence against the source
-XML tree until a match is found or the end of the argument list is
-reached. If the end is reached, an exception is raised. Otherwise, for
-the first XPath expression that matched, the corresponding node will
-be invoked (i.e. used to read actual data from the XML source into the
-+Person+ object). If you specify :else, :default, or :otherwise in
-place of an XPath expression, this is treated as an XPath expression
-that always matches. So you can use :else (or :default or :otherwise)
-for a "fallback" node that will be used if none of the other XPath
+from the +choice_node+ (<tt>@author</tt> and +contr+) will be matched
+in sequence against the source XML tree until a match is found or the
+end of the argument list is reached. If the end is reached, an
+exception is raised. Otherwise, for the first XPath expression that
+matched, the corresponding node will be invoked (i.e. used to read
+actual data from the XML source into the +Person+ object). If you
+specify :else, :default, or :otherwise in place of an XPath
+expression, this is treated as an XPath expression that always
+matches. So you can use :else (or :default or :otherwise) for a
+"fallback" node that will be used if none of the other XPath
 expressions matched (an example for this follows).
 
 When writing a +Publication+ object back to XML, the first node in the
@@ -531,16 +532,121 @@ in the choice_node.
 === {Readers/Writers}[a:readerswriters]
 
 Finally, _all_ nodes support keyword arguments :reader and :writer
-which allow you to completely override the reading and/or writing
-functionality of the node with your own code. The :reader as well as
-the :writer argument must be a proc that takes two arguments: the Ruby
-object to be read/written (instance of the mapping class the node
-belongs to) and the XML tree to be written to/read from. The :reader
-proc is for reading (from the XML into the object), the :writer proc
-is for writing (from the object into the XML).
+which allow you to extend or completely override the reading and/or
+writing functionality of the node with your own code. The :reader as
+well as the :writer argument must be a proc that takes as its
+arguments the Ruby object to be read/written (instance of the mapping
+class the node belongs to) and the XML tree to be written to/read
+from. An optional third argument may be specified -- it will receive a
+proc that wraps the default reader/writer functionality of the
+node.
+
+The :reader proc is for reading (from the XML into the object), the
+:writer proc is for writing (from the object into the XML).
+
+Here's a (really contrived) example:
+
+  :include: reader.intout
+
+So there's a "Foo" class with a text_node that would by default
+(without the :reader and :writer proc) map the Ruby attribute "name"
+to the XML attribute "name". The :reader proc is invoked when reading
+from XML into a +Foo+ object. The +xml+ argument is the XML tree,
++obj+ is the object. +default_reader+ is the proc that wraps the
+default reading functionality of the node. We invoke it at the
+beginning. For this text_node, the default reading functionality is to
+take the text of the "name" attribute of +xml+ and put it into the
++name+ attribute of +obj+. After that, we take the text of the "more"
+attribute of +xml+ and append it to the +name+ attribute of +obj+. So
+an XML tree <tt><foo name="Jim" more="XYZ"/></tt> is converted to a
++Foo+ object with +name+="JimXYZ".
+
+In our :writer proc, we only take +obj+ (the +Foo+ object to be
+written to XML) and +xml+ (the XML tree the stuff is to be written
+to). Analogously to the :reader, we could take a proc that wraps the
+default writing functionality of the node, but we don't need that here
+-- we competely override the writing functionality with our own code,
+which just takes the +name+ attribute of the object and writes "hi
+<the name> ho" to a +bar+ XML attribute in the XML tree (stupid
+example, I know).
+
+As a special convention, if you specify both a :reader and a :writer
+for a node, and in both cases you do /not/ call the default behaviour,
+then you should use the generic node type +node+, e.g.:
+
+  class SomeClass
+    include XML::Mapping
+
+    ....
+
+    node :reader=>proc{|obj,xml| ...},
+         :writer=>proc{|obj,xml| ...}
+  end
+
+(since you're completely replacing both the reading and the writing
+functionality, you're effectively replacing all the functionality of
+the node, so it would be pointless and confusing to use one of the
+more "specific" node types)
+
+As you see, the purpose of readers and writers is to make it possible
+to augment or override a node's functionality arbitrarily, so there
+shouldn't be anything that's absolutely impossible to achieve with
+xml-mapping. However, if you use readers and writers without invoking
+the default behaviour, you really do everything manually, so you're
+not doing any less work than you would do if you weren't using
+xml-mapping at all. So you'll probably use readers and/or writers for
+those bits of your mapping semantics that can't be achieved with
+xml-mapping's predefined node types (an alternative approach might be
+to override the +post_load+ and/or +post_save+ instance methods on the
+mapping class -- see the reference documentation).
+
+An advice similar to the one given above for marshallers/unmarshallers
+applies here as well: If you find yourself writing lots of readers and
+writers that only differ in some easily parameterizable aspects, you
+should think about defining your own node types. We talk about that
+below[aref:definingnodes], and it generally just involves moving the
+(sensibly parameterized) code from your readers/writers to your node
+types.
 
 
 == {Multiple Mappings per Class}[a:mappings]
+
+Sometimes you might want to represent the same Ruby object in multiple
+alternative ways in XML. For example, the name of a "Person" object
+could be represented either in a "name" element or a "name" attribute.
+
+xml-mapping supports this by allowing you to define multiple disjoint
+"mappings" for a mapping class. A mapping is by convention identified
+with a symbol, e.g. <tt>:my_mapping</tt>, <tt>:other_mapping</tt>
+etc., and each mapping comprises a root element name and a set of node
+definitions. In the body of a mapping class definition, you switch to
+another mapping with <tt>use_mapping :the_mapping</tt>. All following
+node declarations will be added to that mapping *unless* you specify
+the option :mapping=>:another_mapping for a node declaration (all node
+types support that option). The default mapping (the mapping used if
+there was no previous +use_mapping+ in the class body) is named
+<tt>:_default</tt>.
+
+All the worker methods like <tt>load_from_xml/file</tt>,
+<tt>save_to_xml/file</tt>, <tt>load_object_from_xml/file</tt> support
+a <tt>:mapping</tt> keyword argument to specify the mapping, which
+again defaults to <tt>:_default</tt>.
+
+In the following example, we define two mappings (the default one and
+a mapping named <tt>:other</tt>) for +Person+ objects with a name, an
+age and an address:
+
+  :include: examples/person_mm.intout
+
+You may have noticed that the <tt>object_node</tt>s in the +Person+
+class apply the mapping they were themselves defined in to their
+sub-ordinated class (+Address+). This is the case for all
+{Single-attribute Nodes with Sub-objects}[aref:subobjnodes]
+(+object_node+, +array_node+ and +hash_node+) unless you explicitly
+specify a different mapping for the sub-object(s) using the option
+:sub_mapping, e.g.
+
+  object_node :address, "address", :class=>Address, :sub_mapping=>:other
 
 
 

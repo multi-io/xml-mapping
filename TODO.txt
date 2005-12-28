@@ -12,6 +12,12 @@
   methods). The language could more or less be Ruby itself, but the
   write support could need some extra work...
 
+- node types: get rid of initialize_impl. Instead, have initializers
+  return the remaining arguments, so initializers can call superclass
+  initializers directly
+
+- XML::XXPath: implement [attrname='attrvalue'] steps
+
 - documentation:
 
   - README:

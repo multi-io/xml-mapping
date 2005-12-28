@@ -1,0 +1,128 @@
+2005-12-07  Olaf Klischat
+
+	* release 0.8.1
+
+2005-12-07  Olaf Klischat
+
+	* ChangeLog file
+
+2005/11/30  Olaf Klischat
+
+	* bugfix: clone default values to avoid external modifications
+
+2005/07/07  Olaf Klischat
+
+	* release 0.8
+
+2005/07/04  Olaf Klischat
+
+	* xml/xpath / XML::XPath -> xml/xxpath / XML::XXPath, license ->
+	  Ruby's
+
+2005/06/29  Olaf Klischat
+
+	* when creating elt[@attr='value'] path elements, add a new
+	  element if one with @attr='value' already existed
+
+2005/03/30  Olaf Klischat
+
+	* add_accessor: check for existing accessors.
+
+2005/03/05  Olaf Klischat
+
+	* better support for inheritance among mapping
+	  classes
+
+2005/03/03  Olaf Klischat
+
+	* "polymorphic" nodes via root element
+	  name. SubObjectBaseNode-based nodes es use node polymorphy when
+	  no explicit node marshaller/unmarshaller has been sp ecified.
+	
+2005/02/28  Olaf Klischat
+
+	* mapping root elt name => mapping class;
+	  XML::Mapping::load_object_from_* implemented
+
+2005/02/13  Olaf Klischat
+
+	* IntNode renamed & generalized to NumericNode
+
+2005/02/12  Olaf Klischat
+
+	* renaming *_rexml => *_xml
+
+2005/01/27  Olaf Klischat
+
+	* special exception NoAttrValueSet for indicating absence of a
+	  specific attribute in an XML source
+
+2005/01/23  Olaf Klischat
+
+	* some more documentation, Node.obj_initializing, setting node
+	  values to defaults on initialization
+
+2005/01/10  Olaf Klischat
+
+	* root_element_name
+
+2005/01/07  Olaf Klischat
+
+	* refactoring:
+
+	  Made node types (classes) dynamically addable via
+	  XML::Mapping.add_node_class, xml/mapping.rb moved to
+	  xml/mapping/base.rb, node types moved to
+	  xml/mapping/standard_nodes.rb, xml/mapping.rb now requires base
+	  and standard_nodes and adds all standard node types to
+	  XML::Mapping.
+
+	* additional node class SingleAttributeNode < Node for nodes that
+	  map to a single attribute in their class (that's true for all
+	  nodes we have so far). Call to add_attribute moved from "core"
+	  to SingleAttributeNode.initialize.
+
+	* XML::Mapping: @nodes renamed to @xml_mapping_nodes to minimize
+	  chance of name clashes.
+	
+2004/12/30  Olaf Klischat
+
+	* array node writing, hash node writing
+
+
+2004/12/30  Olaf Klischat
+
+	* xpath: create_new flag, + convenience method
+
+2004/12/21  Olaf Klischat
+
+	* node classes
+	
+2004/12/20  Olaf Klischat
+
+	* hash_node
+	
+2004/12/08  Olaf Klischat
+
+	* xpath: attribute nodes
+
+	* xml_mapping: retargeted from REXML::XPath to XML::XPath
+
+2004/12/02  Olaf Klischat
+
+	* xpath: write accessors
+	
+2004/11/27  Olaf Klischat
+
+	* xpath: read access seems to work
+
+2004/11/25  Olaf Klischat
+
+	* array_node
+
+stone age   Olaf Klischat
+
+	* see http://rubygarden.org/ruby?XmlMapping
+	
+	
+

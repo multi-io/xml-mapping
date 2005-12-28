@@ -302,9 +302,23 @@ module XML
       # (using XML::XXPath or any other means) and store it to the
       # corresponding parts (attributes etc.) of _obj_'s state.
       def xml_to_obj(obj,xml)
-        if @options[:reader]
-          @options[:reader].call(obj,xml)
-          true
+	# TODO: the @in_xml2obj_dflt flag should be
+	#   per- node-and-instance instead of just per-node
+        if @options[:reader] and !@in_xml2obj_dflt
+          begin
+            @options[:reader].call(obj,xml)
+	  rescue ArgumentError
+	    @options[:reader].call(obj,xml,
+				   proc{|obj,xml|
+				     @in_xml2obj_dflt = true
+				     begin
+				       self.xml_to_obj(obj,xml)
+				     ensure
+				       @in_xml2obj_dflt = nil
+				     end
+				   })
+	  end
+	  true
         else
           false
         end
@@ -317,8 +331,22 @@ module XML
       # attributes etc.) of _xml_ (using XML::XXPath or any other
       # means).
       def obj_to_xml(obj,xml)
-        if @options[:writer]
-          @options[:writer].call(obj,xml)
+	# TODO: the @in_obj2xml_dflt flag should be
+	#   per- node-and-instance instead of just per-node
+        if @options[:writer] and !@in_obj2xml_dflt
+	  begin
+	    @options[:writer].call(obj,xml)
+	  rescue ArgumentError
+	    @options[:writer].call(obj,xml,
+				   proc{|obj,xml|
+				     @in_obj2xml_dflt = true
+				     begin
+				       self.obj_to_xml(obj,xml)
+				     ensure
+				       @in_obj2xml_dflt = nil
+				     end
+				   })
+	  end
           true
         else
           false
