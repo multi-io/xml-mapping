@@ -22,8 +22,10 @@ module XML
       # Initializer. _path_ (a string, the 2nd argument to the node
       # factory function) is the XPath expression that locates the
       # mapped node in the XML.
-      def initialize_impl(path)
+      def initialize(*args)
+        path,*args = super(*args)
         @path = XML::XXPath.new(path)
+        args
       end
       def extract_attr_value(xml) # :nodoc:
         default_when_xpath_err{ @path.first(xml).text }
@@ -42,8 +44,10 @@ module XML
     # (Integer or Float, depending on the nodes's text) and maps it to
     # an Integer or Float attribute.
     class NumericNode < SingleAttributeNode
-      def initialize_impl(path)
+      def initialize(*args)
+        path,*args = super(*args)
         @path = XML::XXPath.new(path)
+        args
       end
       def extract_attr_value(xml) # :nodoc:
         txt = default_when_xpath_err{ @path.first(xml).text }
@@ -89,7 +93,9 @@ module XML
       #
       # If both :class and :marshaller/:unmarshaller arguments are
       # supplied, the latter take precedence.
-      def initialize_impl(*args)
+      def initialize(*args)
+        args = super(*args)
+
         @sub_mapping = @options[:sub_mapping] || @mapping
 
         if @options[:class]
@@ -119,6 +125,8 @@ module XML
             XML::Mapping.load_object_from_xml xml, :mapping=>@sub_mapping
           }
         end
+
+        args
       end
     end
 
@@ -144,9 +152,10 @@ module XML
     class ObjectNode < SubObjectBaseNode
       # Initializer. _path_ (a string denoting an XPath expression) is
       # the location of the subtree.
-      def initialize_impl(path)
-        super
-	@path = XML::XXPath.new(path)
+      def initialize(*args)
+        path,*args = super(*args)
+        @path = XML::XXPath.new(path)
+        args
       end
       def extract_attr_value(xml) # :nodoc:
         @options[:unmarshaller].call(default_when_xpath_err{@path.first(xml)})
@@ -172,9 +181,11 @@ module XML
     # represent the +false+ boolean value.
     class BooleanNode < SingleAttributeNode
       # Initializer.
-      def initialize_impl(path,true_value,false_value)
+      def initialize(*args)
+        path,true_value,false_value,*args = super(*args)
         @path = XML::XXPath.new(path)
         @true_value = true_value; @false_value = false_value
+        args
       end
       def extract_attr_value(xml) # :nodoc:
         default_when_xpath_err{ @path.first(xml).text==@true_value }
@@ -242,20 +253,18 @@ module XML
       # passed is delegated to _per_arrelement_path_; the preceding
       # path argument (if present, "" by default) is delegated to
       # _base_path_.
-      def initialize_impl(path,path2=nil)
-        super
-	if path2
-	  do_initialize(path,path2)
-	else
-	  do_initialize("",path)
-	end
-      end
-      # "Real" initializer.
-      def do_initialize(base_path,per_arrelement_path)
-	per_arrelement_path=per_arrelement_path[1..-1] if per_arrelement_path[0]==?/
-	@base_path = XML::XXPath.new(base_path)
-	@per_arrelement_path = XML::XXPath.new(per_arrelement_path)
-	@reader_path = XML::XXPath.new(base_path+"/"+per_arrelement_path)
+      def initialize(*args)
+        path,path2,*args = super(*args)
+        base_path,per_arrelement_path = if path2
+                                          [path,path2]
+                                        else
+                                          ["",path]
+                                        end
+        per_arrelement_path=per_arrelement_path[1..-1] if per_arrelement_path[0]==?/
+        @base_path = XML::XXPath.new(base_path)
+        @per_arrelement_path = XML::XXPath.new(per_arrelement_path)
+        @reader_path = XML::XXPath.new(base_path+"/"+per_arrelement_path)
+        args
       end
       def extract_attr_value(xml) # :nodoc:
         result = []
@@ -265,10 +274,10 @@ module XML
         result
       end
       def set_attr_value(xml, value) # :nodoc:
-	base_elt = @base_path.first(xml,:ensure_created=>true)
-	value.each do |arr_elt|
+        base_elt = @base_path.first(xml,:ensure_created=>true)
+        value.each do |arr_elt|
           @options[:marshaller].call(@per_arrelement_path.create_new(base_elt), arr_elt)
-	end
+        end
       end
     end
 
@@ -307,21 +316,19 @@ module XML
       # argument (if present, "" by default) is delegated to
       # _base_path_. The meaning of the keyword arguments is the same
       # as for ObjectNode.
-      def initialize_impl(path1,path2,path3=nil)
-        super
-        if path3
-          do_initialize(path1,path2,path3)
-        else
-          do_initialize("",path1,path2)
-        end
-      end
-      # "Real" initializer.
-      def do_initialize(base_path,per_hashelement_path,key_path)
-	per_hashelement_path=per_hashelement_path[1..-1] if per_hashelement_path[0]==?/
-	@base_path = XML::XXPath.new(base_path)
-	@per_hashelement_path = XML::XXPath.new(per_hashelement_path)
-	@key_path = XML::XXPath.new(key_path)
-	@reader_path = XML::XXPath.new(base_path+"/"+per_hashelement_path)
+      def initialize(*args)
+        path1,path2,path3,*args = super(*args)
+        base_path,per_hashelement_path,key_path = if path3
+                                                    [path1,path2,path3]
+                                                  else
+                                                    ["",path1,path2]
+                                                  end
+        per_hashelement_path=per_hashelement_path[1..-1] if per_hashelement_path[0]==?/
+        @base_path = XML::XXPath.new(base_path)
+        @per_hashelement_path = XML::XXPath.new(per_hashelement_path)
+        @key_path = XML::XXPath.new(key_path)
+        @reader_path = XML::XXPath.new(base_path+"/"+per_hashelement_path)
+        args
       end
       def extract_attr_value(xml) # :nodoc:
         result = {}
@@ -333,21 +340,20 @@ module XML
         result
       end
       def set_attr_value(xml, value) # :nodoc:
-	base_elt = @base_path.first(xml,:ensure_created=>true)
-	value.each_pair do |k,v|
+        base_elt = @base_path.first(xml,:ensure_created=>true)
+        value.each_pair do |k,v|
           elt = @per_hashelement_path.create_new(base_elt)
           @options[:marshaller].call(elt,v)
           @key_path.first(elt,:ensure_created=>true).text = k
-	end
+        end
       end
     end
 
 
     class ChoiceNode < Node
 
-      def initialize(owner,*args)
-        super(owner,*args)
-        args=args[0..-2] if Hash===args[-1]  # TODO: contains knowledge about superclass internals...
+      def initialize(*args)
+        args = super(*args)
         @choices = []
         path=nil
         args.each do |arg|
@@ -375,6 +381,8 @@ module XML
 
         raise XML::MappingError, "node missing at end of argument list" unless path.nil?
         raise XML::MappingError, "no choices were supplied" if @choices.empty?
+        
+        []
       end
 
       def xml_to_obj(obj,xml)

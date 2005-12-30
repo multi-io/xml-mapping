@@ -62,7 +62,7 @@ end
 
 ### usage
 
-# XML representation of a person in the default mapping
+## XML representation of a person in the default mapping
 xml = REXML::Document.new('
 <person name="Suzy" age="28">
   <address>
@@ -73,23 +73,23 @@ xml = REXML::Document.new('
   </address>
 </person>').root
 
-# load using the default mapping
+## load using the default mapping
 p = Person.load_from_xml xml #<=
 
 #:invisible_retval:
-# save using the default mapping
+## save using the default mapping
 xml2 = p.save_to_xml
 xml2.write $stdout,2 #<=
 
-# xml2 identical to xml
+## xml2 identical to xml
 
 
-# now, save the same person to XML using the :other mapping...
+## now, save the same person to XML using the :other mapping...
 other_xml = p.save_to_xml :mapping=>:other
 other_xml.write $stdout,2 #<=
 
 #:visible_retval:
-# load it again using the :other mapping
+## load it again using the :other mapping
 p2 = Person.load_from_xml other_xml, :mapping=>:other #<=
 
 #:invisible_retval:

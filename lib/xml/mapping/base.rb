@@ -288,12 +288,14 @@ module XML
         @owner = owner
         if Hash===args[-1]
           @options = args[-1]
+          args = args[0..-2]
         else
           @options={}
         end
         @mapping = @options[:mapping] || owner.default_mapping
         owner.xml_mapping_nodes(:mapping=>@mapping) << self
         XML::Mapping::Classes_by_rootelt_names.ensure_exists owner.root_element_name, @mapping, owner
+        args
       end
       # This is called by the XML unmarshalling machinery when the
       # state of an instance of this node's @owner is to be read from
@@ -302,23 +304,23 @@ module XML
       # (using XML::XXPath or any other means) and store it to the
       # corresponding parts (attributes etc.) of _obj_'s state.
       def xml_to_obj(obj,xml)
-	# TODO: the @in_xml2obj_dflt flag should be
-	#   per- node-and-instance instead of just per-node
+        # TODO: the @in_xml2obj_dflt flag should be
+        #   per- node-and-instance instead of just per-node
         if @options[:reader] and !@in_xml2obj_dflt
           begin
             @options[:reader].call(obj,xml)
-	  rescue ArgumentError
-	    @options[:reader].call(obj,xml,
-				   proc{|obj,xml|
-				     @in_xml2obj_dflt = true
-				     begin
-				       self.xml_to_obj(obj,xml)
-				     ensure
-				       @in_xml2obj_dflt = nil
-				     end
-				   })
-	  end
-	  true
+          rescue ArgumentError
+            @options[:reader].call(obj,xml,
+                                   proc{|obj,xml|
+                                     @in_xml2obj_dflt = true
+                                     begin
+                                       self.xml_to_obj(obj,xml)
+                                     ensure
+                                       @in_xml2obj_dflt = nil
+                                     end
+                                   })
+          end
+          true
         else
           false
         end
@@ -331,22 +333,22 @@ module XML
       # attributes etc.) of _xml_ (using XML::XXPath or any other
       # means).
       def obj_to_xml(obj,xml)
-	# TODO: the @in_obj2xml_dflt flag should be
-	#   per- node-and-instance instead of just per-node
+        # TODO: the @in_obj2xml_dflt flag should be
+        #   per- node-and-instance instead of just per-node
         if @options[:writer] and !@in_obj2xml_dflt
-	  begin
-	    @options[:writer].call(obj,xml)
-	  rescue ArgumentError
-	    @options[:writer].call(obj,xml,
-				   proc{|obj,xml|
-				     @in_obj2xml_dflt = true
-				     begin
-				       self.obj_to_xml(obj,xml)
-				     ensure
-				       @in_obj2xml_dflt = nil
-				     end
-				   })
-	  end
+          begin
+            @options[:writer].call(obj,xml)
+          rescue ArgumentError
+            @options[:writer].call(obj,xml,
+                                   proc{|obj,xml|
+                                     @in_obj2xml_dflt = true
+                                     begin
+                                       self.obj_to_xml(obj,xml)
+                                     ensure
+                                       @in_obj2xml_dflt = nil
+                                     end
+                                   })
+          end
           true
         else
           false
@@ -429,21 +431,24 @@ module XML
       # to TextNode.initialize_impl. "city" is of course the XPath
       # expression locating the XML sub-element this text node refers
       # to; TextNode.initialize_impl stores it into @path.
-      def initialize(owner,attrname,*args)
-        super(owner,*args)
-        @attrname = attrname
-        owner.add_accessor attrname
-        if Hash===args[-1]
-          args = args[0..-2]
-        end
+      def initialize(*args)
+        @attrname,*args = super(*args)
+        @owner.add_accessor @attrname
         if @options[:optional] and not(@options.has_key?(:default_value))
           @options[:default_value] = nil
         end
         initialize_impl(*args)
+        args
       end
-      # Initializer to be implemented by subclasses.
+      # this method was retained for compatibility with xml-mapping 0.8.
+      #
+      # It used to be the initializer to be implemented by subclasses. The
+      # arguments (args) are those still unprocessed by
+      # SingleAttributeNode's initializer.
+      #
+      # In xml-mapping 0.9 and up, you should just override initialize() and
+      # call super.initialize. The returned array is the same args array.
       def initialize_impl(*args)
-        raise "abstract method called"
       end
 
       # Exception that may be used by implementations of

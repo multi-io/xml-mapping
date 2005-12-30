@@ -653,7 +653,12 @@ specify a different mapping for the sub-object(s) using the option
 == {Defining your own Node Types}[a:definingnodes]
 
 It's easy to write additional node types and register them with the
-xml-mapping library.
+xml-mapping library (the following node types come with xml-mapping:
++node+, +text_node+, +numeric_node+, +boolean_node+, +object_node+,
++array_node+, +hash_node+, +choice_node+).
+
+A node
+
 
   Node
    +-SingleAttributeNode
