@@ -44,7 +44,7 @@ module XML
                else
                  raise XXPathError, "XPath (#{xpathstr}): unknown axis: #{x}"
                end
-        axis=:self if axis==:child and (part[0]==?. or part=~/^child::/)  # yuck
+        axis=:self if axis==:child and (part[0]==?. or part=~/^self::/)  # yuck
 
         step = Step.compile(axis,part)
         @creator_procs << step.creator(@creator_procs[-1])

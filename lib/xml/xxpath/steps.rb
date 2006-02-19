@@ -83,7 +83,7 @@ module XML
 
     class AttrStep < Step #:nodoc:
       def self.compile axis, string
-        /^\.\[@(.*?)='(.*?)'\]$/ === string or return nil
+        /^(?:\.|self::\*)\[@(.*?)='(.*?)'\]$/ === string or return nil
         self.new axis,$1,$2
       end
 

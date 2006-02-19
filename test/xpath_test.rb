@@ -118,13 +118,18 @@ class XPathTest < Test::Unit::TestCase
   def test_read_attr
     assert_equal [@d.root.elements[3]],
                  XML::XXPath.new(".[@key='xy']").all(@d.root.elements[3])
+    assert_equal [@d.root.elements[3]],
+                 XML::XXPath.new("self::*[@key='xy']").all(@d.root.elements[3])
     assert_equal [],
                  XML::XXPath.new(".[@key='xz']").all(@d.root.elements[3])
 
     assert_equal [@d.root.elements[3]], @d.all("bla/foo[2]/.[@key='xy']")
+    assert_equal [@d.root.elements[3]], @d.all("bla/foo[2]/self::*[@key='xy']")
     assert_equal [@d.root.elements[3]], @d.all("bla/*/.[@key='xy']")
+    assert_equal [@d.root.elements[3]], @d.all("bla/*/self::*[@key='xy']")
     assert_equal [], @d.all("bla/foo[2]/.[@key='xy2']")
     assert_equal [], @d.all("bla/foo[2]/.[@key2='xy']")
+    assert_equal [], @d.all("bla/foo[2]/self::*[@key2='xy']")
   end
 
 
@@ -238,7 +243,7 @@ class XPathTest < Test::Unit::TestCase
   def test_write_attr
     assert_equal [@d.root.elements[3]], @d.all("bla/foo[2]/.[@key='xy']", :ensure_created=>true)
     assert_equal "xy", @d.root.elements[3].attributes['key']
-    assert_equal [@d.root.elements[3]], @d.all("bla/foo[2]/.[@key2='ab']", :ensure_created=>true)
+    assert_equal [@d.root.elements[3]], @d.all("bla/foo[2]/self::*[@key2='ab']", :ensure_created=>true)
     assert_equal "ab", @d.root.elements[3].attributes['key2']
     assert_equal "xy", @d.root.elements[3].attributes['key']
 
@@ -246,7 +251,7 @@ class XPathTest < Test::Unit::TestCase
       @d.root.elements[3].create_new ".[@key='xy']"
     }
     assert_raises(XML::XXPathError) {
-      @d.root.elements[3].create_new ".[@notthere='foobar']"
+      @d.root.elements[3].create_new "self::*[@notthere='foobar']"
     }
   end
 
