@@ -20,7 +20,9 @@ module XML
     # representation (XPath pattern) of the path
     def initialize(xpathstr)
       @xpathstr = xpathstr  # for error messages
-      
+
+      # TODO: write a real XPath parser sometime
+
       xpathstr='/'+xpathstr if xpathstr[0] != ?/
 
       @creator_procs = [ proc{|node,create_new| node} ]
@@ -42,7 +44,7 @@ module XML
                else
                  raise XXPathError, "XPath (#{xpathstr}): unknown axis: #{x}"
                end
-        axis=:self if axis==:child and part=='.'   # TODO: verify
+        axis=:self if axis==:child and (part[0]==?. or part=~/^child::/)  # yuck
 
         step = Step.compile(axis,part)
         @creator_procs << step.creator(@creator_procs[-1])

@@ -32,16 +32,18 @@ module XML
 
       # return a proc that takes a list of nodes, finds all sub-nodes
       # that are reachable from one of those nodes via _self_'s axis
-      # and match (Step#matches) _self_'s node matcher, and calls
-      # _prev_reader_ on them (and returns the result).  When the proc
-      # doesn't find any such nodes, it throws <tt>:not_found,
+      # and match (see below) _self_, and calls _prev_reader_ on them
+      # (and returns the result).  When the proc doesn't find any such
+      # nodes, it throws <tt>:not_found,
       # [nodes,creator_from_here]</tt>.
       #
       # Needed for compiling whole XPath expressions for reading.
       #
-      # <tt>Step</tt> itself provides a generic default
-      # implementation, subclasses may provide specialized
-      # implementations for better performance.
+      # <tt>Step</tt> itself provides a generic default implementation
+      # which checks whether _self_ matches a given node by calling
+      # self.matches(node). Subclasses must either implement such a
+      # _matches_ method or override _reader_ to provide more
+      # specialized implementations for better performance.
       def reader(prev_reader,creator_from_here)
         proc {|nodes|
           next_nodes = []
@@ -79,6 +81,32 @@ module XML
     end
 
 
+    class AttrStep < Step #:nodoc:
+      def self.compile axis, string
+        /^\.\[@(.*?)='(.*?)'\]$/ === string or return nil
+        self.new axis,$1,$2
+      end
+
+      def initialize(axis,attr_name,attr_value)
+        super(axis)
+        @attr_name,@attr_value = attr_name,attr_value
+      end
+
+      def matches node
+        node.class==REXML::Element and node.attributes[@attr_name]==@attr_value
+      end
+
+      def create_on(node,create_new)
+        if create_new
+          raise XXPathError, "XPath: .[@'#{@attr_name}'='#{@attr_value}']: create_new but context node already exists"
+        end
+        # TODO: raise if node.attributes[@attr_name] already exists?
+        node.attributes[@attr_name]=@attr_value
+        node
+      end
+    end
+
+
     class NameAndAttrStep < Step #:nodoc:
       def self.compile axis, string
         /^(.*?)\[@(.*?)='(.*?)'\]$/ === string or return nil
@@ -98,8 +126,8 @@ module XML
         if create_new
           newnode = node.elements.add(@name)
         else
-          newnode = node.elements.select{|elt| elt.name==@name}[0]
-          if not(newnode) or newnode.attributes[@attr_name]
+          newnode = node.elements.select{|elt| elt.name==@name and not(elt.attributes[@attr_name])}[0]
+          if not(newnode)
             newnode = node.elements.add(@name)
           end
         end
