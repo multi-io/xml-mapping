@@ -424,11 +424,7 @@ Here XML mappings are defined for the existing fields +year+, +month+
 etc. Xml-mapping noticed that the getter methods for those attributes
 existed, so it didn't overwrite them. When calling +save_to_xml+ on a
 +Time+ object, these methods are called and return the object's values
-for those fields, which then get written to the output XML. Of course
-you could also derive a new class from a pre-existing one and
-implement the XML::Mapping stuff there, or even derive several such
-classes in order to define more than one XML mapping for one existing
-class.
+for those fields, which then get written to the output XML.
 
 So you can convert +Time+ objects into XML trees. What about reading
 them back in from XML? All XML reading operations go through
@@ -464,14 +460,17 @@ that gets read/written by the node.
 === {choice_node}[a:choice_node]
 
 There is one node type distributed with xml-mapping that is not a
-single-attribute node: +choice_node+. It allows you to specify a
-sequence of pairs, each consisting of an XPath expression and a
-node. When reading in an XML source, the choice_node will invoke the
-node whose corresponding XPath expression was matched in the XML. When
-writing an object back to XML, the choice_node will invoke the first
-node whose data was "present" in the object (for single-attribute
-nodes, the data is considered "present" if the node's attribute is
-non-nil).
+single-attribute node: +choice_node+. A +choice_node+ allows you to
+specify a sequence of pairs, each consisting of an XPath expression
+and another node (any node is supported here, including other
+choice_nodes). When reading in an XML source, the choice_node will
+delegate the work to the first node in the sequence whose
+corresponding XPath expression was matched in the XML. When writing an
+object back to XML, the choice_node will delegate the work to the
+first node whose data was "present" in the object (for
+single-attribute nodes, the data is considered "present" if the node's
+attribute is non-nil; for choice_nodes, the data is considered
+"present" if at least one of the node's sub-nodes is "present").
 
 As a (somewhat contrived) example, here's a mapping for +Publication+
 objects that have either a single author (contained in an "author" XML
@@ -480,10 +479,10 @@ attribute) or several "contributors" (contained in a sequence of
 
   :include: publication.intout
 
-Note that the symbols :if, :then, and :elsif (but not :else -- see
-below) in the +choice_node+'s node factory method call are ignored;
-they may be sprinkled across the argument list at will (preferably the
-way shown above of course) to increase readability.
+The symbols :if, :then, and :elsif (but not :else -- see below) in the
++choice_node+'s node factory method call are ignored; they may be
+sprinkled across the argument list at will (preferably the way shown
+above of course) to increase readability.
 
 The rest of the arguments specify the mentioned sequence of XPath
 expressions and corresponding nodes.
@@ -564,10 +563,10 @@ an XML tree <tt><foo name="Jim" more="XYZ"/></tt> is converted to a
 In our :writer proc, we only take +obj+ (the +Foo+ object to be
 written to XML) and +xml+ (the XML tree the stuff is to be written
 to). Analogously to the :reader, we could take a proc that wraps the
-default writing functionality of the node, but we don't need that here
--- we competely override the writing functionality with our own code,
-which just takes the +name+ attribute of the object and writes "hi
-<the name> ho" to a +bar+ XML attribute in the XML tree (stupid
+default writing functionality of the node, but we don't do that
+here--we completely override the writing functionality with our own
+code, which just takes the +name+ attribute of the object and writes
+"hi <the name> ho" to a +bar+ XML attribute in the XML tree (stupid
 example, I know).
 
 As a special convention, if you specify both a :reader and a :writer
@@ -604,9 +603,9 @@ An advice similar to the one given above for marshallers/unmarshallers
 applies here as well: If you find yourself writing lots of readers and
 writers that only differ in some easily parameterizable aspects, you
 should think about defining your own node types. We talk about that
-below[aref:definingnodes], and it generally just involves moving the
-(sensibly parameterized) code from your readers/writers to your node
-types.
+below[aref:definingnodes], and it generally just means that you move
+the (sensibly parameterized) code from your readers/writers to your
+node types.
 
 
 == {Multiple Mappings per Class}[a:mappings]
@@ -638,6 +637,13 @@ age and an address:
 
   :include: examples/person_mm.intout
 
+In this example, each of the two mappings contains nodes that map the
+same set of Ruby attributes (name, age and address). This is probably
+what you want most of the time (since you're normally defining
+multiple XML mappings for the same Ruby data), but it's not a
+necessity at all. When a mapping class is defined, xml-mapping will
+add all Ruby attributes from all mappings to it.
+
 You may have noticed that the <tt>object_node</tt>s in the +Person+
 class apply the mapping they were themselves defined in to their
 sub-ordinated class (+Address+). This is the case for all
@@ -657,8 +663,14 @@ xml-mapping library (the following node types come with xml-mapping:
 +node+, +text_node+, +numeric_node+, +boolean_node+, +object_node+,
 +array_node+, +hash_node+, +choice_node+).
 
-A node
+=== Node Types Are Ruby Classes
 
+A node type is implemented as a Ruby class derived from
+XML::Mapping::Node or one of its subclasses.
+
+The following node types (node classes) come with xml-mapping (they
+all live in the XML::Mapping namespace, which I've left out here for
+brevity):
 
   Node
    +-SingleAttributeNode
@@ -671,6 +683,90 @@ A node
    |  +-BooleanNode
    +-ChoiceNode
 
+XML::Mapping::Node is the base class for all nodes,
+XML::Mapping::SingleAttributeNode is the base class for
+{single-attribute nodes}[aref:sanodes], and
+XML::Mapping::SubObjectBaseNode is the base class for
+{single-attribute nodes with
+sub-objects}[aref:subobjnodes]. XML::Mapping::TextNode,
+XML::Mapping::ArrayNode etc. are of course the +text_node+,
++array_node+ we've talked about in this document. When you've written
+a new node class, you register it with xml-mapping by calling
+<tt>XML::Mapping.add_node_class MyNode</tt>. When you do that,
+xml-mapping automatically defines the node factory method for your
+class -- the method's name (e.g. +my_node+) is derived from the node's
+class name (e.g. Foo::Bar::MyNode) by stripping all parent module
+names, and then converting capital letters to lowercase and preceding
+them with an underscore. In fact, this is just how all the predefined
+node types are defined -- those node types are not "special"; they're
+defined in the source file +xml/mapping/standard_nodes.rb+ and then
+registered normally in +xml/mapping.rb+. The source code of the
+built-in nodes is not very long or complicated; you may consider
+reading it in addition to this text.
+
+
+=== How Nodes Types Work
+
+The xml-mapping core "operates" node types as follows:
+
+
+==== Node Initialization
+
+As said above, when a node class is registered with xml-mapping by
+calling <tt>XML::Mapping.add_node_class TheNodeClass</tt>, xml-mapping
+automatically generates the node factory method for that type. The
+node factory method will effectively be defined as a class method of
+the XML::Mapping module, which is why one can call it from the body of
+a mapping class definition. The method will create a new instance of
+the node class (a *node* for short) by calling +new+ on the node
+class. The list of parameters to the initializer will consist of
+<i>the mapping class, followed by all arguments that were passed to
+the node factory method</i>. For example, when you have this node
+declaration:
+
+  class MyMappingClass
+    include XML::Mapping
+
+    my_node :foo, "bar", 42, :hi=>"ho"
+  end
+
+, then the node factory method (+my_node+) calls
+<tt>MyNode.new(MyMappingClass, :foo, "bar", 42, :hi=>"ho")</tt>.
+
+_new_ of course creates the instance and calls _initialize_ on it.
+The base node class XML::Mapping::Node provides an _initialize_
+implementation that, among other things (described below), adds _self_
+(i.e. the created node) to the internal list of nodes held by the
+mapping class, and sets the @owner attribute of _self_ to reference
+the mapping class.
+
+So, effectively there will be one instance of a node class (a node)
+per node definition, and that instance lives in the mapping class the
+node was defined in.
+
+
+==== Node Operation during Marshalling and Unmarshalling
+
+When an instance of a mapping class is created or filled from an XML
+tree, xml-mapping will call +xml_to_obj+ on all nodes defined in that
+mapping class in the order of their definition. Two parameters will be
+passed: the mapping class instance being created/filled, and the XML
+tree the instance is being created/filled from. The implementation of
++xml_to_obj+ is expected to read whatever pieces of data it is
+responsible for from the XML tree and put it into the appropriate
+variables/attributes etc. of the instance.
+
+When an instance of a mapping class is stored or filled into an XML
+tree, xml-mapping will call +obj_to_xml+ on all nodes defined in that
+mapping class in the order of their definition, again passing as
+parameters the mapping class instance being stored, and the XML tree
+the instance is being stored/filled into. The implementation of
++obj_to_xml+ is expected to read whatever pieces of data it is
+responsible for from the instance and put it into the appropriate
+XML elements/XML attr etc. of the XML tree.
+
+
+==== Example
 
 Let's say we want to extend the +Signature+ class from the example to
 include the time at which the signature was created. We want the new
