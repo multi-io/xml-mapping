@@ -26,7 +26,7 @@ class Rake::GemPackageTask
 end
 
 
-FILES_RDOC_EXTRA=%w{README README_XPATH TODO.txt doc/xpath_impl_notes.txt}
+FILES_RDOC_EXTRA=%w{README README_XPATH ChangeLog TODO.txt doc/xpath_impl_notes.txt}
 FILES_RDOC_INCLUDES=%w{examples/company.xml
                        examples/company.rb
                        examples/company_usage.intout
