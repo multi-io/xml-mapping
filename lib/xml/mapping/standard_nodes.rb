@@ -97,22 +97,23 @@ module XML
         args = super(*args)
 
         @sub_mapping = @options[:sub_mapping] || @mapping
+        @marshaller, @unmarshaller = @options[:marshaller], @options[:unmarshaller]
 
         if @options[:class]
-          unless @options[:marshaller]
-            @options[:marshaller] = proc {|xml,value|
+          unless @marshaller
+            @marshaller = proc {|xml,value|
               value.fill_into_xml xml, :mapping=>@sub_mapping
             }
           end
-          unless @options[:unmarshaller]
-            @options[:unmarshaller] = proc {|xml|
+          unless @unmarshaller
+            @unmarshaller = proc {|xml|
               @options[:class].load_from_xml xml, :mapping=>@sub_mapping
             }
           end
         end
 
-        unless @options[:marshaller]
-          @options[:marshaller] = proc {|xml,value|
+        unless @marshaller
+          @marshaller = proc {|xml,value|
             value.fill_into_xml xml, :mapping=>@sub_mapping
             if xml.unspecified?
               xml.name = value.class.root_element_name :mapping=>@sub_mapping
@@ -120,8 +121,8 @@ module XML
             end
           }
         end
-        unless @options[:unmarshaller]
-          @options[:unmarshaller] = proc {|xml|
+        unless @unmarshaller
+          @unmarshaller = proc {|xml|
             XML::Mapping.load_object_from_xml xml, :mapping=>@sub_mapping
           }
         end
@@ -158,10 +159,10 @@ module XML
         args
       end
       def extract_attr_value(xml) # :nodoc:
-        @options[:unmarshaller].call(default_when_xpath_err{@path.first(xml)})
+        @unmarshaller.call(default_when_xpath_err{@path.first(xml)})
       end
       def set_attr_value(xml, value) # :nodoc:
-        @options[:marshaller].call(@path.first(xml,:ensure_created=>true), value)
+        @marshaller.call(@path.first(xml,:ensure_created=>true), value)
       end
     end
 
@@ -269,14 +270,14 @@ module XML
       def extract_attr_value(xml) # :nodoc:
         result = []
         default_when_xpath_err{@reader_path.all(xml)}.each do |elt|
-          result << @options[:unmarshaller].call(elt)
+          result << @unmarshaller.call(elt)
         end
         result
       end
       def set_attr_value(xml, value) # :nodoc:
         base_elt = @base_path.first(xml,:ensure_created=>true)
         value.each do |arr_elt|
-          @options[:marshaller].call(@per_arrelement_path.create_new(base_elt), arr_elt)
+          @marshaller.call(@per_arrelement_path.create_new(base_elt), arr_elt)
         end
       end
     end
@@ -334,7 +335,7 @@ module XML
         result = {}
         default_when_xpath_err{@reader_path.all(xml)}.each do |elt|
           key = @key_path.first(elt).text
-          value = @options[:unmarshaller].call(elt)
+          value = @unmarshaller.call(elt)
           result[key] = value
         end
         result
@@ -343,7 +344,7 @@ module XML
         base_elt = @base_path.first(xml,:ensure_created=>true)
         value.each_pair do |k,v|
           elt = @per_hashelement_path.create_new(base_elt)
-          @options[:marshaller].call(elt,v)
+          @marshaller.call(elt,v)
           @key_path.first(elt,:ensure_created=>true).text = k
         end
       end
