@@ -295,6 +295,34 @@ module XML
         @mapping = @options[:mapping] || owner.default_mapping
         owner.xml_mapping_nodes(:mapping=>@mapping) << self
         XML::Mapping::Classes_by_rootelt_names.ensure_exists owner.root_element_name, @mapping, owner
+        if @options[:reader]
+          # override xml_to_obj in this instance with invocation of
+          # @options[:reader]
+          class << self
+            alias_method :default_xml_to_obj, :xml_to_obj
+            def xml_to_obj(obj,xml)
+              begin
+                @options[:reader].call(obj,xml)
+              rescue ArgumentError
+                @options[:reader].call(obj,xml,self.method(:default_xml_to_obj))
+              end
+            end
+          end
+        end
+        if @options[:writer]
+          # override obj_to_xml in this instance with invocation of
+          # @options[:writer]
+          class << self
+            alias_method :default_obj_to_xml, :obj_to_xml
+            def obj_to_xml(obj,xml)
+              begin
+                @options[:writer].call(obj,xml)
+              rescue ArgumentError
+                @options[:writer].call(obj,xml,self.method(:default_obj_to_xml))
+              end
+            end
+          end
+        end
         args
       end
       # This is called by the XML unmarshalling machinery when the
@@ -304,26 +332,7 @@ module XML
       # (using XML::XXPath or any other means) and store it to the
       # corresponding parts (attributes etc.) of _obj_'s state.
       def xml_to_obj(obj,xml)
-        # TODO: the @in_xml2obj_dflt flag should be
-        #   per- node-and-instance instead of just per-node
-        if @options[:reader] and !@in_xml2obj_dflt
-          begin
-            @options[:reader].call(obj,xml)
-          rescue ArgumentError
-            @options[:reader].call(obj,xml,
-                                   proc{|obj,xml|
-                                     @in_xml2obj_dflt = true
-                                     begin
-                                       self.xml_to_obj(obj,xml)
-                                     ensure
-                                       @in_xml2obj_dflt = nil
-                                     end
-                                   })
-          end
-          true
-        else
-          false
-        end
+        raise "abstract method called"
       end
       # This is called by the XML unmarshalling machinery when the
       # state of an instance of this node's @owner is to be stored
@@ -333,26 +342,7 @@ module XML
       # attributes etc.) of _xml_ (using XML::XXPath or any other
       # means).
       def obj_to_xml(obj,xml)
-        # TODO: the @in_obj2xml_dflt flag should be
-        #   per- node-and-instance instead of just per-node
-        if @options[:writer] and !@in_obj2xml_dflt
-          begin
-            @options[:writer].call(obj,xml)
-          rescue ArgumentError
-            @options[:writer].call(obj,xml,
-                                   proc{|obj,xml|
-                                     @in_obj2xml_dflt = true
-                                     begin
-                                       self.obj_to_xml(obj,xml)
-                                     ensure
-                                       @in_obj2xml_dflt = nil
-                                     end
-                                   })
-          end
-          true
-        else
-          false
-        end
+        raise "abstract method called"
       end
       # Called when a new instance of the mapping class this node
       # belongs to is being initialized. _obj_ is the
@@ -460,7 +450,6 @@ module XML
       end
 
       def xml_to_obj(obj,xml)  # :nodoc:
-        return true if super(obj,xml)
         begin
           obj.send :"#{@attrname}=", extract_attr_value(xml)
         rescue NoAttrValueSet => err
@@ -489,7 +478,6 @@ module XML
         raise "abstract method called"
       end
       def obj_to_xml(obj,xml) # :nodoc:
-        return true if super(obj,xml)
         value = obj.send(:"#{@attrname}")
         if @options.has_key? :default_value
           unless value == @options[:default_value]

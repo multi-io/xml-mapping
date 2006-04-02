@@ -259,7 +259,7 @@ module XML
         base_path,per_arrelement_path = if path2
                                           [path,path2]
                                         else
-                                          ["",path]
+                                          [".",path]
                                         end
         per_arrelement_path=per_arrelement_path[1..-1] if per_arrelement_path[0]==?/
         @base_path = XML::XXPath.new(base_path)
@@ -387,7 +387,6 @@ module XML
       end
 
       def xml_to_obj(obj,xml)
-        return true if super(obj,xml)
         @choices.each do |path,node|
           if path==:else or not(path.all(xml).empty?)
             node.xml_to_obj(obj,xml)
@@ -398,7 +397,6 @@ module XML
       end
 
       def obj_to_xml(obj,xml)
-        return true if super(obj,xml)
         @choices.each do |path,node|
           if node.is_present_in obj
             node.obj_to_xml(obj,xml)
