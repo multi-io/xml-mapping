@@ -1,5 +1,5 @@
 # xml-mapping -- bidirectional Ruby-XML mapper
-#  Copyright (C) 2004,2005 Olaf Klischat
+#  Copyright (C) 2004-2006 Olaf Klischat
 
 $:.unshift(File.dirname(__FILE__)+"/..")
 

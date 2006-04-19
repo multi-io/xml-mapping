@@ -1,3 +1,6 @@
+# xxpath -- XPath implementation for Ruby, including write access
+#  Copyright (C) 2004-2006 Olaf Klischat
+
 require 'rexml/document'
 
 module XML
