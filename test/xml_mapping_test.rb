@@ -25,6 +25,8 @@ class XmlMappingTest < Test::Unit::TestCase
     Object.send(:remove_const, "Customer")
     Object.send(:remove_const, "Thing")
     Object.send(:remove_const, "Names1")
+    Object.send(:remove_const, "ReaderTest")
+    Object.send(:remove_const, "WriterTest")
     $".delete "company.rb"
     $:.unshift File.dirname(__FILE__)  # test/unit may have undone this (see test/unit/collector/dir.rb)
     require 'company'
@@ -102,26 +104,55 @@ class XmlMappingTest < Test::Unit::TestCase
 
 
   def test_reader
-    xml = REXML::Document.new('<test><foo>footext</foo></test>').root
+    xml = REXML::Document.new("<test>
+                                 <foo>footext</foo>
+                                 <foo2>foo2text</foo2>
+                                 <foo3>foo3text</foo3>
+                                 <bar>bartext</bar>
+                              </test>").root
     r = ReaderTest.load_from_xml xml
-    assert_nil r.foo
-    assert_equal 'hubba-bubba', r.read
+    assert_equal 'footext', r.foo
+    assert_nil r.foo2
+    assert_equal 'foo3text', r.foo3
+    assert_equal 'bartext', r.bar
+    assert_equal [:foo2,:foo3], r.read
 
-    r.foo = 'foovalue'
+    r.foo = 'foonew'
+    r.foo2 = 'foo2new'
+    r.foo3 = 'foo3new'
+    r.bar = 'barnew'
     xml2 = r.save_to_xml
-    assert_equal 'foovalue', xml2.first("foo").text
+    assert_equal 'foonew', xml2.first("foo").text
+    assert_equal 'foo2new', xml2.first("foo2").text
+    assert_equal 'foo3new', xml2.first("foo3").text
+    assert_equal 'barnew', xml2.first("bar").text
   end
 
 
   def test_writer
-    xml = REXML::Document.new('<test><foo>footext</foo></test>').root
+    xml = REXML::Document.new("<test>
+                                 <foo>footext</foo>
+                                 <foo2>foo2text</foo2>
+                                 <foo3>foo3text</foo3>
+                                 <bar>bartext</bar>
+                              </test>").root
     w = WriterTest.load_from_xml xml
     assert_equal 'footext', w.foo
+    assert_equal 'foo2text', w.foo2
+    assert_equal 'foo3text', w.foo3
+    assert_equal 'bartext', w.bar
 
-    w.foo = 'foovalue'
+    w.foo = 'foonew'
+    w.foo2 = 'foo2new'
+    w.foo3 = 'foo3new'
+    w.bar = 'barnew'
     xml2 = w.save_to_xml
-    assert_equal 'dingdong', xml2.first("quux").text
-    assert_nil xml2.first("foo",:allow_nil=>true)
+    assert_equal 'foonew', xml2.first("foo").text
+    assert_nil xml2.first("foo2",:allow_nil=>true)
+    assert_equal 'foo3new', xml2.first("foo3").text
+    assert_equal 'barnew', xml2.first("bar").text
+
+    assert_equal %w{dingdong2 dingdong3}, xml2.all("quux").map{|elt|elt.text}
   end
 
   

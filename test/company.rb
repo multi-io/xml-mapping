@@ -80,12 +80,24 @@ class ReaderTest
 
   attr_accessor :read
 
-  text_node :foo, "foo", :reader=>proc{|obj,xml| obj.read = 'hubba-bubba'}
+  text_node :foo, "foo"
+  text_node :foo2, "foo2", :reader=>proc{|obj,xml| (obj.read||=[]) << :foo2 }
+  text_node :foo3, "foo3", :reader=>proc{|obj,xml,default|
+                                            (obj.read||=[]) << :foo3
+                                            default.call(obj,xml)
+                                        }
+  text_node :bar, "bar"
 end
 
 
 class WriterTest
   include XML::Mapping
 
-  text_node :foo, "foo", :writer=>proc{|obj,xml| e = xml.elements.add; e.name='quux'; e.text='dingdong' }
+  text_node :foo, "foo"
+  text_node :foo2, "foo2", :writer=>proc{|obj,xml| e = xml.elements.add; e.name='quux'; e.text='dingdong2' }
+  text_node :foo3, "foo3", :writer=>proc{|obj,xml,default|
+                                            default.call(obj,xml)
+                                            e = xml.elements.add; e.name='quux'; e.text='dingdong3'
+                                        }
+  text_node :bar, "bar"
 end

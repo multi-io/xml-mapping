@@ -1,10 +1,12 @@
 require 'xml/mapping/base'
 
 class TimeNode < XML::Mapping::SingleAttributeNode
-  def initialize_impl(path)
+  def initialize(*args)
+    path,*args = super(*args)
     @y_path = XML::XXPath.new(path+"/year")
     @m_path = XML::XXPath.new(path+"/month")
     @d_path = XML::XXPath.new(path+"/day")
+    args
   end
 
   def extract_attr_value(xml)
@@ -16,7 +18,6 @@ class TimeNode < XML::Mapping::SingleAttributeNode
   end
 
   def set_attr_value(xml, value)
-    raise "Not a Time: #{value}" unless Time===value
     @y_path.first(xml,:ensure_created=>true).text = value.year
     @m_path.first(xml,:ensure_created=>true).text = value.month
     @d_path.first(xml,:ensure_created=>true).text = value.day

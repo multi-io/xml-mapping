@@ -162,8 +162,8 @@ correspond to the XML sub-trees yielded by the XPath expression
 "Signed-By/Signature" (relative to the tree corresponding to the
 +Order+ instance). Each element will be of class +Signature+
 (internally, each element is created from its corresponding XML
-element by just calling
-<tt>Signature.load_from_xml(the_xml_element)</tt>). The reason why the
+subtree by just calling
+<tt>Signature.load_from_xml(the_subtree)</tt>). The reason why the
 path "Signed-By/Signature" is provided in two arguments instead of
 just one combined one becomes apparent when marshalling the array
 (along with the surrounding +Order+ object) back into a sequence of
@@ -557,7 +557,7 @@ beginning. For this text_node, the default reading functionality is to
 take the text of the "name" attribute of +xml+ and put it into the
 +name+ attribute of +obj+. After that, we take the text of the "more"
 attribute of +xml+ and append it to the +name+ attribute of +obj+. So
-an XML tree <tt><foo name="Jim" more="XYZ"/></tt> is converted to a
+the XML tree <tt><foo name="Jim" more="XYZ"/></tt> is converted to a
 +Foo+ object with +name+="JimXYZ".
 
 In our :writer proc, we only take +obj+ (the +Foo+ object to be
@@ -663,110 +663,9 @@ xml-mapping library (the following node types come with xml-mapping:
 +node+, +text_node+, +numeric_node+, +boolean_node+, +object_node+,
 +array_node+, +hash_node+, +choice_node+).
 
-=== Node Types Are Ruby Classes
+I'll first show an example, then some more theoretical insight.
 
-A node type is implemented as a Ruby class derived from
-XML::Mapping::Node or one of its subclasses.
-
-The following node types (node classes) come with xml-mapping (they
-all live in the XML::Mapping namespace, which I've left out here for
-brevity):
-
-  Node
-   +-SingleAttributeNode
-   |  +-SubObjectBaseNode
-   |  |  +-ObjectNode
-   |  |  +-ArrayNode
-   |  |  +-HashNode
-   |  +-TextNode
-   |  +-NumericNode
-   |  +-BooleanNode
-   +-ChoiceNode
-
-XML::Mapping::Node is the base class for all nodes,
-XML::Mapping::SingleAttributeNode is the base class for
-{single-attribute nodes}[aref:sanodes], and
-XML::Mapping::SubObjectBaseNode is the base class for
-{single-attribute nodes with
-sub-objects}[aref:subobjnodes]. XML::Mapping::TextNode,
-XML::Mapping::ArrayNode etc. are of course the +text_node+,
-+array_node+ we've talked about in this document. When you've written
-a new node class, you register it with xml-mapping by calling
-<tt>XML::Mapping.add_node_class MyNode</tt>. When you do that,
-xml-mapping automatically defines the node factory method for your
-class -- the method's name (e.g. +my_node+) is derived from the node's
-class name (e.g. Foo::Bar::MyNode) by stripping all parent module
-names, and then converting capital letters to lowercase and preceding
-them with an underscore. In fact, this is just how all the predefined
-node types are defined -- those node types are not "special"; they're
-defined in the source file +xml/mapping/standard_nodes.rb+ and then
-registered normally in +xml/mapping.rb+. The source code of the
-built-in nodes is not very long or complicated; you may consider
-reading it in addition to this text.
-
-
-=== How Nodes Types Work
-
-The xml-mapping core "operates" node types as follows:
-
-
-==== Node Initialization
-
-As said above, when a node class is registered with xml-mapping by
-calling <tt>XML::Mapping.add_node_class TheNodeClass</tt>, xml-mapping
-automatically generates the node factory method for that type. The
-node factory method will effectively be defined as a class method of
-the XML::Mapping module, which is why one can call it from the body of
-a mapping class definition. The method will create a new instance of
-the node class (a *node* for short) by calling +new+ on the node
-class. The list of parameters to the initializer will consist of
-<i>the mapping class, followed by all arguments that were passed to
-the node factory method</i>. For example, when you have this node
-declaration:
-
-  class MyMappingClass
-    include XML::Mapping
-
-    my_node :foo, "bar", 42, :hi=>"ho"
-  end
-
-, then the node factory method (+my_node+) calls
-<tt>MyNode.new(MyMappingClass, :foo, "bar", 42, :hi=>"ho")</tt>.
-
-_new_ of course creates the instance and calls _initialize_ on it.
-The base node class XML::Mapping::Node provides an _initialize_
-implementation that, among other things (described below), adds _self_
-(i.e. the created node) to the internal list of nodes held by the
-mapping class, and sets the @owner attribute of _self_ to reference
-the mapping class.
-
-So, effectively there will be one instance of a node class (a node)
-per node definition, and that instance lives in the mapping class the
-node was defined in.
-
-
-==== Node Operation during Marshalling and Unmarshalling
-
-When an instance of a mapping class is created or filled from an XML
-tree, xml-mapping will call +xml_to_obj+ on all nodes defined in that
-mapping class in the order of their definition. Two parameters will be
-passed: the mapping class instance being created/filled, and the XML
-tree the instance is being created/filled from. The implementation of
-+xml_to_obj+ is expected to read whatever pieces of data it is
-responsible for from the XML tree and put it into the appropriate
-variables/attributes etc. of the instance.
-
-When an instance of a mapping class is stored or filled into an XML
-tree, xml-mapping will call +obj_to_xml+ on all nodes defined in that
-mapping class in the order of their definition, again passing as
-parameters the mapping class instance being stored, and the XML tree
-the instance is being stored/filled into. The implementation of
-+obj_to_xml+ is expected to read whatever pieces of data it is
-responsible for from the instance and put it into the appropriate
-XML elements/XML attr etc. of the XML tree.
-
-
-==== Example
+=== Example
 
 Let's say we want to extend the +Signature+ class from the example to
 include the time at which the signature was created. We want the new
@@ -798,17 +697,28 @@ There will be one instance of the node type +TimeNode+ per +time_node+
 declaration per mapping class (not per mapping class instance). That
 instance (the "node" for short) will be created by the node factory
 method (+time_node+); there's no need to instantiate the node type
-directly. The node factory method places the node into the mapping
+directly. The +time_node+ method places the node into the mapping
 class; the @owner attribute of the node is set to reference the
-mapping class. The node factory method passes its arguments (in the
-example, that would be <tt>:signed_on, "signed-on",
-:default_value=>Time.now</tt>) to the node's initializer. TimeNode's
-parent class XML::Mapping::SingleAttributeNode already handles the
-<tt>:signed_on</tt> and <tt>:default_value=>Time.now</tt> arguments --
-<tt>:signed_on</tt> is stored into <tt>@attrname</tt>, and the default
-value declarations will be described in a moment. The remaining
-argument <tt>"signed-on"</tt> gets passed to our +initialize_impl+
-method as parameter _path_. We'll interpret it as an XPath expression
+mapping class. The node factory method passes the mapping class the
+node appears in (+Signature+), followed by its own arguments, to the
+node's constructor. In the example, the +time_node+ method calls
+<tt>TimeNode.new(Signature, :signed_on, "signed-on",
+:default_value=>Time.now)</tt>). +new+ of course creates the node and
+then delegates the arguments to our initializer +initialize+. We first
+call the superclass's initializer, which strips off from the argument
+list those arguments it handles itself, and returns the remaining
+ones. In this case, the superclass XML::Mapping::SingleAttributeNode
+handles the +Signature+, <tt>:signed_on</tt> and
+<tt>:default_value=>Time.now</tt> arguments -- +Signature+ is stored
+into <tt>@owner</tt>, <tt>:signed_on</tt> is stored into
+<tt>@attrname</tt>, and <tt>{:default_value=>Time.now}</tt> is stored
+into <tt>@options</tt>. The remaining argument list
+<tt>["signed-on"]</tt> is returned; we capture the
+<tt>"signed-on"</tt> string in _path_ (the rest of the argument list
+(an empty array) we capture in _args_ for returning it at the end of
+the initializer. This isn't strictly necessary, it's just a convention
+that a node class initializer should always return those arguments it
+didn't handle itself). We'll interpret _path_ as an XPath expression
 that locates the time value relative to the parent mapping object's
 XML tree (in this case, this would be the XML tree rooted at the
 <tt><Signature></tt> element, i.e. the tree the +Signature+ instance
@@ -827,15 +737,18 @@ mapping class the node belongs to (+Signature+ in the example) is
 being created from an XML tree. The parameter _xml_ is that tree
 (again, this is the tree rooted at the <tt><Signature></tt> element in
 this example). The method implementation is expected to extract the
-attribute's value from _xml_ and return it, or raise
+single attribute's value from _xml_ and return it, or raise
 XML::Mapping::SingleAttributeNode::NoAttrValueSet if the attribute was
 "unset" in the XML (this exception tells the framework that the
 default value should be put in place if it was defined), or raise any
-other exception to signal an error and abort the whole process. In our
-implementation, we apply the xpath expressions created during
-initialization to _xml_ (e.g. <tt>@y_path.first(xml)</tt>). An
-expression _xpath_expr_.first(_xml_) returns (as a REXML element) the
-first sub-element of _xml_ that matches _xpath_expr_, or raises
+other exception to signal an error and abort the whole process. Our
+superclass XML::Mapping::SingleAttributeNode will store the returned
+single attribute's value into the <tt>signed_on</tt> attribute of the
++Signature+ instance being read in. In our implementation, we apply
+the xpath expressions created during initialization to _xml_
+(e.g. <tt>@y_path.first(xml)</tt>). An expression
+_xpath_expr_.first(_xml_) returns (as a REXML element) the first
+sub-element of _xml_ that matches _xpath_expr_, or raises
 XML::XXPathError if there was no such element. We apply REXML's _text_
 method to the returned element to get out the element's text, convert
 it to integer, and supply it to the constructor of the +Time+ object
@@ -864,18 +777,19 @@ mapping class the node belongs to (+Signature+ in the example) is
 being stored into an XML tree. The _xml_ parameter is the XML tree (a
 REXML element node; here this is again the tree rooted at the
 <tt><Signature></tt> element); _value_ is the current value of the
-attribute. _xml_ will most probably be "half-populated" by the time
-this method is called -- the framework calls the +set_attr_value+
-methods of all nodes of a mapping class in the order of their
-definition, letting each node fill its "bit" into _xml_. The method
-implementation is expected to write _value_ into (the correct
-sub-elements of) _xml_, or raise an exception to signal an error and
-abort the whole process. No default value handling is done here;
-+set_attr_value+ won't be called at all if the attribute had been set
-to its default value. In our implementation we grab the year, month
-and day values from _value_ (which must be a +Time+), and store it
-into the sub-elements of _xml_ identified by XPath expressions
-<tt>@y_path</tt>, <tt>@m_path</tt> and <tt>@d_path</tt>,
+single attribute (in this example, the <tt>signed_on</tt> attribute of
+the +Signature+ instance being stored). _xml_ will most probably be
+"half-populated" by the time this method is called -- the framework
+calls the +set_attr_value+ methods of all nodes of a mapping class in
+the order of their definition, letting each node fill its "bit" into
+_xml_. The method implementation is expected to write _value_ into
+(the correct sub-elements of) _xml_, or raise an exception to signal
+an error and abort the whole process. No default value handling is
+done here; +set_attr_value+ won't be called at all if the attribute
+had been set to its default value. In our implementation we grab the
+year, month and day values from _value_ (which must be a +Time+), and
+store it into the sub-elements of _xml_ identified by XPath
+expressions <tt>@y_path</tt>, <tt>@m_path</tt> and <tt>@d_path</tt>,
 respectively. We do this by calling XML::XXPath#first with an
 additional parameter <tt>:ensure_created=>true</tt>. An expression
 _xpath_expr_.first(_xml_,:ensure_created=>true) works just like
@@ -902,6 +816,233 @@ we put the <tt>:signatures</tt> node _before_ the <tt>:items</tt>
 node, the <tt><Signed-By></tt> element will appear _before_ the
 sequence of <tt><Item></tt> elements in the output XML.
 
+
+The following is a more systematic overview of the basic node
+types. The description is self-contained, so some information from the
+previous section will be repeated.
+
+=== Node Types Are Ruby Classes
+
+A node type is implemented as a Ruby class derived from
+XML::Mapping::Node or one of its subclasses.
+
+The following node types (node classes) come with xml-mapping (they
+all live in the XML::Mapping namespace, which I've left out here for
+brevity):
+
+  Node
+   +-SingleAttributeNode
+   |  +-SubObjectBaseNode
+   |  |  +-ObjectNode
+   |  |  +-ArrayNode
+   |  |  +-HashNode
+   |  +-TextNode
+   |  +-NumericNode
+   |  +-BooleanNode
+   +-ChoiceNode
+
+XML::Mapping::Node is the base class for all nodes,
+XML::Mapping::SingleAttributeNode is the base class for
+{single-attribute nodes}[aref:sanodes], and
+XML::Mapping::SubObjectBaseNode is the base class for
+{single-attribute nodes with
+sub-objects}[aref:subobjnodes]. XML::Mapping::TextNode,
+XML::Mapping::ArrayNode etc. are of course the +text_node+,
++array_node+ etc. we've talked about in this document. When you've
+written a new node class, you register it with xml-mapping by calling
+<tt>XML::Mapping.add_node_class MyNode</tt>. When you do that,
+xml-mapping automatically defines the node factory method for your
+class -- the method's name (e.g. +my_node+) is derived from the node's
+class name (e.g. Foo::Bar::MyNode) by stripping all parent module
+names, and then converting capital letters to lowercase and preceding
+them with an underscore. In fact, this is just how all the predefined
+node types are defined -- those node types are not "special"; they're
+defined in the source file +xml/mapping/standard_nodes.rb+ and then
+registered normally in +xml/mapping.rb+. The source code of the
+built-in nodes is not very long or complicated; you may consider
+reading it in addition to this text to gain a better understanding.
+
+
+=== How Node Types Work
+
+The xml-mapping core "operates" node types as follows:
+
+
+==== Node Initialization
+
+As said above, when a node class is registered with xml-mapping by
+calling <tt>XML::Mapping.add_node_class TheNodeClass</tt>, xml-mapping
+automatically generates the node factory method for that type. The
+node factory method will effectively be defined as a class method of
+the XML::Mapping module, which is why one can call it from the body of
+a mapping class definition. The method will create a new instance of
+the node class (a *node* for short) by calling _new_ on the node
+class. The list of parameters to _new_ will consist of <i>the mapping
+class, followed by all arguments that were passed to the node factory
+method</i>. For example, when you have this node declaration:
+
+  class MyMappingClass
+    include XML::Mapping
+
+    my_node :foo, "bar", 42, :hi=>"ho"
+  end
+
+, then the node factory method (+my_node+) calls
+<tt>MyNode.new(MyMappingClass, :foo, "bar", 42, :hi=>"ho")</tt>.
+
+_new_ of course creates the instance and calls _initialize_ on it. The
+_initialize_ implementation will generally store the parameters into
+some instance variables for later usage. As a convention, _initialize_
+should always extract from the parameter list those parameters it
+processes itself, process them, and return an array containing the
+remaining (still unprocessed) parameters. Thus, an implementation of
+_initialize_ follows this pattern:
+
+  def initialize(*args)
+    myparam1,myparam2,...,myparamx,*args = super(*args)
+
+    .... process the myparam1,myparam2,...,myparamx ....
+
+    # return still unprocessed args
+    args
+  end
+
+(since the called superclass initializer is written the same way, the
+parameter array returned by it will already be stripped of all
+parameters that the superclass initializer (or any of its
+superclasses's initializers) processed)
+
+This technique is a simple way to "chain" the initializers of all
+superclasses of a node class, starting with the topmost one (Node), so
+that each initializer can easily find out and process the parameters
+it is responsible for.
+
+The base node class XML::Mapping::Node provides an _initialize_
+implementation that, among other things (described below), adds _self_
+(i.e. the created node) to the internal list of nodes held by the
+mapping class, and sets the @owner attribute of _self_ to reference
+the mapping class.
+
+So, effectively there will be one instance of a node class (a node)
+per node definition, and that instance lives in the mapping class the
+node was defined in.
+
+
+==== Node Operation during Marshalling and Unmarshalling
+
+When an instance of a mapping class is created or filled from an XML
+tree, xml-mapping will call +xml_to_obj+ on all nodes defined in that
+mapping class in the {mapping}[aref:mappings] the node is defined in,
+in the order of their definition. Two parameters will be passed: the
+mapping class instance being created/filled, and the XML tree the
+instance is being created/filled from. The implementation of
++xml_to_obj+ is expected to read whatever pieces of data it is
+responsible for from the XML tree and put it into the appropriate
+variables/attributes etc. of the instance.
+
+When an instance of a mapping class is stored or filled into an XML
+tree, xml-mapping will call +obj_to_xml+ on all nodes defined in that
+mapping class in the {mapping}[aref:mappings] the node is defined in,
+in the order of their definition, again passing as parameters the
+mapping class instance being stored, and the XML tree the instance is
+being stored/filled into. The implementation of +obj_to_xml+ is
+expected to read whatever pieces of data it is responsible for from
+the instance and put it into the appropriate XML elements/XML attr
+etc. of the XML tree.
+
+
+=== Basic Node Types Overview
+
+The following is an overview of how initialization and
+marshalling/unmarshalling is implemented in the node base classes
+(Node, SingleAttributeNode, and SubObjectBaseNode).
+
+TODO: summary table: member var name; introduced in class; meaning
+
+==== Node
+
+In _initialize_, the mapping class and the option arguments are
+stripped from the argument list. The mapping class is stored in
+@owner, the option arguments are stored (as a hash) in @options (the
+hash will be empty if no options were given). The
+{mapping}[aref:mappings] the node is defined in is determined
+(:mapping option, last <tt>use_mapping</tt> or <tt>:_default</tt>) and
+stored in @mapping. The node then stores itself in the list of nodes
+of the mapping class belonging to the mapping
+(<tt>@owner.xml_mapping_nodes(:mapping=>@mapping)</tt>; see
+XML::Mapping::ClassMethods#xml_mapping_nodes). This list is the list
+of nodes later used when marshalling/unmarshalling an instance of the
+mapping class with respect to a given mapping. This means that node
+implementors will not normally "see" anything of the mapping (they
+don't need to access the @mapping variable) because the
+marshalling/unmarshalling methods
+(<tt>obj_to_xml</tt>/<tt>xml_to_obj</tt>) simply won't be called if
+the node's mapping is not the same as the mapping the
+marshalling/unmarshalling is happening with.
+
+Furthermore, when :reader and/or :writer options were given,
+<tt>xml_to_obj</tt> resp. <tt>obj_to_xml</tt> are transparently
+overwritten on the node to delegate to the supplied :reader/:writer
+procs.
+
+The marshalling/unmarshalling methods
+(<tt>obj_to_xml</tt>/<tt>xml_to_obj</tt>) are not implemented in
++Node+ (they just raise an exception).
+
+
+==== SingleAttributeNode
+
+In _initialize_, the attribute name is stripped from the argument list
+and stored in @attrname, and an attribute of that name is added to the
+mapping class the node belongs to.
+
+During marshalling/unmarshalling of an object to/from XML,
+single-attribute nodes only read/write a single piece of the object's
+state: the single attribute (@attrname) the node handles. Because of
+this, the <tt>obj_to_xml</tt>/<tt>xml_to_obj</tt> implementations in
+SingleAttributeNode call two new methods introduced by
+SingleAttributeNode, which must be overwritten by subclasses:
+
+  extract_attr_value(xml)
+
+  set_attr_value(xml, value)
+
+<tt>extract_attr_value(xml)</tt> is called by <tt>xml_to_obj</tt>
+during unmarshalling. _xml_ is the XML tree being read. The method
+must read the attribute's value from _xml_ and return
+it. <tt>xml_to_obj</tt> will set the attribute to that value.
+
+<tt>set_attr_value(xml, value)</tt> is called by <tt>obj_to_xml</tt>
+during marshalling. _xml_ is the XML tree being written, _value_ is
+the current value of the attribute. The method must write _value_ into
+(the correct sub-elements/attributes) of _xml_.
+
+SingleAttributeNode also handles the default value, if it was
+specified (via the :default option): When writing data to XML,
+<tt>set_attr_value(xml, value)</tt> won't be called if the attribute
+was set to the default value. When reading data from XML, the
+<tt>extract_attr_value(xml)</tt> implementation must raise a special
+exception, XML::Mapping::SingleAttributeNode::NoAttrValueSet, to
+indicate that the data was not present in the XML. The base class
+(SingleAttributeNode) will catch this exception and put the default
+value, if it was defined, into the attribute.
+
+
+==== SubObjectBaseNode
+
+The initializer will set up additional member variables @sub_mapping,
+@marshaller, and @unmarshaller.
+
+@sub_mapping contains the mapping to be used when reading/writing the
+sub-objects (either specified with :sub_mapping, or, by default, the
+mapping the node itself was defined in).
+
+@marshaller and @unmarshaller contain procs that encapsulate
+writing/reading of sub-objects to/from XML, as specified by the user
+with :class/:marshaller/:unmarshaller etc. options (the meaning of
+those different options was described {above}[aref:subobjnodes]). The
+procs are there to be called from <tt>extract_attr_value</tt> or
+<tt>set_attr_value</tt> whenever the need arises.
 
 
 == {XPath Interpreter}[a:xpath]

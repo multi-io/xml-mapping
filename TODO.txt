@@ -1,38 +1,37 @@
+- XML::XXPath: Write a real XPath parser eventually
+
 - XML::XXPath: avoid duplicates in path.all(node) result arrays when
   using the descendants ("//") axis
 
-- XML::XXPath: generalize foo[@x='bar'] to foo[<any XPath
-  expression>='bar'] (unless create/create_new implementation proves
-  to be too difficult, but I don't think it will...)
+- invent an XPath-like language for Ruby object graphs (i.e. a
+  language that is to Ruby object graphs what XPath is to XML
+  trees). Use expressions in that language as a generalization of
+  "attribute names" (e.g. the 1st parameter to single attribute node
+  factory methods). The language could more or less be Ruby itself,
+  but the write support would need some extra work...
 
-- invent an XPath-like language for Ruby object trees (i.e. a language
-  that is to Ruby object trees what XPath is to XML trees). Use
-  expressions in that language as a generalization of "attribute
-  names" (e.g. the 1st parameter to single attribute node factory
-  methods). The language could more or less be Ruby itself, but the
-  write support could need some extra work...
+- XML::XXPath:
 
-- node types: get rid of initialize_impl. Instead, have initializers
-  return the remaining arguments, so initializers can call superclass
-  initializers directly
+  - implement .[@attrname] steps
 
-- XML::XXPath: implement [attrname='attrvalue'] steps
+    - returns the context node iff it contains an attrname attribute
+
+    - doesn't work properly in REXML::XPath?
+
+  - implement *[@attrname] steps
+
+  - implement *[@attrname='attrvalue'] steps
+
+  - id/idref support (write support possible?)
+
+- XML::Mapping: make SubObjectBaseNode a mixin instead of a subclass
+  of SingleAttributeNode ("mapping sub-objects" and "mapping to a
+  single attribute" are orthogonal concepts; inheritance is bad design
+  here)
 
 - documentation:
 
   - README:
-
-    - 
-
-    - multiple mappings per mapping class
-
-    - multi-attribute nodes, :writer/:reader (TODO: impl)
-
-      - using :writer/:reader in nodes other than Node to
-        shortcut/deactivate parts of their functionality
-
-    - new XML::XXPath features, incl. issues when writing (solution:
-      use :writer)
 
     - document/show usage of default_when_xpath_err outside node type
       implementations
