@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<bla rootkey='rootkeyval'>
+  <foo>x</foo>
+  <bar>bar1</bar>
+  <foo key='xy'>
+    y
+    <u/>
+    <bar barkey='hello'>
+      bar2
+    </bar>
+    <quux barkey='goodbye'>
+      quux1
+    </quux>
+    <bar>
+      bar3
+    </bar>
+    <bar barkey='subtree'>
+      bar4
+      <bar>
+        bar4-1
+      </bar>
+      <foo>
+        z
+        <bar>
+          bar4-2
+        </bar>
+        hello
+        <bar>
+          bar4-3
+        </bar>
+      </foo>
+      <bar>
+        bar4-4
+      </bar>
+      <bar>
+        bar4-5
+      </bar>
+      <quux barkey='hello'>
+        bar4-quux1
+      </quux>
+      <bar>
+        bar4-6
+      </bar>
+      <bar>
+        bar4-7
+      </bar>
+    </bar>
+    <quux barkey='hello'>
+      quux2
+    </quux>
+    This buffer is for notes you don't want to save, and for Lisp
+    evaluation.  If you want to create a file, first visit that file
+    with C-x C-f, then enter the text in that file's own buffer.
+    <bar>
+      bar5
+    </bar>
+    <bar>
+      bar6
+    </bar>
+    <quux>
+      quux3
+    </quux>
+    <quux barkey='hello'>
+      quux4
+    </quux>
+    <bar>
+      bar7
+    </bar>
+    <bar>
+      bar8
+    </bar>
+    <bar>
+      bar9
+    </bar>
+  </foo>
+</bla>
