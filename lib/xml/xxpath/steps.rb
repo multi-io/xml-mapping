@@ -12,7 +12,7 @@ module XML
     # with name "bar" and value "baz").
     #
     # Steps can find out whether they match a given XML node
-    # (Step#matches(node)), and they know how to create a matchingnode
+    # (Step#matches?(node)), and they know how to create a matchingnode
     # on a given base node (Step#create_on(node,create_new)).
     class Step #:nodoc:
       def self.inherited(subclass)
@@ -44,8 +44,8 @@ module XML
       #
       # <tt>Step</tt> itself provides a generic default implementation
       # which checks whether _self_ matches a given node by calling
-      # self.matches(node). Subclasses must either implement such a
-      # _matches_ method or override _reader_ to provide more
+      # self.matches?(node). Subclasses must either implement such a
+      # _matches?_ method or override _reader_ to provide more
       # specialized implementations for better performance.
       def reader(prev_reader,creator_from_here)
         proc {|nodes|
@@ -53,7 +53,7 @@ module XML
           nodes.each do |node|
             if node.respond_to? :each_on_axis
               node.each_on_axis(@axis) do |subnode|
-                next_nodes << subnode if self.matches(subnode)
+                next_nodes << subnode if self.matches?(subnode)
               end
             end
           end
@@ -95,8 +95,8 @@ module XML
         @attr_name,@attr_value = attr_name,attr_value
       end
 
-      def matches node
-        node.class==REXML::Element and node.attributes[@attr_name]==@attr_value
+      def matches? node
+        node.is_a?(REXML::Element) and node.attributes[@attr_name]==@attr_value
       end
 
       def create_on(node,create_new)
@@ -121,8 +121,8 @@ module XML
         @name,@attr_name,@attr_value = name,attr_name,attr_value
       end
 
-      def matches node
-        node.class==REXML::Element and node.name==@name and node.attributes[@attr_name]==@attr_value
+      def matches? node
+        node.is_a?(REXML::Element) and node.name==@name and node.attributes[@attr_name]==@attr_value
       end
 
       def create_on(node,create_new)
@@ -151,7 +151,7 @@ module XML
         @name,@index = name,index
       end
 
-      def matches node
+      def matches? node
         raise XXPathError, "can't use #{@name}[#{@index}] on root node" if node.parent.nil?
         node == node.parent.elements.select{|elt| elt.name==@name}[@index-1]
       end
@@ -201,7 +201,7 @@ module XML
         @attr_name = attr_name
       end
 
-      def matches node
+      def matches? node
         node.class==XML::XXPath::Accessors::Attribute and node.name==@attr_name
       end
 
@@ -239,8 +239,8 @@ module XML
         self.new axis
       end
 
-      def matches node
-        node.class==REXML::Element
+      def matches? node
+        node.is_a? REXML::Element
       end
 
       def create_on(node,create_new)
@@ -257,7 +257,7 @@ module XML
         self.new axis
       end
 
-      def matches node
+      def matches? node
         true
       end
 
@@ -284,8 +284,8 @@ module XML
         @names = names
       end
 
-      def matches node
-        node.class==REXML::Element and @names.inject(false){|prev,name| prev or node.name==name}
+      def matches? node
+        node.is_a?(REXML::Element) and @names.inject(false){|prev,name| prev or node.name==name}
       end
 
       def create_on(node,create_new)
@@ -302,7 +302,7 @@ module XML
         self.new axis
       end
 
-      def matches node
+      def matches? node
         node.is_a? REXML::Text
       end
 
@@ -328,8 +328,8 @@ module XML
         @name = name
       end
 
-      def matches node
-        node.class==REXML::Element and node.name==@name
+      def matches? node
+        node.is_a?(REXML::Element) and node.name==@name
       end
 
       def create_on(node,create_new)
