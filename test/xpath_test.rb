@@ -133,6 +133,11 @@ class XPathTest < Test::Unit::TestCase
   end
 
 
+  def test_read_textnodes
+    assert_equal ["bar3"], @d.root.all("foo[2]/bar/bar[1]/text()").map{|x|x.text.strip}
+  end
+
+
   def test_read_descendant
     assert_equal ["bar1","bar2","bar3","bar4","bar5"],
                  XML::XXPath.new("//bar").all(@d.root).map{|node|node.text.strip}
@@ -253,6 +258,12 @@ class XPathTest < Test::Unit::TestCase
     assert_raises(XML::XXPathError) {
       @d.root.elements[3].create_new "self::*[@notthere='foobar']"
     }
+  end
+
+
+  def test_write_textnodes
+    @d.root.create_new("morestuff/text()").text = "hello world"
+    assert_equal "hello world", @d.root.first("morestuff").text
   end
 
 

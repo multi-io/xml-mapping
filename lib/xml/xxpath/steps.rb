@@ -296,6 +296,28 @@ module XML
     end
 
 
+    class TextNodesStep < Step #:nodoc:
+      def self.compile axis, string
+        'text()' == string or return nil
+        self.new axis
+      end
+
+      def matches node
+        node.is_a? REXML::Text
+      end
+
+      def create_on(node,create_new)
+        node.add(REXML::Text.new(""))
+      end
+    end
+
+    class REXML::Text
+      # call-compatibility w/ REXML::Element
+      alias_method :text, :value
+      alias_method :text=, :value=
+    end
+
+
     class NameStep < Step #:nodoc:
       def self.compile axis, string
         self.new axis,string
