@@ -91,9 +91,9 @@ class XmlMappingTest < Test::Unit::TestCase
   def test_choice_node_presence
     node = Thing.xml_mapping_nodes[0]
     t = Thing.new
-    assert !(node.is_present_in t)
+    assert !(node.is_present_in? t)
     t.name = "Mary"
-    assert node.is_present_in t
+    assert node.is_present_in? t
   end
 
 

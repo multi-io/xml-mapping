@@ -398,7 +398,7 @@ module XML
 
       def obj_to_xml(obj,xml)
         @choices.each do |path,node|
-          if node.is_present_in obj
+          if node.is_present_in? obj
             node.obj_to_xml(obj,xml)
             path.first(xml, :ensure_created=>true)
             return true
@@ -412,10 +412,10 @@ module XML
         @choices[0][1].obj_initializing(obj,mapping)
       end
 
-      # (overridden) true if at least one of our nodes is_present_in
+      # (overridden) true if at least one of our nodes is_present_in?
       # obj.
-      def is_present_in obj
-        @choices.inject(false){|prev,(path,node)| prev or node.is_present_in(obj)}
+      def is_present_in? obj
+        @choices.inject(false){|prev,(path,node)| prev or node.is_present_in?(obj)}
       end
     end
 
