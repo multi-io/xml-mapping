@@ -88,9 +88,31 @@ o.items['XY-42'].quantity = 3
 o.items['XY-42'].unit_price = 299.95
 
 #:invisible_retval:
-o.save_to_xml.write($stdout,2)
+xml=o.save_to_xml
+xml.write($stdout,2)
 #<=
+#:invisible:
+assert_equal "order", xml.name
+assert_equal o.reference, xml.first("@reference").text
+assert_equal o.client.name, xml.first("Client/Name").text
+assert_equal o.client.home_address.street, xml.first("Client/Address[@where='home']/Street").text
+assert_equal o.client.home_address.city, xml.first("Client/Address[@where='home']/City").text
+assert_nil xml.first("Client/Address[@where='work']", :allow_nil=>true)
+assert_equal 1, xml.all("Client/Address").size
 
+o.client.work_address = Address.new
+o.client.work_address.street = 'milky way 2'
+o.client.work_address.city = 'Ursa Major'
+o.client.work_address.zip = 18293
+o.client.work_address.state = 'Magellan Cloud'
+xml=o.save_to_xml
+
+assert_equal o.client.work_address.street, xml.first("Client/Address[@where='work']/Street").text
+assert_equal o.client.work_address.city, xml.first("Client/Address[@where='work']/City").text
+assert_equal o.client.home_address.street, xml.first("Client/Address[@where='home']/Street").text
+assert_equal 2, xml.all("Client/Address").size
+#<=
+#:visible:
 
 ## the root element name when saving an object to XML will by default
 ## be derived from the class name (in this example, "Order" became

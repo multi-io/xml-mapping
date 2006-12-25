@@ -50,10 +50,10 @@ An instance of a mapping class can be created from/converted into an
 XML node with methods like XML::Mapping::ClassMethods.load_from_xml,
 XML::Mapping#save_to_xml, XML::Mapping::ClassMethods.load_from_file,
 XML::Mapping#save_to_file. Special class methods like "text_node",
-"array_node" etc., called "node factory methods", may be called from
-the body of the class definition to define instance attributes that
-are automatically and bidirectionally mapped to subtrees of the XML
-element an instance of the class is mapped to.
+"array_node" etc., called *node* *factory* *methods*, may be called
+from the body of the class definition to define instance attributes
+that are automatically and bidirectionally mapped to subtrees of the
+XML element an instance of the class is mapped to.
 
 == {Single-attribute Nodes}[a:sanodes]
 
@@ -875,11 +875,11 @@ calling <tt>XML::Mapping.add_node_class TheNodeClass</tt>, xml-mapping
 automatically generates the node factory method for that type. The
 node factory method will effectively be defined as a class method of
 the XML::Mapping module, which is why one can call it from the body of
-a mapping class definition. The method will create a new instance of
-the node class (a *node* for short) by calling _new_ on the node
-class. The list of parameters to _new_ will consist of <i>the mapping
-class, followed by all arguments that were passed to the node factory
-method</i>. For example, when you have this node declaration:
+a mapping class definition. The generated method will create a new
+instance of the node class (a *node* for short) by calling _new_ on
+the node class. The list of parameters to _new_ will consist of <i>the
+mapping class, followed by all arguments that were passed to the node
+factory method</i>. For example, when you have this node declaration:
 
   class MyMappingClass
     include XML::Mapping
@@ -980,7 +980,7 @@ marshalling/unmarshalling methods
 the node's mapping is not the same as the mapping the
 marshalling/unmarshalling is happening with.
 
-Furthermore, when :reader and/or :writer options were given,
+Furthermore, if :reader and/or :writer options were given,
 <tt>xml_to_obj</tt> resp. <tt>obj_to_xml</tt> are transparently
 overwritten on the node to delegate to the supplied :reader/:writer
 procs.
@@ -1018,13 +1018,13 @@ the current value of the attribute. The method must write _value_ into
 (the correct sub-elements/attributes) of _xml_.
 
 SingleAttributeNode also handles the default value, if it was
-specified (via the :default option): When writing data to XML,
+specified (via the :default_value option): When writing data to XML,
 <tt>set_attr_value(xml, value)</tt> won't be called if the attribute
 was set to the default value. When reading data from XML, the
 <tt>extract_attr_value(xml)</tt> implementation must raise a special
-exception, XML::Mapping::SingleAttributeNode::NoAttrValueSet, to
-indicate that the data was not present in the XML. The base class
-(SingleAttributeNode) will catch this exception and put the default
+exception, XML::Mapping::SingleAttributeNode::NoAttrValueSet, if it
+wants to indicate that the data was not present in the
+XML. SingleAttributeNode will catch this exception and put the default
 value, if it was defined, into the attribute.
 
 
@@ -1048,14 +1048,12 @@ procs are there to be called from <tt>extract_attr_value</tt> or
 == {XPath Interpreter}[a:xpath]
 
 XML::XXPath is an XPath parser. It is used in xml-mapping node type
-definitions, but can just as well be utilized stand-alone (it does
-not depend on xml-mapping). XML::XXPath is very incomplete and probably
-will always be (it only supports path elements of types _elt_name_,
-@_attr_name_, _elt_name_[@_attr_name_=_attr_value_],
-_elt_name_[_index_], and *), but it should be reasonably efficient
-(XPath expressions are precompiled), and, most importantly, it
-supports write access. For example, if you create the path
-"/foo/bar[3]/baz[@key='hiho']" in the XML document
+definitions, but can just as well be utilized stand-alone (it does not
+depend on xml-mapping). XML::XXPath is very incomplete and probably
+will always be, but it should be reasonably efficient (XPath
+expressions are precompiled), and, most importantly, it supports write
+access, which is needed for writing objects to XML. For example, if
+you create the path "/foo/bar[3]/baz[@key='hiho']" in the XML document
 
   <foo>
     <bar>

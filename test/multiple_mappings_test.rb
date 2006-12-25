@@ -127,4 +127,29 @@ class MultipleMappingsTest < Test::Unit::TestCase
   def test_node_initialization
   end
 
+
+  def test_misc
+    m1nodes = Triangle.xml_mapping_nodes(:mapping=>:m1).map{|n|n.class}
+    m2nodes = Triangle.xml_mapping_nodes(:mapping=>:m2).map{|n|n.class}
+    allnodes = Triangle.xml_mapping_nodes.map{|n|n.class}
+
+    t=XML::Mapping::TextNode
+    o=XML::Mapping::ObjectNode
+    assert_equal [t,o,o,t,o], m1nodes
+    assert_equal [o,t,t,o,o,t], m2nodes
+    begin
+      assert_equal m1nodes+m2nodes, allnodes
+    rescue Test::Unit::AssertionFailedError
+      assert_equal m2nodes+m1nodes, allnodes
+    end
+
+    allm1nodes = Triangle.all_xml_mapping_nodes(:mapping=>:m1).map{|n|n.class}
+    allm2nodes = Triangle.all_xml_mapping_nodes(:mapping=>:m2).map{|n|n.class}
+    allallnodes = Triangle.all_xml_mapping_nodes.map{|n|n.class}
+
+    assert_equal allm1nodes, m1nodes
+    assert_equal allm2nodes, m2nodes
+    assert_equal allnodes, allallnodes
+  end
+
 end

@@ -9,19 +9,17 @@ module XML
     # 
     #   text_node :_attrname_, _path_ [, :default_value=>_obj_]
     #                                 [, :optional=>true]
+    #                                 [, :mapping=>_m_]
     #
     # Node that maps an XML node's text (the element's first child
     # text node resp. the attribute's value) to a (string) attribute
-    # of the mapped object. Since TextNode inherits from
-    # SingleAttributeNode, the first argument to the node factory
-    # function is the attribute name (as a symbol). Handling of
-    # <tt>:default_value</tt> and <tt>:optional</tt> option arguments
-    # (if given) is also provided by the superclass -- see there for
-    # details.
+    # of the mapped object. _path_ (an XPath expression) locates the
+    # XML node, _attrname_ (a symbol) names the
+    # attribute. <tt>:default_value</tt> is the default value,
+    # :optional=>true is equivalent to :default_value=>nil (see
+    # superclass documentation for details). <tt>_m_</tt> is the
+    # mapping; it defaults to the current default mapping
     class TextNode < SingleAttributeNode
-      # Initializer. _path_ (a string, the 2nd argument to the node
-      # factory function) is the XPath expression that locates the
-      # mapped node in the XML.
       def initialize(*args)
         path,*args = super(*args)
         @path = XML::XXPath.new(path)
@@ -39,6 +37,7 @@ module XML
     # 
     #   numeric_node :_attrname_, _path_ [, :default_value=>_obj_]
     #                                    [, :optional=>true]
+    #                                    [, :mapping=>_m_]
     #
     # Like TextNode, but interprets the XML node's text as a number
     # (Integer or Float, depending on the nodes's text) and maps it to
@@ -71,10 +70,9 @@ module XML
     class SubObjectBaseNode < SingleAttributeNode
       # processes the keyword arguments :class, :marshaller, and
       # :unmarshaller (_args_ is ignored). When this initiaizer
-      # returns, @options[:marshaller] and @options[:unmarshaller] are
-      # set to procs that marshal/unmarshal a Ruby object to/from an
-      # XML tree according to the keyword arguments that were passed
-      # to the initializer:
+      # returns, @marshaller and @unmarshaller are set to procs that
+      # marshal/unmarshal a Ruby object to/from an XML tree according
+      # to the keyword arguments that were passed to the initializer:
       #
       # You either supply a :class argument with a class implementing
       # XML::Mapping -- in that case, the subtree will be mapped to an
@@ -103,6 +101,10 @@ module XML
           unless @marshaller
             @marshaller = proc {|xml,value|
               value.fill_into_xml xml, :mapping=>@sub_mapping
+              if xml.unspecified?
+                xml.name = value.class.root_element_name :mapping=>@sub_mapping
+                xml.unspecified = false
+              end
             }
           end
           unless @unmarshaller
@@ -140,6 +142,8 @@ module XML
     #                                   [, :class=>_c_]
     #                                   [, :marshaller=>_proc_]
     #                                   [, :unmarshaller=>_proc_]
+    #                                   [, :mapping=>_m_]
+    #                                   [, :sub_mapping=>_sm_]
     #
     # Node that maps a subtree in the source XML to a Ruby
     # object. :_attrname_ and _path_ are again the attribute name
@@ -171,6 +175,7 @@ module XML
     #   boolean_node :_attrname_, _path_,
     #                _true_value_, _false_value_ [, :default_value=>_obj_]
     #                                            [, :optional=>true]
+    #                                            [, :mapping=>_m_]
     #
     # Node that maps an XML node's text (the element name resp. the
     # attribute value) to a boolean attribute of the mapped
@@ -204,6 +209,8 @@ module XML
     #                     [, :class=>_c_]
     #                     [, :marshaller=>_proc_]
     #                     [, :unmarshaller=>_proc_]
+    #                     [, :mapping=>_m_]
+    #                     [, :sub_mapping=>_sm_]
     #
     # -or-
     #
@@ -249,11 +256,10 @@ module XML
     #    </bar>
     #   </foo>
     class ArrayNode < SubObjectBaseNode
-      # Initializer, delegates to do_initialize. Called with keyword
-      # arguments and either 1 or 2 paths; the hindmost path argument
-      # passed is delegated to _per_arrelement_path_; the preceding
-      # path argument (if present, "" by default) is delegated to
-      # _base_path_.
+      # Initializer. Called with keyword arguments and either 1 or 2
+      # paths; the hindmost path argument passed is delegated to
+      # _per_arrelement_path_; the preceding path argument (if
+      # present, "" by default) is delegated to _base_path_.
       def initialize(*args)
         path,path2,*args = super(*args)
         base_path,per_arrelement_path = if path2
@@ -291,6 +297,8 @@ module XML
     #                     [, :class=>_c_]
     #                     [, :marshaller=>_proc_]
     #                     [, :unmarshaller=>_proc_]
+    #                     [, :mapping=>_m_]
+    #                     [, :sub_mapping=>_sm_]
     #
     # - or -
     #
@@ -310,13 +318,13 @@ module XML
     # to such a node, key_path_ names the node whose text becomes the
     # associated hash key.
     class HashNode < SubObjectBaseNode
-      # Initializer, delegates to do_initialize. Called with keyword
-      # arguments and either 2 or 3 paths; the hindmost path argument
-      # passed is delegated to _key_path_, the preceding path argument
-      # is delegated to _per_arrelement_path_, the path preceding that
-      # argument (if present, "" by default) is delegated to
-      # _base_path_. The meaning of the keyword arguments is the same
-      # as for ObjectNode.
+      # Initializer. Called with keyword arguments and either 2 or 3
+      # paths; the hindmost path argument passed is delegated to
+      # _key_path_, the preceding path argument is delegated to
+      # _per_arrelement_path_, the path preceding that argument (if
+      # present, "" by default) is delegated to _base_path_. The
+      # meaning of the keyword arguments is the same as for
+      # ObjectNode.
       def initialize(*args)
         path1,path2,path3,*args = super(*args)
         base_path,per_hashelement_path,key_path = if path3
@@ -415,6 +423,7 @@ module XML
       # (overridden) true if at least one of our nodes is_present_in?
       # obj.
       def is_present_in? obj
+        # TODO: use Enumerable#any?
         @choices.inject(false){|prev,(path,node)| prev or node.is_present_in?(obj)}
       end
     end

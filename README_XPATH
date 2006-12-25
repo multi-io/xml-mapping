@@ -10,9 +10,10 @@ details. xml-xxpath, however, does not depend on xml-mapping at all,
 and is useful in its own right -- maybe I'll later distribute it as a
 seperate library instead of bundling it. For the time being, if you
 want to use this XPath implementation stand-alone, you can just rip
-the file <tt>lib/xml/xxpath.rb</tt> out of the xml-mapping
-distribution and use it on its own (it does not depend on anything
-else).
+the files <tt>lib/xml/xxpath.rb</tt>,
+<tt>lib/xml/xxpath/steps.rb</tt>, and
+<tt>lib/xml/xxpath_methods.rb</tt> out of the xml-mapping distribution
+and use them on their own (they do not depend on anything else).
 
 xml-xxpath's XPath support is vastly incomplete (see below), but, in
 addition to the normal reading/matching functionality found in other
@@ -47,12 +48,11 @@ Ruby code, it is quite fast (paths are precompiled), and xml-xxpath
 returns matched elements in the order they appeared in the source
 document -- I've heard REXML::XPath doesn't do that :)
 
-Some basic knowledge of XPath is helpful for reading this document (I
-don't know very much either).
+Some basic knowledge of XPath is helpful for reading this document.
 
 At the moment, xml-xxpath understands XPath expressions of the form
-[<tt>/</tt>]_pathelement_<tt>/</tt>_pathelement_<tt>/</tt>..., where
-each _pathelement_ must be one of these:
+[<tt>/</tt>]_pathelement_<tt>/[/]</tt>_pathelement_<tt>/[/]</tt>...,
+where each _pathelement_ must be one of these:
 
 - a simple element name _name_, e.g. +signature+
 
@@ -64,6 +64,21 @@ each _pathelement_ must be one of these:
 - an element name and an index, _elt_name_[_index_]
 
 - the "match-all" path element, <tt>*</tt>
+
+- .
+
+- foo|bar
+
+- .[@key='xy'] / self::*[@key='xy']
+
+- text()
+
+
+
+Xml-xxpath only supports relative paths at this time, i.e. XPath
+expressions beginning with "/" or "//" will still only find nodes
+below the node the expression is applied to (as if you had written
+"./" or ".//", respectively).
 
 
 == Usage
