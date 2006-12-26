@@ -60,6 +60,14 @@ module XML
   # Including XML::Mapping also adds all methods of
   # XML::Mapping::ClassMethods to your class (as class methods).
   #
+  # It is recommended that if your class does not have required
+  # +initialize+ method arguments. The XML loader attempts to create a
+  # new object using the +new+ method. If this fails because the
+  # initializer expects an argument, then the loader calls +allocate+
+  # instead. +allocate+ bypasses the initializer.  If your class must
+  # have initializer arguments, then you should verify that bypassing
+  # the initializer is acceptable.
+  #
   # As you may have noticed from the example, the node factory methods
   # generally use XPath expressions to specify locations in the mapped
   # XML document. To make this work, XML::Mapping relies on
@@ -155,8 +163,7 @@ module XML
     end
 
     # Initializer. Called (by Class#new) after _self_ was created
-    # using _new_. Not called when _self_ was created from an XML source
-    # using load_from_file/load_from_xml (see #initialize_xml_mapping).
+    # using _new_.
     #
     # XML::Mapping's implementation calls #initialize_xml_mapping.
     def initialize(*args)
@@ -324,7 +331,17 @@ module XML
       def load_from_xml(xml, options={:mapping=>:_default})
         raise(MappingError, "undefined mapping: #{options[:mapping].inspect}") \
           unless xml_mapping_nodes_hash.has_key?(options[:mapping])
-        obj = self.allocate
+        # create the new object. It is recommended that the class
+        # have a no-argument initializer, so try new first. If that
+        # doesn't work, try allocate, which bypasses the initializer.
+        begin
+          obj = self.new
+        rescue ArgumentError # TODO: this may hide real errors.
+	                     #   how to statically check whether
+	                     #   self self.new accepts an empty
+	                     #   argument list?
+          obj = self.allocate
+        end
         obj.initialize_xml_mapping :mapping=>options[:mapping]
         obj.fill_from_xml xml, :mapping=>options[:mapping]
         obj
