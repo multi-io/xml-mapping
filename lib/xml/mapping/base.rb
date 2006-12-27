@@ -337,9 +337,9 @@ module XML
         begin
           obj = self.new
         rescue ArgumentError # TODO: this may hide real errors.
-	                     #   how to statically check whether
-	                     #   self self.new accepts an empty
-	                     #   argument list?
+                             #   how to statically check whether
+                             #   self self.new accepts an empty
+                             #   argument list?
           obj = self.allocate
         end
         obj.initialize_xml_mapping :mapping=>options[:mapping]
