@@ -75,11 +75,16 @@ module XML
       # implementation, subclasses may provide specialized
       # implementations for better performance.
       def creator(prev_creator)
-        proc {|node,create_new|
-          raise XXPathError, "can't create axis: #{@axis}" unless @axis==:child or @axis==:self
-          prev_creator.call(self.create_on(node,create_new),
-                            create_new)
-        }
+	if @axis==:child or @axis==:self
+	  proc {|node,create_new|
+	    prev_creator.call(self.create_on(node,create_new),
+			      create_new)
+	  }
+	else
+	  proc {|node,create_new|
+	    raise XXPathError, "can't create axis: #{@axis}"
+	  }
+	end
       end
     end
 
