@@ -109,11 +109,11 @@ assert_equal "London", p.address.city
 assert_equal 18827, p.address.zip
 
 assert_equal "individual", other_xml.name
-assert_equal p.name, other_xml.first("name").text
-assert_equal p.age, other_xml.first("age").text.to_i
-assert_equal p.address.street, other_xml.first("street-name").text
-assert_equal p.address.number, other_xml.first("street-name/@number").text.to_i
-assert_equal p.address.city, other_xml.first("city-name").text
-assert_equal p.address.zip, other_xml.first("city-name/@zip-code").text.to_i
+assert_equal p.name, other_xml.first_xpath("name").text
+assert_equal p.age, other_xml.first_xpath("age").text.to_i
+assert_equal p.address.street, other_xml.first_xpath("street-name").text
+assert_equal p.address.number, other_xml.first_xpath("street-name/@number").text.to_i
+assert_equal p.address.city, other_xml.first_xpath("city-name").text
+assert_equal p.address.zip, other_xml.first_xpath("city-name/@zip-code").text.to_i
 
 #<=

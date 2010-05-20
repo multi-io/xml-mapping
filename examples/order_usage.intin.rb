@@ -52,9 +52,9 @@ xml=o.save_to_xml #convert to REXML node; there's also o.save_to_file(name) #<=
 xml.write($stdout,2) #<=
 
 #:invisible:
-assert_equal %w{RF-0001 RF-0034 RF-3341 RF-4711}, xml.all("Item/@reference").map{|x|x.text}.sort
+assert_equal %w{RF-0001 RF-0034 RF-3341 RF-4711}, xml.all_xpath("Item/@reference").map{|x|x.text}.sort
 assert_equal ['John Doe','Jill Smith','Miles O\'Brien','Harry Smith'],
-             xml.all("Signed-By/Signature/Name").map{|x|x.text}
+             xml.all_xpath("Signed-By/Signature/Name").map{|x|x.text}
 #<=
 #:visible:
 
@@ -93,12 +93,12 @@ xml.write($stdout,2)
 #<=
 #:invisible:
 assert_equal "order", xml.name
-assert_equal o.reference, xml.first("@reference").text
-assert_equal o.client.name, xml.first("Client/Name").text
-assert_equal o.client.home_address.street, xml.first("Client/Address[@where='home']/Street").text
-assert_equal o.client.home_address.city, xml.first("Client/Address[@where='home']/City").text
-assert_nil xml.first("Client/Address[@where='work']", :allow_nil=>true)
-assert_equal 1, xml.all("Client/Address").size
+assert_equal o.reference, xml.first_xpath("@reference").text
+assert_equal o.client.name, xml.first_xpath("Client/Name").text
+assert_equal o.client.home_address.street, xml.first_xpath("Client/Address[@where='home']/Street").text
+assert_equal o.client.home_address.city, xml.first_xpath("Client/Address[@where='home']/City").text
+assert_nil xml.first_xpath("Client/Address[@where='work']", :allow_nil=>true)
+assert_equal 1, xml.all_xpath("Client/Address").size
 
 o.client.work_address = Address.new
 o.client.work_address.street = 'milky way 2'
@@ -107,10 +107,10 @@ o.client.work_address.zip = 18293
 o.client.work_address.state = 'Magellan Cloud'
 xml=o.save_to_xml
 
-assert_equal o.client.work_address.street, xml.first("Client/Address[@where='work']/Street").text
-assert_equal o.client.work_address.city, xml.first("Client/Address[@where='work']/City").text
-assert_equal o.client.home_address.street, xml.first("Client/Address[@where='home']/Street").text
-assert_equal 2, xml.all("Client/Address").size
+assert_equal o.client.work_address.street, xml.first_xpath("Client/Address[@where='work']/Street").text
+assert_equal o.client.work_address.city, xml.first_xpath("Client/Address[@where='work']/City").text
+assert_equal o.client.home_address.street, xml.first_xpath("Client/Address[@where='home']/Street").text
+assert_equal 2, xml.all_xpath("Client/Address").size
 #<=
 #:visible:
 

@@ -20,12 +20,12 @@ end
 
 def Time.load_from_xml(xml, options={:mapping=>:_default})
   year,month,day,hour,min,sec =
-    [xml.first("year").text.to_i,
-     xml.first("month").text.to_i,
-     xml.first("mday").text.to_i,
-     xml.first("hours").text.to_i,
-     xml.first("minutes").text.to_i,
-     xml.first("seconds").text.to_i]
+    [xml.first_xpath("year").text.to_i,
+     xml.first_xpath("month").text.to_i,
+     xml.first_xpath("mday").text.to_i,
+     xml.first_xpath("hours").text.to_i,
+     xml.first_xpath("minutes").text.to_i,
+     xml.first_xpath("seconds").text.to_i]
   Time.local(year,month,day,hour,min,sec)
 end
 #<=

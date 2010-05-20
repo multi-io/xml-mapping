@@ -83,8 +83,8 @@ MyRDocTask.new { |rdoc|
   # additional file dependencies for the rdoc task
   #   this somewhat of a black art because RDocTask doesn't document the
   #   prerequisite of its rdoc task (<rdoc_dir>/index.html)
-  file rdoc.rdoc_target => FILES_RDOC_INCLUDES
-  file "#{rdoc.rdoc_dir}/index.html" => FileList.new("examples/**/*.rb")
+  #file rdoc.rdoc_target => FILES_RDOC_INCLUDES
+  #file "#{rdoc.rdoc_dir}/index.html" => FileList.new("examples/**/*.rb")
 }
 
 #rule '.intout' => ['.intin.rb', *FileList.new("lib/**/*.rb")] do |task|  # doesn't work -- see below

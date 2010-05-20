@@ -36,9 +36,9 @@ assert_equal ["Chris", "Mel", "Toby"], p2.contributors
 xml1 = p1.save_to_xml
 xml2 = p2.save_to_xml
 
-assert_equal p1.author, xml1.first("@author").text
-assert_nil xml1.first("contr", :allow_nil=>true)
+assert_equal p1.author, xml1.first_xpath("@author").text
+assert_nil xml1.first_xpath("contr", :allow_nil=>true)
 
-assert_nil xml2.first("@author", :allow_nil=>true)
-assert_equal p2.contributors, xml2.all("contr").map{|elt|elt.text}
+assert_nil xml2.first_xpath("@author", :allow_nil=>true)
+assert_equal p2.contributors, xml2.all_xpath("contr").map{|elt|elt.text}
 #<=
