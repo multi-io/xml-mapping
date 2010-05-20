@@ -245,7 +245,7 @@ end
 
 
 task :rfpub_rdoc => [:rdoc] do
-  p=Rake::SshDirPublisher.new('xml-mapping.rubyforge.org',
+  p=Rake::SshDirPublisher.new('rubyforge.org',
                               '/var/www/gforge-projects/xml-mapping/',
                               'doc/api')
   p.upload
