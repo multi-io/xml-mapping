@@ -258,7 +258,7 @@ module XML
     def save_to_file(filename, options={:mapping=>:_default})
       xml = save_to_xml :mapping=>options[:mapping]
       File.open(filename,"w") do |f|
-        xml.write(f,2)
+        REXML::Formatters::Transitive.new(2,false).write(xml,f)
       end
     end
 
