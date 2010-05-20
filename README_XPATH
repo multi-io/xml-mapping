@@ -67,9 +67,11 @@ where each _pathelement_ must be one of these:
 
 - .
 
-- foo|bar
+- name1|name2|...
 
 - .[@key='xy'] / self::*[@key='xy']
+
+- child::*[@key='xy']
 
 - text()
 

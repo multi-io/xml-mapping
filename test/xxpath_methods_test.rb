@@ -22,20 +22,20 @@ class XXPathMethodsTest < Test::Unit::TestCase
     EOS
   end
 
-  def test_first
+  def test_first_xpath
     pathstr = "foo[2]/u"
     path = XML::XXPath.new(pathstr)
     elt = path.first(@d.root)
-    assert_equal elt, @d.root.first(pathstr)
-    assert_equal elt, @d.root.first(path)
+    assert_equal elt, @d.root.first_xpath(pathstr)
+    assert_equal elt, @d.root.first_xpath(path)
   end
 
-  def test_all
+  def test_all_xpath
     pathstr = "foo"
     path = XML::XXPath.new(pathstr)
     elts = path.all(@d.root)
-    assert_equal elts, @d.root.all(pathstr)
-    assert_equal elts, @d.root.all(path)
+    assert_equal elts, @d.root.all_xpath(pathstr)
+    assert_equal elts, @d.root.all_xpath(path)
   end
 
   def test_each_xpath
@@ -53,8 +53,8 @@ class XXPathMethodsTest < Test::Unit::TestCase
   end
 
   def test_create_new
-    @d.root.create_new("foo")
-    @d.root.create_new(XML::XXPath.new("foo"))
+    @d.root.create_new_xpath("foo")
+    @d.root.create_new_xpath(XML::XXPath.new("foo"))
     assert_equal 4, @d.root.elements.to_a("foo").size
   end
 

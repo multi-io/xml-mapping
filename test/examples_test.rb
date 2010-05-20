@@ -21,9 +21,9 @@ class ExamplesTest < Test::Unit::TestCase
     s.signed_on = Time.local(2006,6,15)
     xml2 = s.save_to_xml
 
-    assert_equal "15", xml2.first("signed-on/day").text
-    assert_equal "6", xml2.first("signed-on/month").text
-    assert_equal "2006", xml2.first("signed-on/year").text
+    assert_equal "15", xml2.first_xpath("signed-on/day").text
+    assert_equal "6", xml2.first_xpath("signed-on/month").text
+    assert_equal "2006", xml2.first_xpath("signed-on/year").text
   end
 
 end

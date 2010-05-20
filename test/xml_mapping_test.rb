@@ -122,10 +122,10 @@ class XmlMappingTest < Test::Unit::TestCase
     r.foo3 = 'foo3new'
     r.bar = 'barnew'
     xml2 = r.save_to_xml
-    assert_equal 'foonew', xml2.first("foo").text
-    assert_equal 'foo2new', xml2.first("foo2").text
-    assert_equal 'foo3new', xml2.first("foo3").text
-    assert_equal 'barnew', xml2.first("bar").text
+    assert_equal 'foonew', xml2.first_xpath("foo").text
+    assert_equal 'foo2new', xml2.first_xpath("foo2").text
+    assert_equal 'foo3new', xml2.first_xpath("foo3").text
+    assert_equal 'barnew', xml2.first_xpath("bar").text
   end
 
 
@@ -147,12 +147,12 @@ class XmlMappingTest < Test::Unit::TestCase
     w.foo3 = 'foo3new'
     w.bar = 'barnew'
     xml2 = w.save_to_xml
-    assert_equal 'foonew', xml2.first("foo").text
-    assert_nil xml2.first("foo2",:allow_nil=>true)
-    assert_equal 'foo3new', xml2.first("foo3").text
-    assert_equal 'barnew', xml2.first("bar").text
+    assert_equal 'foonew', xml2.first_xpath("foo").text
+    assert_nil xml2.first_xpath("foo2",:allow_nil=>true)
+    assert_equal 'foo3new', xml2.first_xpath("foo3").text
+    assert_equal 'barnew', xml2.first_xpath("bar").text
 
-    assert_equal %w{dingdong2 dingdong3}, xml2.all("quux").map{|elt|elt.text}
+    assert_equal %w{dingdong2 dingdong3}, xml2.all_xpath("quux").map{|elt|elt.text}
   end
 
   
@@ -186,12 +186,12 @@ class XmlMappingTest < Test::Unit::TestCase
 
   def test_setter_choice_node
     xml=@c.save_to_xml
-    thingselts = xml.all("stuff2/thing")
+    thingselts = xml.all_xpath("stuff2/thing")
     assert_equal @c.things.size, thingselts.size
-    assert_equal @c.things[0].name, thingselts[0].first("name").text
-    assert_equal @c.things[1].name, thingselts[1].first("name").text
-    assert_equal @c.things[2].name, thingselts[2].first("name").text
-    assert_equal @c.things[3].name, thingselts[3].first("name").text
+    assert_equal @c.things[0].name, thingselts[0].first_xpath("name").text
+    assert_equal @c.things[1].name, thingselts[1].first_xpath("name").text
+    assert_equal @c.things[2].name, thingselts[2].first_xpath("name").text
+    assert_equal @c.things[3].name, thingselts[3].first_xpath("name").text
   end
 
 
@@ -203,13 +203,13 @@ class XmlMappingTest < Test::Unit::TestCase
 
     n1.names = ["multi1","multi2"]
     xml = n1.save_to_xml
-    assert_equal n1.names, xml.all("names/name").map{|elt|elt.text}
-    assert_nil xml.first("name", :allow_nil=>true)
+    assert_equal n1.names, xml.all_xpath("names/name").map{|elt|elt.text}
+    assert_nil xml.first_xpath("name", :allow_nil=>true)
 
     n1.name = "foo"
     xml = n1.save_to_xml
-    assert_equal [], xml.all("names/name").map{|elt|elt.text}
-    assert_equal n1.name, xml.first("name", :allow_nil=>true).text
+    assert_equal [], xml.all_xpath("names/name").map{|elt|elt.text}
+    assert_equal n1.name, xml.first_xpath("name", :allow_nil=>true).text
   end
 
 

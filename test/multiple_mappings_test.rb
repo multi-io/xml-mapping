@@ -72,10 +72,10 @@ class MultipleMappingsTest < Test::Unit::TestCase
     m1xml = t1.save_to_xml :mapping=>:m1
     m2xml = t1.save_to_xml :mapping=>:m2
 
-    assert_equal t1.name, m1xml.first('@name').text
-    assert_equal t1.name, m2xml.first('name').text
-    assert_equal t1.p2, Point.load_from_xml(m1xml.first('pt2'), :mapping=>:m1)
-    assert_equal t1.p2, Point.load_from_xml(m2xml.first('points/point[2]'), :mapping=>:m1)
+    assert_equal t1.name, m1xml.first_xpath('@name').text
+    assert_equal t1.name, m2xml.first_xpath('name').text
+    assert_equal t1.p2, Point.load_from_xml(m1xml.first_xpath('pt2'), :mapping=>:m1)
+    assert_equal t1.p2, Point.load_from_xml(m2xml.first_xpath('points/point[2]'), :mapping=>:m1)
   end
 
 

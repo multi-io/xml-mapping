@@ -193,7 +193,7 @@ spec = Gem::Specification.new do |s|
   s.test_file = 'test/all_tests.rb'
 
   s.author = 'Olaf Klischat'
-  s.email = 'klischat@cs.tu-berlin.de'
+  s.email = 'olaf.klischat@sofd.de'
   s.homepage = "http://xml-mapping.rubyforge.org"
 end
 

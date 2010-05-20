@@ -123,18 +123,18 @@ class XPathTest < Test::Unit::TestCase
     assert_equal [],
                  XML::XXPath.new(".[@key='xz']").all(@d.root.elements[3])
 
-    assert_equal [@d.root.elements[3]], @d.all("bla/foo[2]/.[@key='xy']")
-    assert_equal [@d.root.elements[3]], @d.all("bla/foo[2]/self::*[@key='xy']")
-    assert_equal [@d.root.elements[3]], @d.all("bla/*/.[@key='xy']")
-    assert_equal [@d.root.elements[3]], @d.all("bla/*/self::*[@key='xy']")
-    assert_equal [], @d.all("bla/foo[2]/.[@key='xy2']")
-    assert_equal [], @d.all("bla/foo[2]/.[@key2='xy']")
-    assert_equal [], @d.all("bla/foo[2]/self::*[@key2='xy']")
+    assert_equal [@d.root.elements[3]], @d.all_xpath("bla/foo[2]/.[@key='xy']")
+    assert_equal [@d.root.elements[3]], @d.all_xpath("bla/foo[2]/self::*[@key='xy']")
+    assert_equal [@d.root.elements[3]], @d.all_xpath("bla/*/.[@key='xy']")
+    assert_equal [@d.root.elements[3]], @d.all_xpath("bla/*/self::*[@key='xy']")
+    assert_equal [], @d.all_xpath("bla/foo[2]/.[@key='xy2']")
+    assert_equal [], @d.all_xpath("bla/foo[2]/.[@key2='xy']")
+    assert_equal [], @d.all_xpath("bla/foo[2]/self::*[@key2='xy']")
   end
 
 
   def test_read_textnodes
-    assert_equal ["bar3"], @d.root.all("foo[2]/bar/bar[1]/text()").map{|x|x.text.strip}
+    assert_equal ["bar3"], @d.root.all_xpath("foo[2]/bar/bar[1]/text()").map{|x|x.text.strip}
   end
 
 
@@ -246,24 +246,24 @@ class XPathTest < Test::Unit::TestCase
 
 
   def test_write_attr
-    assert_equal [@d.root.elements[3]], @d.all("bla/foo[2]/.[@key='xy']", :ensure_created=>true)
+    assert_equal [@d.root.elements[3]], @d.all_xpath("bla/foo[2]/.[@key='xy']", :ensure_created=>true)
     assert_equal "xy", @d.root.elements[3].attributes['key']
-    assert_equal [@d.root.elements[3]], @d.all("bla/foo[2]/self::*[@key2='ab']", :ensure_created=>true)
+    assert_equal [@d.root.elements[3]], @d.all_xpath("bla/foo[2]/self::*[@key2='ab']", :ensure_created=>true)
     assert_equal "ab", @d.root.elements[3].attributes['key2']
     assert_equal "xy", @d.root.elements[3].attributes['key']
 
     assert_raises(XML::XXPathError) {
-      @d.root.elements[3].create_new ".[@key='xy']"
+      @d.root.elements[3].create_new_xpath ".[@key='xy']"
     }
     assert_raises(XML::XXPathError) {
-      @d.root.elements[3].create_new "self::*[@notthere='foobar']"
+      @d.root.elements[3].create_new_xpath "self::*[@notthere='foobar']"
     }
   end
 
 
   def test_write_textnodes
-    @d.root.create_new("morestuff/text()").text = "hello world"
-    assert_equal "hello world", @d.root.first("morestuff").text
+    @d.root.create_new_xpath("morestuff/text()").text = "hello world"
+    assert_equal "hello world", @d.root.first_xpath("morestuff").text
   end
 
 
