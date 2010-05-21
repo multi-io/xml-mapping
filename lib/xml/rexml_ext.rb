@@ -149,7 +149,21 @@ end
 #   a working Element#write is required by several tests and
 #   documentation code snippets
 begin
-  REXML::Element.new.write("",2)
+  # temporarily suppress warnings
+  class <<Kernel
+    alias_method :old_warn, :warn
+    def warn(msg)
+    end
+  end
+  begin
+    # detect bug
+    REXML::Element.new.write("",2)
+  ensure
+    # unsuppress
+    class <<Kernel
+      alias_method :warn, :old_warn
+    end
+  end
 rescue NameError
   # bug is present -- fix it. I use Element#write in numerous tests and rdoc
   #  inline code snippets. TODO: switch to REXML::Formatters there sometime.

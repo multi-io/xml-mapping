@@ -183,7 +183,7 @@ spec = Gem::Specification.new do |s|
   s.rdoc_options += %w{--include examples}
 
   s.require_path = 'lib'
-  s.autorequire = 'xml/mapping'
+  # s.autorequire = 'xml/mapping'
 
   # s.add_dependency 'rexml'
 
@@ -194,6 +194,7 @@ spec = Gem::Specification.new do |s|
   s.author = 'Olaf Klischat'
   s.email = 'olaf.klischat@sofd.de'
   s.homepage = "http://xml-mapping.rubyforge.org"
+  s.rubyforge_project = "xml-mapping"
 end
 
 
