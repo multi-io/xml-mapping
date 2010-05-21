@@ -167,6 +167,7 @@ module XML
     #
     # XML::Mapping's implementation calls #initialize_xml_mapping.
     def initialize(*args)
+      super
       initialize_xml_mapping
     end
 

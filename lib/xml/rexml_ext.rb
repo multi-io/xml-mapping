@@ -143,3 +143,30 @@ class REXML::Parent
     send :"each_on_axis_#{axis}", &block
   end
 end
+
+
+## hotfix for REXML bug #128 -- see http://trac.germane-software.com/rexml/ticket/128
+#   a working Element#write is required by several tests and
+#   documentation code snippets
+begin
+  REXML::Element.new.write("",2)
+rescue NameError
+  # bug is present -- fix it. I use Element#write in numerous tests and rdoc
+  #  inline code snippets. TODO: switch to REXML::Formatters there sometime.
+  class REXML::Element
+    def write(output=$stdout, indent=-1, transitive=false, ie_hack=false)
+      Kernel.warn("#{self.class.name}.write is deprecated.  See REXML::Formatters")
+      formatter = if indent > -1
+                    if transitive
+                      require "rexml/formatters/transitive"
+                      REXML::Formatters::Transitive.new( indent, ie_hack )
+                    else
+                      REXML::Formatters::Pretty.new( indent, ie_hack )
+                    end
+                  else
+                    REXML::Formatters::Default.new( ie_hack )
+                  end
+      formatter.write( self, output )
+    end
+  end
+end
