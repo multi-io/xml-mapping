@@ -100,8 +100,8 @@ rule '.intout' => ['.intin.rb'] do |task|
         Dir.chdir File.dirname(task.name)
         fin.read.split("#<=\n").each do |snippet|
 
-          snippet.scan(/^#:(.*?):$/) do |(switch,)|
-            case switch
+          snippet.scan(/^#:(.*?):$/) do |switches|
+            case switches[0]
             when "visible"
               visible=true
             when "invisible"
