@@ -27,7 +27,9 @@ class XmlMappingTest < Test::Unit::TestCase
     Object.send(:remove_const, "Names1")
     Object.send(:remove_const, "ReaderTest")
     Object.send(:remove_const, "WriterTest")
-    $".delete "company.rb"
+    unless ($".delete "company.rb") # works in 1.8 only. In 1.9, $" contains absolute paths.
+      $".delete_if{|name| name =~ %r!test/company.rb$!}
+    end
     $:.unshift File.dirname(__FILE__)  # test/unit may have undone this (see test/unit/collector/dir.rb)
     require 'company'
 
