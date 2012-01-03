@@ -4,6 +4,13 @@ class Entry
   include XML::Mapping
 
   text_node :name, "name"
+
+  def initialize(init_props={})
+    super()  #the super initialize (inherited from XML::Mapping) must be called
+    init_props.entries.each do |name,value|
+      self.send :"#{name}=", value
+    end
+  end
 end
 
 
