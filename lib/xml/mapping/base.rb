@@ -538,9 +538,9 @@ module XML
             alias_method :default_xml_to_obj, :xml_to_obj
             def xml_to_obj(obj,xml)
               begin
-                @options[:reader].call(obj,xml)
-              rescue ArgumentError
                 @options[:reader].call(obj,xml,self.method(:default_xml_to_obj))
+              rescue ArgumentError  # thrown if @options[:reader] is a lambda (i.e. no Proc) with !=3 args (e.g. proc{...} in ruby1.8)
+                @options[:reader].call(obj,xml)
               end
             end
           end
@@ -552,9 +552,9 @@ module XML
             alias_method :default_obj_to_xml, :obj_to_xml
             def obj_to_xml(obj,xml)
               begin
-                @options[:writer].call(obj,xml)
-              rescue ArgumentError
                 @options[:writer].call(obj,xml,self.method(:default_obj_to_xml))
+              rescue ArgumentError # thrown if (see above)
+                @options[:writer].call(obj,xml)
               end
             end
           end

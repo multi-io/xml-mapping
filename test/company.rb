@@ -101,3 +101,46 @@ class WriterTest
                                         }
   text_node :bar, "bar"
 end
+
+
+class ReaderWriterProcVsLambdaTest
+  include XML::Mapping
+
+  attr_accessor :read, :written
+
+  text_node :proc_2args, "proc_2args", :reader=>Proc.new{|obj,xml|
+                                                            (obj.read||=[]) << :proc_2args
+                                                        },
+                                       :writer=>Proc.new{|obj,xml|
+                                                            (obj.written||=[]) << :proc_2args
+                                                        }
+
+  text_node :proc_3args, "proc_3args", :reader=>Proc.new{|obj,xml,default|
+                                                            (obj.read||=[]) << :proc_3args
+                                                            default.call(obj,xml)
+                                                        },
+                                       :writer=>Proc.new{|obj,xml,default|
+                                                            (obj.written||=[]) << :proc_3args
+                                                            default.call(obj,xml)
+                                                        }
+
+
+  text_node :lambda_2args, "lambda_2args", :reader=>lambda{|obj,xml|
+                                                              (obj.read||=[]) << :lambda_2args
+                                                          },
+                                           :writer=>lambda{|obj,xml|
+                                                              (obj.written||=[]) << :lambda_2args
+                                                          }
+
+
+  text_node :lambda_3args, "lambda_3args", :reader=>lambda{|obj,xml,default|
+                                                              (obj.read||=[]) << :lambda_3args
+                                                              default.call(obj,xml)
+                                                          },
+                                           :writer=>lambda{|obj,xml,default|
+                                                              (obj.written||=[]) << :lambda_3args
+                                                              default.call(obj,xml)
+                                                          }
+
+
+end

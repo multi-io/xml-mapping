@@ -27,6 +27,7 @@ class XmlMappingTest < Test::Unit::TestCase
     Object.send(:remove_const, "Names1")
     Object.send(:remove_const, "ReaderTest")
     Object.send(:remove_const, "WriterTest")
+    Object.send(:remove_const, "ReaderWriterProcVsLambdaTest")
     unless ($".delete "company.rb") # works in 1.8 only. In 1.9, $" contains absolute paths.
       $".delete_if{|name| name =~ %r!test/company.rb$!}
     end
@@ -157,7 +158,33 @@ class XmlMappingTest < Test::Unit::TestCase
     assert_equal %w{dingdong2 dingdong3}, xml2.all_xpath("quux").map{|elt|elt.text}
   end
 
-  
+  def test_reader_writer_proc_vs_lambda
+    xml = REXML::Document.new("<test>
+                                 <proc_2args>proc_2args_text</proc_2args>
+                                 <lambda_2args>lambda_2args_text</lambda_2args>
+                                 <proc_3args>proc_3args_text</proc_3args>
+                                 <lambda_3args>lambda_3args_text</lambda_3args>
+                              </test>").root
+    r = ReaderWriterProcVsLambdaTest.load_from_xml xml
+    assert_equal [:proc_2args, :proc_3args, :lambda_2args, :lambda_3args], r.read
+    assert_nil r.written
+    assert_nil r.proc_2args
+    assert_nil r.lambda_2args
+    assert_equal 'proc_3args_text', r.proc_3args
+    assert_equal 'lambda_3args_text', r.lambda_3args
+
+    r.proc_2args = "proc_2args_text_new"
+    r.lambda_2args = "lambda_2args_text_new"
+    r.proc_3args = "proc_3args_text_new"
+    r.lambda_3args = "lambda_3args_text_new"
+    xml2 = r.save_to_xml
+    assert_equal [:proc_2args, :proc_3args, :lambda_2args, :lambda_3args], r.written
+    assert_nil xml2.first_xpath("proc_2args", :allow_nil=>true)
+    assert_nil xml2.first_xpath("lambda_2args", :allow_nil=>true)
+    assert_equal 'proc_3args_text_new', xml2.first_xpath("proc_3args").text
+    assert_equal 'lambda_3args_text_new', xml2.first_xpath("lambda_3args").text
+  end
+
   def test_setter_text_node
     @c.ent2 = "lalala"
     assert_equal "lalala", REXML::XPath.first(@c.save_to_xml, "arrtest/entry[2]").text
