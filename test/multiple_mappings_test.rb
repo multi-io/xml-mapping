@@ -15,7 +15,9 @@ class MultipleMappingsTest < Test::Unit::TestCase
       Classes_by_rootelt_names.clear
     EOS
     Object.send(:remove_const, "Triangle")
-    $".delete "triangle_mm.rb"
+    unless ($".delete "triangle_mm.rb")
+      $".delete_if{|name| name =~ %r!test/triangle_mm.rb$!}
+    end
     $:.unshift File.dirname(__FILE__)  # test/unit may have undone this (see test/unit/collector/dir.rb)
     require 'triangle_mm'
   end

@@ -13,8 +13,12 @@ class XmlMappingAdvancedTest < Test::Unit::TestCase
     Object.send(:remove_const, "Document")
     Object.send(:remove_const, "Folder")
 
-    $".delete "documents_folders.rb"
-    $".delete "bookmarks.rb"
+    unless ($".delete "documents_folders.rb")  # works in 1.8 only. In 1.9, $" contains absolute paths.
+      $".delete_if{|name| name =~ %r!test/documents_folders.rb$!}
+    end
+    unless ($".delete "bookmarks.rb")
+      $".delete_if{|name| name =~ %r!test/bookmarks.rb$!}
+    end
     require 'documents_folders'
     require 'bookmarks'
 
