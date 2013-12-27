@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>File: xpath_impl_notes.txt</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+  <div id="fileHeader">
+    <h1>xpath_impl_notes.txt</h1>
+    <table class="header-table">
+    <tr class="top-aligned-row">
+      <td><strong>Path:</strong></td>
+      <td>doc/xpath_impl_notes.txt
+      </td>
+    </tr>
+    <tr class="top-aligned-row">
+      <td><strong>Last Update:</strong></td>
+      <td>Mon Jul 04 02:00:31 CEST 2005</td>
+    </tr>
+    </table>
+  </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <h3>latest design (12/2004)</h3>
+<p>
+At the lowest level, the &quot;Accessors&quot; sub-module contains reader
+and creator functions that correspond to the various types of path elements
+(<em>elt_name</em>, @<em>attr_name</em>,
+<em>elt_name</em>[@<em>attr_name</em>=&#8217;<em>attr_value</em>&#8217;]
+etc.) that xml-xxpath supports. A reader function gets an array of nodes
+and the search parameters corresponding to its path element type (e.g.
+<em>elt_name</em>, <em>attr_name</em>, <em>attr_value</em>) and returns an
+array with all matching direct sub-nodes of any of the supplied nodes. A
+creator function gets one node and the search parameters and returns the
+created sub-node.
+</p>
+<p>
+An XPath expression
+<tt>&lt;things1&gt;/&lt;things2&gt;/&#8230;/&lt;thingsx&gt;</tt> is
+compiled into a bunch of nested closures, each of which is responsible for
+a specific path element and calls the corresponding accessor function:
+</p>
+<ul>
+<li><tt>@creator_procs</tt> &#8212; an array of &quot;creator&quot; functions.
+<tt>@creator_procs[i]</tt> gets passed a base node (<a
+href="../../classes/XML.html">XML</a> element) and a create_new flag, and
+it creates the path
+<tt>&lt;things[x-i+1]&gt;/&lt;things[x-i+2]&gt;/&#8230;/&lt;thingsx&gt;</tt>
+inside the base node and returns the hindmost element created (i.e. the one
+corresponding to <tt>&lt;thingsx&gt;</tt>).
+
+</li>
+<li><tt>@reader_proc</tt> &#8212; a &quot;reader&quot; function that gets
+passed an array of nodes and returns an array of all nodes that matched the
+path in any of the supplied nodes, or, if no match was found, throws
+:not_found along with the last non-empty set of nodes that was found, and
+the element of <tt>@creator_procs</tt> that could be used to create the
+remaining part of the path.
+
+</li>
+</ul>
+<p>
+The <tt>all</tt> function is then trivially implemented on top of this:
+</p>
+<pre>
+    def all(node,options={})
+      raise &quot;options not a hash&quot; unless Hash===options
+      if options[:create_new]
+        return [ @creator_procs[-1].call(node,true) ]
+      else
+        last_nodes,rest_creator = catch(:not_found) do
+          return @reader_proc.call([node])
+        end
+        if options[:ensure_created]
+          [ rest_creator.call(last_nodes[0],false) ]
+        else
+          []
+        end
+      end
+    end
+</pre>
+<p>
+&#8230;and <tt>first</tt>, <tt>create_new</tt> etc. are even more trivial
+frontends to that.
+</p>
+<p>
+The implementations of the <tt>@creator_procs</tt> look like this:
+</p>
+<pre>
+  @creator_procs[0] =
+    proc{|node,create_new| node}
+
+  @creator_procs[1] =
+    proc {|node,create_new|
+      @creator_procs[0].call(Accessors.create_subnode_by_&lt;thingsx&gt;(node,create_new,&lt;thingsx&gt;),
+                             create_new)
+    }
+
+  @creator_procs[2] =
+    proc {|node,create_new|
+      @creator_procs[1].call(Accessors.create_subnode_by_&lt;thingsx-1&gt;(node,create_new,&lt;thingsx-1&gt;),
+                             create_new)
+    }
+
+  ...
+
+  @creator_procs[n] =
+    proc {|node,create_new|
+      @creator_procs[n-1].call(Accessors.create_subnode_by_&lt;things[x+1-n]&gt;(node,create_new,&lt;things[x+1-n]&gt;),
+                               create_new)
+    }
+
+  ...
+  @creator_procs[x] =
+    proc {|node,create_new|
+      @creator_procs[x-1].call(Accessors.create_subnode_by_&lt;things1&gt;(node,create_new,&lt;things1&gt;),
+                               create_new)
+    }
+</pre>
+<p>
+..and the implementation of @reader_proc looks like this:
+</p>
+<pre>
+  @reader_proc = rpx where
+
+  rp0 = proc {|nodes| nodes}
+
+  rp1 = proc {|nodes|
+                next_nodes = Accessors.subnodes_by_&lt;thingsx&gt;(nodes,&lt;thingsx&gt;)
+                if (next_nodes == [])
+                  throw :not_found, [nodes,@creator_procs[1]]
+                else
+                  rp0.call(next_nodes)
+                end
+              }
+
+  rp2 = proc {|nodes|
+                next_nodes = Accessors.subnodes_by_&lt;thingsx-1&gt;(nodes,&lt;thingsx-1&gt;)
+                if (next_nodes == [])
+                  throw :not_found, [nodes,@creator_procs[2]]
+                else
+                  rp1.call(next_nodes)
+                end
+              }
+  ...
+
+  rpx = proc {|nodes|
+                next_nodes = Accessors.subnodes_by_&lt;things1&gt;(nodes,&lt;things1&gt;)
+                if (next_nodes == [])
+                  throw :not_found, [nodes,@creator_procs[x]]
+                else
+                  rpx-1.call(next_nodes)
+                end
+              }
+</pre>
+
+    </div>
+
+
+   </div>
+
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>
