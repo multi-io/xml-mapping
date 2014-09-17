@@ -10,8 +10,7 @@ require 'rake'
 require 'rake/testtask'
 require 'build_lib/my_rdoctask'
 require 'rake/packagetask'
-require 'rake/gempackagetask'
-#require 'rake/contrib/rubyforgepublisher'
+require 'rubygems/package_task'
 require 'rake/contrib/sshpublisher'
 
 require File.dirname(__FILE__)+"/lib/xml/mapping/version"
@@ -194,12 +193,14 @@ spec = Gem::Specification.new do |s|
   s.test_file = 'test/all_tests.rb'
 
   s.author = 'Olaf Klischat'
-  s.email = 'olaf.klischat@sofd.de'
+  s.email = 'olaf.klischat@gmail.com'
   s.homepage = "http://xml-mapping.rubyforge.org"
   s.rubyforge_project = "xml-mapping"
 end
 
 
+
+if false
 
 Rake::GemPackageTask.new(spec) do |p|
   p.gem_spec = spec
@@ -224,4 +225,6 @@ task :rfpub_rdoc => [:rdoc] do
                               '/var/www/gforge-projects/xml-mapping/',
                               'doc/api')
   p.upload
+end
+
 end
