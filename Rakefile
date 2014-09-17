@@ -7,8 +7,10 @@ $:.unshift "."
 
 require 'rubygems'
 require 'rake'
+require 'rake/clean'
 require 'rake/testtask'
-require 'build_lib/my_rdoctask'
+#require 'build_lib/my_rdoctask'
+require 'rdoc/task'
 require 'rake/packagetask'
 require 'rubygems/package_task'
 require 'rake/contrib/sshpublisher'
@@ -25,8 +27,8 @@ class Rake::GemPackageTask
   #public :gem_file
 end
 
-
-FILES_RDOC_EXTRA=%w{README README_XPATH ChangeLog TODO.txt doc/xpath_impl_notes.txt}
+FILE_RDOC_MAIN = 'README'
+FILES_RDOC_EXTRA = [FILE_RDOC_MAIN] + %w{README_XPATH ChangeLog TODO.txt doc/xpath_impl_notes.txt}
 FILES_RDOC_INCLUDES=%w{examples/company.xml
                        examples/company.rb
                        examples/company_usage.intout
@@ -58,11 +60,11 @@ FILES_RDOC_INCLUDES=%w{examples/company.xml
 desc "Default Task"
 task :default => [ :test ]
 
-Rake::TestTask.new(:test) { |t|
+Rake::TestTask.new :test do |t|
   t.test_files = ["test/all_tests.rb"]
   t.verbose = true
 #  t.loader = :testrb
-}
+end
 
 # runs tests only if sources have changed since last succesful run of
 # tests
@@ -73,19 +75,19 @@ end
 
 
 
-MyRDocTask.new { |rdoc|
+RDoc::Task.new do |rdoc|
   rdoc.rdoc_dir = 'doc/api'
   rdoc.title    = "XML::Mapping -- Simple, extensible Ruby-to-XML (and back) mapper"
-  rdoc.options += %w{--line-numbers --inline-source --accessor cattr_accessor=object --include examples}
+  rdoc.options += %w{--line-numbers --include examples}
+  #rdoc.main = FILE_RDOC_MAIN
   rdoc.rdoc_files.include(*FILES_RDOC_EXTRA)
   rdoc.rdoc_files.include('lib/**/*.rb')
 
   # additional file dependencies for the rdoc task
   #   this somewhat of a black art because RDocTask doesn't document the
   #   prerequisite of its rdoc task (<rdoc_dir>/index.html)
-  file rdoc.rdoc_target => FILES_RDOC_INCLUDES
-  file "#{rdoc.rdoc_dir}/index.html" => FileList.new("examples/**/*.rb")
-}
+  file "#{rdoc.rdoc_dir}/index.html" => (FileList.new("examples/**/*.rb") + FILES_RDOC_INCLUDES)
+end
 
 #rule '.intout' => ['.intin.rb', *FileList.new("lib/**/*.rb")] do |task|  # doesn't work -- see below
 rule '.intout' => ['.intin.rb'] do |task|
