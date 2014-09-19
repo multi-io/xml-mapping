@@ -31,12 +31,17 @@
 
 - documentation:
 
-  - README:
+  - consider switching to YARD
+
+    - reasons: parameter/return type metadata, (maybe) plugin for the
+      code snippet inclusion stuff
+
+  - user_manual:
 
     - document/show usage of default_when_xpath_err outside node type
       implementations
 
-  - README_XPATH:
+  - user_manual_xxpath:
 
     - mention new step types, new axes, xml/xpath_methods
 
@@ -49,6 +54,11 @@
   addition to the current REXML/DOM - based one. Probably won't be
   implementable for some more complicated XPaths -- raise meaningful
   exceptions in those cases.
+
+  - would need support in xxpath
+
+  - should probably be built on top of the Ruby 2.0 lazy enumeration
+    stuff
 
 - XML::XXPath/XML::Mapping: add XML text nodes (the sub-node of an
   element node that contains that element's text) first-class to

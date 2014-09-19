@@ -10,35 +10,34 @@ details. xml-xxpath, however, does not depend on xml-mapping at all,
 and is useful in its own right -- maybe I'll later distribute it as a
 seperate library instead of bundling it. For the time being, if you
 want to use this XPath implementation stand-alone, you can just rip
-the files <tt>lib/xml/xxpath.rb</tt>,
-<tt>lib/xml/xxpath/steps.rb</tt>, and
-<tt>lib/xml/xxpath_methods.rb</tt> out of the xml-mapping distribution
-and use them on their own (they do not depend on anything else).
+the files `lib/xml/xxpath.rb`, `lib/xml/xxpath/steps.rb`, and
+`lib/xml/xxpath_methods.rb` out of the xml-mapping distribution and
+use them on their own (they do not depend on anything else).
 
 xml-xxpath's XPath support is vastly incomplete (see below), but, in
 addition to the normal reading/matching functionality found in other
 XPath implementations (i.e. "find all elements in a given XML document
 matching a given XPath expression"), xml-xxpath supports <i>write
 access</i>. For example, when writing the XPath expression
-"/foo/bar[3]/baz[@key='hiho']" to the XML document
+`/foo/bar[3]/baz[@key='hiho']` to the XML document
 
-  <foo>
-    <bar>
-      <baz key='ab'>hello</baz>
-      <baz key='xy'>goodbye</baz>
-    </bar>
-  </foo>
+    <foo>
+      <bar>
+        <baz key='ab'>hello</baz>
+        <baz key='xy'>goodbye</baz>
+      </bar>
+    </foo>
 
 , you'll get:
 
-  <foo>
-    <bar>
-      <baz key='ab'>hello</baz>
-      <baz key='xy'>goodbye</baz>
-    </bar>
-    <bar/>
-    <bar><baz key='hiho'/></bar>
-  </foo>
+    <foo>
+      <bar>
+        <baz key='ab'>hello</baz>
+        <baz key='xy'>goodbye</baz>
+      </bar>
+      <bar/>
+      <bar><baz key='hiho'/></bar>
+    </foo>
 
 This feature is used by xml-mapping when writing (marshalling) Ruby
 objects to XML, and is actually the reason why I couldn't just use any
@@ -51,29 +50,29 @@ document -- I've heard REXML::XPath doesn't do that :)
 Some basic knowledge of XPath is helpful for reading this document.
 
 At the moment, xml-xxpath understands XPath expressions of the form
-[<tt>/</tt>]_pathelement_<tt>/[/]</tt>_pathelement_<tt>/[/]</tt>...,
+[`/`]_pathelement_`/[/]`_pathelement_`/[/]`...,
 where each _pathelement_ must be one of these:
 
-- a simple element name _name_, e.g. +signature+
+- a simple element name _name_, e.g. `signature`
 
-- an attribute name, @_attr_name_, e.g. <tt>@key</tt>
+- an attribute name, @_attrname_, e.g. `@key`
 
 - a combination of an element name and an attribute name and
-  -value, in the form _elt_name_[@_attr_name_='_attr_value_']
+  -value, in the form `elt_name[@attr_name='attr_value']`
 
-- an element name and an index, _elt_name_[_index_]
+- an element name and an index, `elt_name[index]`
 
-- the "match-all" path element, <tt>*</tt>
+- the "match-all" path element, `*`
 
 - .
 
-- name1|name2|...
+- name1`|`name2`|`...
 
-- .[@key='xy'] / self::*[@key='xy']
+- `.[@key='xy'] / self::*[@key='xy']`
 
-- child::*[@key='xy']
+- `child::*[@key='xy']`
 
-- text()
+- `text()`
 
 
 
@@ -98,15 +97,15 @@ updated in-place.
 
   :include: xpath_usage.intout
 
-The objects supplied to the <tt>all()</tt>, <tt>first()</tt>, and
-<tt>each()</tt> calls must be REXML element nodes, i.e. they must
-support messages like <tt>elements</tt>, <tt>attributes</tt> etc
+The objects supplied to the `all()`, `first()`, and
+`each()` calls must be REXML element nodes, i.e. they must
+support messages like `elements`, `attributes` etc
 (instances of REXML::Element and its subclasses do this). The calls
 return the found elements as instances of REXML::Element or
 XML::XXPath::Accessors::Attribute. The latter is a wrapper around
 attribute nodes that is largely call-compatible to
 REXML::Element. This is so you can write things like
-<tt>path.each{|node|puts node.text}</tt> without having to
+`path.each{|node|puts node.text}` without having to
 special-case anything even if the path matches attributes, not just
 elements.
 
@@ -116,7 +115,7 @@ pattern is stored inside the XPath object in a pre-compiled form,
 which makes it more efficient.
 
 The path elements of the XPath pattern are applied to the
-<tt>.elements</tt> collection of the passed XML element and its
+`.elements` collection of the passed XML element and its
 sub-elements, starting with the first one. This is shown by the
 following code:
 
@@ -137,8 +136,8 @@ against the +firstelt+ element in the example *must not* start with
 
 ### Write Access
 
-You may pass an <tt>:ensure_created=>true</tt> option argument to
-_path_.first(_elt_)/_path_.all(_elt_) calls to make sure that _path_
+You may pass an `:ensure_created=>true` option argument to
+_path_.first(_elt_) / _path_.all(_elt_) calls to make sure that _path_
 exists inside the passed XML element _elt_. If it existed before,
 nothing changes, and the call behaves just as it would without the
 option argument. If the path didn't exist before, the XML element is
@@ -160,11 +159,11 @@ Examples:
   :include: xpath_ensure_created.intout
 
 
-Alternatively, you may pass a <tt>:create_new=>true</tt> option
-argument or call <tt>create_new</tt> (_path_.create_new(_elt_) is
-equivalent to _path_.first(_elt_,:create_new=>true)). In that case, a
-new node is created in _elt_ for each path element of _path_ (or an
-exception raised if that wasn't possible for any path element).
+Alternatively, you may pass a `:create_new=>true` option
+argument or call `create_new` (_path_`.create_new(`_elt_`)` is
+equivalent to _path_`.first(`_elt_`,:create_new=>true)`). In that
+case, a new node is created in _elt_ for each path element of _path_
+(or an exception raised if that wasn't possible for any path element).
 
 Examples:
 
@@ -194,7 +193,7 @@ mentioned above.
 
 ## Implentation notes
 
-<tt>doc/xpath_impl_notes.txt</tt> contains some documentation on the
+`doc/xpath_impl_notes.txt` contains some documentation on the
 implementation of xml-xxpath.
 
 ## License

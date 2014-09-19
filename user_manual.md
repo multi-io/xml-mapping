@@ -5,25 +5,25 @@ semi-automatically map Ruby objects to XML trees and vice versa.
 
 ## Download
 
-For downloading the latest version, CVS repository access etc. go to:
+For downloading the latest version, git repository access etc. go to:
 
-http://rubyforge.org/projects/xml-mapping/
+https://github.com/multi-io/xml-mapping
 
 ## Contents of this Document
 
-- {Example}[aref:example]
-- {Single-attribute Nodes}[aref:sanodes]
-  - {Default Values}[aref:defaultvalues]
-  - {Single-attribute Nodes with Sub-objects}[aref:subobjnodes]
-  - {Attribute Handling Details, Augmenting Existing Classes}[aref:attrdefns]
-- {Other Nodes}[aref:onodes]
-  - {choice_node}[aref:choice_node]
-  - {Readers/Writers}[aref:readerswriters]
-- {Multiple Mappings per Class}[aref:mappings]
-- {Defining your own Node Types}[aref:definingnodes]
-- {XPath Interpreter}[aref:xpath]
+- {Example}[rdoc-label:label-Example]
+- {Single-attribute Nodes}[rdoc-label:label-Single-attribute+Nodes]
+    - {Default Values}[rdoc-label:label-Default+Values]
+    - {Single-attribute Nodes with Sub-objects}[rdoc-label:label-Single-attribute+Nodes+with+Sub-objects]
+    - {Attribute Handling Details, Augmenting Existing Classes}[rdoc-label:label-Attribute+Handling+Details%2C+Augmenting+Existing+Classes]
+- {Other Nodes}[rdoc-label:label-Other+Nodes]
+    - {choice_node}[rdoc-label:label-choice_node]
+    - {Readers/Writers}[rdoc-label:label-Readers%2FWriters]
+- {Multiple Mappings per Class}[rdoc-label:label-Multiple+Mappings+per+Class]
+- {Defining your own Node Types}[rdoc-label:label-Defining+your+own+Node+Types]
+- {XPath Interpreter}[rdoc-label:label-XPath+Interpreter]
 
-## {Example}[a:example]
+## Example
 
 (example document stolen + extended from
 http://www.castor.org/xml-mapping.html)
@@ -55,18 +55,18 @@ from the body of the class definition to define instance attributes
 that are automatically and bidirectionally mapped to subtrees of the
 XML element an instance of the class is mapped to.
 
-## {Single-attribute Nodes}[a:sanodes]
+## Single-attribute Nodes
 
 For example, in the definition
 
-  class Address
-    include XML::Mapping
+    class Address
+      include XML::Mapping
 
-    text_node :city, "City"
-    text_node :state, "State"
-    numeric_node :zip, "ZIP"
-    text_node :street, "Street"
-  end
+      text_node :city, "City"
+      text_node :state, "State"
+      numeric_node :zip, "ZIP"
+      text_node :street, "Street"
+    end
 
 the first call to #text_node creates an attribute named "city" which
 is mapped to the text of the XML child element defined by the XPath
@@ -90,7 +90,7 @@ node". All node types that come with xml-mapping except one
 nodes.
 
 
-### {Default Values}[a:defaultvalues]
+### Default Values
 
 For each single-attribute node you may define a <i>default value</i>
 which will be set if there was no value defined for the attribute in
@@ -98,43 +98,43 @@ the XML source.
 
 From the example:
 
-  class Signature
-    include XML::Mapping
+    class Signature
+      include XML::Mapping
 
-    text_node :position, "Position", :default_value=>"Some Employee"
-  end
+      text_node :position, "Position", :default_value=>"Some Employee"
+    end
 
 The semantics of default values are as follows:
 
 - when creating a new instance from scratch:
 
-  - attributes with default values are set to their default values
+    - attributes with default values are set to their default values
 
-  - attributes without default values are left unset
+    - attributes without default values are left unset
 
   (when defining your own initializer, you'll have to call the
   inherited _initialize_ method in order to get this behaviour)
 
 - when loading an instance from an XML document:
 
-  - attributes without default values that are not represented in the
-    XML raise an error
+    - attributes without default values that are not represented in
+      the XML raise an error
 
-  - attributes with default values that are not represented in the XML
-    are set to their default values
+    - attributes with default values that are not represented in the
+      XML are set to their default values
 
-  - all other attributes are set to their respective values as present
-    in the XML
+    - all other attributes are set to their respective values as
+      present in the XML
 
 
 - when saving an instance to an XML document:
 
-  - unset attributes without default values raise an error
+    - unset attributes without default values raise an error
 
-  - attributes with default values that are set to their default
-    values are not saved
+    - attributes with default values that are set to their default
+      values are not saved
 
-  - all other attributes are saved
+    - all other attributes are saved
 
 
 This implies that:
@@ -147,14 +147,14 @@ This implies that:
 
 
 
-### {Single-attribute Nodes with Sub-objects}[a:subobjnodes]
+### Single-attribute Nodes with Sub-objects
 
 Single-attribute nodes of type +array_node+, +hash_node+, and
 +object_node+ recursively map one or more subtrees of their XML to
 sub-objects (e.g. array elements or hash values) of their
 attribute. For example, with the line
 
-  array_node :signatures, "Signed-By", "Signature", :class=>Signature, :default_value=>[]
+    array_node :signatures, "Signed-By", "Signature", :class=>Signature, :default_value=>[]
 
 , an attribute named "signatures" is added to the surrounding class
 (here: +Order+); the attribute will be an array whose elements
@@ -174,17 +174,17 @@ attribute contains an array with 3 +Signature+ instances (let's call
 them <tt>sig1</tt>, <tt>sig2</tt>, and <tt>sig3</tt>) in it, it will
 be marshalled to an XML tree that looks like this:
 
-  <Signed-By>
-    <Signature>
-      [marshalled object sig1]
-    </Signature>
-    <Signature>
-      [marshalled object sig2]
-    </Signature>
-    <Signature>
-      [marshalled object sig3]
-    </Signature>
-  </Signed-By>
+    <Signed-By>
+      <Signature>
+        [marshalled object sig1]
+      </Signature>
+      <Signature>
+        [marshalled object sig2]
+      </Signature>
+      <Signature>
+        [marshalled object sig3]
+      </Signature>
+    </Signed-By>
 
 Internally, each +Signature+ instance is stored into its
 <tt><Signature></tt> sub-element by calling
@@ -353,9 +353,9 @@ possible with all single-attribute nodes with sub-objects, i.e. with
 a whole array of date values, you could use +array_node+ with the same
 :marshaller/:unmarshaller procs as above, for example:
 
-  array_node :birthdays, "birthdays", "birthday",
-             :unmarshaller=> <as above>,
-             :marshaller=> <as above>
+    array_node :birthdays, "birthdays", "birthday",
+               :unmarshaller=> <as above>,
+               :marshaller=> <as above>
 
 You can see that :marshaller/:unmarshaller procs give you more
 flexibility, but they also impose more work because you essentially
@@ -383,12 +383,12 @@ functionality of a node type while retaining another part.
 
 
 
-### {Attribute Handling Details, Augmenting Existing Classes}[a:attrdefns]
+### Attribute Handling Details, Augmenting Existing Classes
 
 I'll shed some more light on how single-attribute nodes add mapped
 attributes to Ruby classes. An attribute declaration like
 
-  text_node :city, "City"
+    text_node :city, "City"
 
 maps some portion of the XML tree (here: the "City" sub-element) to an
 attribute (here: "city") of the class whose body the declaration
@@ -448,7 +448,7 @@ class:
   :include: time_augm_loading.intout
 
 
-## {Other Nodes}[a:onodes]
+## Other Nodes
 
 All nodes I've shown so far (node types text_node, numeric_node,
 boolean_node, object_node, array_node, and hash_node) were
@@ -457,7 +457,7 @@ of such a node is an attribute name, and the attribute of that name is
 the only piece of the state of instances of the node's mapping class
 that gets read/written by the node.
 
-### {choice_node}[a:choice_node]
+### choice_node
 
 There is one node type distributed with xml-mapping that is not a
 single-attribute node: +choice_node+. A +choice_node+ allows you to
@@ -528,7 +528,7 @@ sub-element. Of course, this is because that alternative appears first
 in the choice_node.
 
 
-### {Readers/Writers}[a:readerswriters]
+### Readers/Writers
 
 Finally, _all_ nodes support keyword arguments :reader and :writer
 which allow you to extend or completely override the reading and/or
@@ -573,14 +573,14 @@ As a special convention, if you specify both a :reader and a :writer
 for a node, and in both cases you do /not/ call the default behaviour,
 then you should use the generic node type +node+, e.g.:
 
-  class SomeClass
-    include XML::Mapping
+    class SomeClass
+      include XML::Mapping
 
-    ....
+      ....
 
-    node :reader=>proc{|obj,xml| ...},
-         :writer=>proc{|obj,xml| ...}
-  end
+      node :reader=>proc{|obj,xml| ...},
+           :writer=>proc{|obj,xml| ...}
+    end
 
 (since you're completely replacing both the reading and the writing
 functionality, you're effectively replacing all the functionality of
@@ -608,7 +608,7 @@ the (sensibly parameterized) code from your readers/writers to your
 node types.
 
 
-## {Multiple Mappings per Class}[a:mappings]
+## Multiple Mappings per Class
 
 Sometimes you might want to represent the same Ruby object in multiple
 alternative ways in XML. For example, the name of a "Person" object
@@ -652,11 +652,11 @@ sub-ordinated class (+Address+). This is the case for all
 specify a different mapping for the sub-object(s) using the option
 :sub_mapping, e.g.
 
-  object_node :address, "address", :class=>Address, :sub_mapping=>:other
+    object_node :address, "address", :class=>Address, :sub_mapping=>:other
 
 
 
-## {Defining your own Node Types}[a:definingnodes]
+## Defining your own Node Types
 
 It's easy to write additional node types and register them with the
 xml-mapping library (the following node types come with xml-mapping:
@@ -830,16 +830,16 @@ The following node types (node classes) come with xml-mapping (they
 all live in the XML::Mapping namespace, which I've left out here for
 brevity):
 
-  Node
-   +-SingleAttributeNode
-   |  +-SubObjectBaseNode
-   |  |  +-ObjectNode
-   |  |  +-ArrayNode
-   |  |  +-HashNode
-   |  +-TextNode
-   |  +-NumericNode
-   |  +-BooleanNode
-   +-ChoiceNode
+    Node
+     +-SingleAttributeNode
+     |  +-SubObjectBaseNode
+     |  |  +-ObjectNode
+     |  |  +-ArrayNode
+     |  |  +-HashNode
+     |  +-TextNode
+     |  +-NumericNode
+     |  +-BooleanNode
+     +-ChoiceNode
 
 XML::Mapping::Node is the base class for all nodes,
 XML::Mapping::SingleAttributeNode is the base class for
@@ -881,11 +881,11 @@ the node class. The list of parameters to _new_ will consist of <i>the
 mapping class, followed by all arguments that were passed to the node
 factory method</i>. For example, when you have this node declaration:
 
-  class MyMappingClass
-    include XML::Mapping
+    class MyMappingClass
+      include XML::Mapping
 
-    my_node :foo, "bar", 42, :hi=>"ho"
-  end
+      my_node :foo, "bar", 42, :hi=>"ho"
+    end
 
 , then the node factory method (+my_node+) calls
 <tt>MyNode.new(MyMappingClass, :foo, "bar", 42, :hi=>"ho")</tt>.
@@ -898,14 +898,14 @@ processes itself, process them, and return an array containing the
 remaining (still unprocessed) parameters. Thus, an implementation of
 _initialize_ follows this pattern:
 
-  def initialize(*args)
-    myparam1,myparam2,...,myparamx,*args = super(*args)
+    def initialize(*args)
+      myparam1,myparam2,...,myparamx,*args = super(*args)
 
-    .... process the myparam1,myparam2,...,myparamx ....
+      .... process the myparam1,myparam2,...,myparamx ....
 
-    # return still unprocessed args
-    args
-  end
+      # return still unprocessed args
+      args
+    end
 
 (since the called superclass initializer is written the same way, the
 parameter array returned by it will already be stripped of all
@@ -1003,9 +1003,9 @@ this, the <tt>obj_to_xml</tt>/<tt>xml_to_obj</tt> implementations in
 SingleAttributeNode call two new methods introduced by
 SingleAttributeNode, which must be overwritten by subclasses:
 
-  extract_attr_value(xml)
+    extract_attr_value(xml)
 
-  set_attr_value(xml, value)
+    set_attr_value(xml, value)
 
 <tt>extract_attr_value(xml)</tt> is called by <tt>xml_to_obj</tt>
 during unmarshalling. _xml_ is the XML tree being read. The method
@@ -1045,7 +1045,7 @@ procs are there to be called from <tt>extract_attr_value</tt> or
 <tt>set_attr_value</tt> whenever the need arises.
 
 
-## {XPath Interpreter}[a:xpath]
+## XPath Interpreter
 
 XML::XXPath is an XPath parser. It is used in xml-mapping node type
 definitions, but can just as well be utilized stand-alone (it does not
@@ -1053,27 +1053,28 @@ depend on xml-mapping). XML::XXPath is very incomplete and probably
 will always be, but it should be reasonably efficient (XPath
 expressions are precompiled), and, most importantly, it supports write
 access, which is needed for writing objects to XML. For example, if
-you create the path "/foo/bar[3]/baz[@key='hiho']" in the XML document
+you create the path <tt>/foo/bar[3]/baz[@key='hiho']</tt> in the XML
+document
 
-  <foo>
-    <bar>
-      <baz key="ab">hello</baz>
-      <baz key="xy">goodbye</baz>
-    </bar>
-  </foo>
+    <foo>
+      <bar>
+        <baz key="ab">hello</baz>
+        <baz key="xy">goodbye</baz>
+      </bar>
+    </foo>
 
 , you'll get:
 
-  <foo>
-    <bar>
-      <baz key='ab'>hello</baz>
-      <baz key='xy'>goodbye</baz>
-    </bar>
-    <bar/>
-    <bar>
-      <baz key='hiho'/>
-    </bar>
-  </foo>
+    <foo>
+      <bar>
+        <baz key='ab'>hello</baz>
+        <baz key='xy'>goodbye</baz>
+      </bar>
+      <bar/>
+      <bar>
+        <baz key='hiho'/>
+      </bar>
+    </foo>
 
 XML::XXPath is explained in more detail in the reference documentation
 and the user_manual_xxpath file.
