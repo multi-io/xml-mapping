@@ -1,8 +1,6 @@
 # xml-mapping -- bidirectional Ruby-XML mapper
 #  Copyright (C) 2004-2006 Olaf Klischat
 
-$:.unshift(File.dirname(__FILE__)+"/..")
-
 require 'xml/mapping/base'
 require 'xml/mapping/standard_nodes'
 
