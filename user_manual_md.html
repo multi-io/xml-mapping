@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 
-<title>XML::Mapping -- Simple, extensible Ruby-to-XML (and back) mapper</title>
+<title>user_manual - XML::Mapping -- Simple, extensible Ruby-to-XML (and back) mapper</title>
 
 <link href="./fonts.css" rel="stylesheet">
 <link href="./rdoc.css" rel="stylesheet">
@@ -36,7 +36,6 @@
   </div>
 </div>
 
-
     <div id="search-section" role="search" class="project-section initially-hidden">
   <form action="#" method="get" accept-charset="utf-8">
     <div id="search-field-wrapper">
@@ -53,6 +52,44 @@
 </div>
 
   </div>
+
+  
+<div class="nav-section">
+  <h3>Table of Contents</h3>
+
+  <ul class="link-list" role="directory">
+    <li><a href="#label-XML-MAPPING%3A+XML-to-object+%28and+back%29+Mapper+for+Ruby%2C+including+XPath+Interpreter">XML-MAPPING: XML-to-object (and back) Mapper for Ruby, including XPath Interpreter</a>
+    <li><a href="#label-Download">Download</a>
+    <li><a href="#label-Contents+of+this+Document">Contents of this Document</a>
+    <li><a href="#label-Example">Example</a>
+    <li><a href="#label-Input+Document%3A">Input Document:</a>
+    <li><a href="#label-Mapping+Class+Declaration%3A">Mapping Class Declaration:</a>
+    <li><a href="#label-Usage%3A">Usage:</a>
+    <li><a href="#label-Single-attribute+Nodes">Single-attribute Nodes</a>
+    <li><a href="#label-Default+Values">Default Values</a>
+    <li><a href="#label-Single-attribute+Nodes+with+Sub-objects">Single-attribute Nodes with Sub-objects</a>
+    <li><a href="#label-Polymorphic+Sub-objects%2C+Marshallers%2FUnmarshallers">Polymorphic Sub-objects, Marshallers/Unmarshallers</a>
+    <li><a href="#label-Attribute+Handling+Details%2C+Augmenting+Existing+Classes">Attribute Handling Details, Augmenting Existing Classes</a>
+    <li><a href="#label-Other+Nodes">Other Nodes</a>
+    <li><a href="#label-choice_node">choice_node</a>
+    <li><a href="#label-Readers%2FWriters">Readers/Writers</a>
+    <li><a href="#label-Multiple+Mappings+per+Class">Multiple Mappings per Class</a>
+    <li><a href="#label-Defining+your+own+Node+Types">Defining your own Node Types</a>
+    <li><a href="#label-Example">Example</a>
+    <li><a href="#label-Element+order+in+created+XML+documents">Element order in created XML documents</a>
+    <li><a href="#label-Node+Types+Are+Ruby+Classes">Node Types Are Ruby Classes</a>
+    <li><a href="#label-How+Node+Types+Work">How Node Types Work</a>
+    <li><a href="#label-Node+Initialization">Node Initialization</a>
+    <li><a href="#label-Node+Operation+during+Marshalling+and+Unmarshalling">Node Operation during Marshalling and Unmarshalling</a>
+    <li><a href="#label-Basic+Node+Types+Overview">Basic Node Types Overview</a>
+    <li><a href="#label-Node">Node</a>
+    <li><a href="#label-SingleAttributeNode">SingleAttributeNode</a>
+    <li><a href="#label-SubObjectBaseNode">SubObjectBaseNode</a>
+    <li><a href="#label-XPath+Interpreter">XPath Interpreter</a>
+    <li><a href="#label-License">License</a>
+  </ul>
+</div>
+
 
   <div id="project-metadata">
     <div id="fileindex-section" class="nav-section">
@@ -73,75 +110,10 @@
   </ul>
 </div>
 
-    <div id="classindex-section" class="nav-section">
-  <h3>Class and Module Index</h3>
-
-  <ul class="link-list">
-  
-    <li><a href="./Kernel.html">Kernel</a>
-  
-    <li><a href="./Numeric.html">Numeric</a>
-  
-    <li><a href="./REXML/Parent.html">REXML::Parent</a>
-  
-    <li><a href="./String.html">String</a>
-  
-    <li><a href="./XML.html">XML</a>
-  
-    <li><a href="./XML/Mapping/ArrayNode.html">XML::Mapping::ArrayNode</a>
-  
-    <li><a href="./XML/Mapping/BooleanNode.html">XML::Mapping::BooleanNode</a>
-  
-    <li><a href="./XML/Mapping/ChoiceNode.html">XML::Mapping::ChoiceNode</a>
-  
-    <li><a href="./XML/Mapping/ClassMethods.html">XML::Mapping::ClassMethods</a>
-  
-    <li><a href="./XML/Mapping/Classes_by_rootelt_names.html">XML::Mapping::Classes_by_rootelt_names</a>
-  
-    <li><a href="./XML/Mapping/HashNode.html">XML::Mapping::HashNode</a>
-  
-    <li><a href="./XML/Mapping/Node.html">XML::Mapping::Node</a>
-  
-    <li><a href="./XML/Mapping/NumericNode.html">XML::Mapping::NumericNode</a>
-  
-    <li><a href="./XML/Mapping/ObjectNode.html">XML::Mapping::ObjectNode</a>
-  
-    <li><a href="./XML/Mapping/SingleAttributeNode.html">XML::Mapping::SingleAttributeNode</a>
-  
-    <li><a href="./XML/Mapping/SingleAttributeNode/NoAttrValueSet.html">XML::Mapping::SingleAttributeNode::NoAttrValueSet</a>
-  
-    <li><a href="./XML/Mapping/SubObjectBaseNode.html">XML::Mapping::SubObjectBaseNode</a>
-  
-    <li><a href="./XML/Mapping/TextNode.html">XML::Mapping::TextNode</a>
-  
-    <li><a href="./XML/MappingError.html">XML::MappingError</a>
-  
-    <li><a href="./XML/XXPath.html">XML::XXPath</a>
-  
-    <li><a href="./XML/XXPath/Accessors.html">XML::XXPath::Accessors</a>
-  
-    <li><a href="./XML/XXPath/Accessors/Attribute.html">XML::XXPath::Accessors::Attribute</a>
-  
-    <li><a href="./XML/XXPath/Accessors/UnspecifiednessSupport.html">XML::XXPath::Accessors::UnspecifiednessSupport</a>
-  
-    <li><a href="./XML/XXPath/XML.html">XML::XXPath::XML</a>
-  
-    <li><a href="./XML/XXPath/XML/XXPath.html">XML::XXPath::XML::XXPath</a>
-  
-    <li><a href="./XML/XXPath/XML/XXPath/REXML.html">XML::XXPath::XML::XXPath::REXML</a>
-  
-    <li><a href="./XML/XXPathError.html">XML::XXPathError</a>
-  
-    <li><a href="./XML/XXPathMethods.html">XML::XXPathMethods</a>
-  
-  </ul>
-</div>
-
   </div>
 </nav>
 
-<main role="main">
-
+<main role="main" aria-label="Page user_manual.md">
 
 <h1 id="label-XML-MAPPING%3A+XML-to-object+%28and+back%29+Mapper+for+Ruby%2C+including+XPath+Interpreter">XML-MAPPING: XML-to-object (and back) Mapper for Ruby, including XPath Interpreter<span><a href="#label-XML-MAPPING%3A+XML-to-object+%28and+back%29+Mapper+for+Ruby%2C+including+XPath+Interpreter">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
 

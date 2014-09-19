@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>class XML::Mapping::ArrayNode - XML::Mapping -- Simple, extensible Ruby-to-XML (and back) mapper</title>
+
+<link href="../../fonts.css" rel="stylesheet">
+<link href="../../rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../../";
+</script>
+
+<script src="../../js/jquery.js"></script>
+<script src="../../js/navigation.js"></script>
+<script src="../../js/search_index.js"></script>
+<script src="../../js/search.js"></script>
+<script src="../../js/searcher.js"></script>
+<script src="../../js/darkfish.js"></script>
+
+
+<body id="top" role="document" class="class">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="../../index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="../../table_of_contents.html#pages">Pages</a>
+    <a href="../../table_of_contents.html#classes">Classes</a>
+    <a href="../../table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    <div id="parent-class-section" class="nav-section">
+  <h3>Parent</h3>
+
+  
+  <p class="link"><a href="SubObjectBaseNode.html">XML::Mapping::SubObjectBaseNode</a>
+  
+</div>
+
+    
+    
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    
+    <li class="calls-super" ><a href="#method-c-new">::new</a>
+    
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="class-XML::Mapping::ArrayNode">
+  <h1 id="class-XML::Mapping::ArrayNode" class="class">
+    class XML::Mapping::ArrayNode
+  </h1>
+
+  <section class="description">
+    
+<p><a href="Node.html">Node</a> factory function synopsis:</p>
+
+<pre class="ruby"><span class="ruby-identifier">array_node</span> :<span class="ruby-identifier">_attrname_</span>, <span class="ruby-identifier">_per_arrelement_path_</span>
+                  [, :<span class="ruby-identifier">default_value=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">_obj_</span>]
+                  [, :<span class="ruby-identifier">optional=</span><span class="ruby-operator">&gt;</span><span class="ruby-keyword">true</span>]
+                  [, :<span class="ruby-keyword">class</span>=<span class="ruby-operator">&gt;</span><span class="ruby-identifier">_c_</span>]
+                  [, :<span class="ruby-identifier">marshaller=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">_proc_</span>]
+                  [, :<span class="ruby-identifier">unmarshaller=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">_proc_</span>]
+                  [, :<span class="ruby-identifier">mapping=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">_m_</span>]
+                  [, :<span class="ruby-identifier">sub_mapping=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">_sm_</span>]
+</pre>
+
+<p>-or-</p>
+
+<pre>array_node :_attrname_, _base_path_, _per_arrelement_path_
+                  [keyword args the same]</pre>
+
+<p><a href="Node.html">Node</a> that maps a sequence of sub-nodes of the <a
+href="../../XML.html">XML</a> tree to an attribute containing an array of
+Ruby objects, with each array element mapping to a corresponding member of
+the sequence of sub-nodes.</p>
+
+<p>If <em>base_path</em> is not supplied, it is assumed to be “”.
+<em>base_path</em>+<code>&quot;/&quot;</code>+<em>per_arrelement_path</em>
+is an XPath expression that must “yield” the sequence of <a
+href="../../XML.html">XML</a> nodes that is to be mapped to the array.  The
+difference between <em>base_path</em> and <em>per_arrelement_path</em>
+becomes important when marshalling the array attribute back to <a
+href="../../XML.html">XML</a>. When that happens, <em>base_path</em> names
+the most specific common parent node of all the mapped sub-nodes, and
+<em>per_arrelement_path</em> names (relative to <em>base_path</em>) the
+part of the path that is duplicated for each array element. For example,
+with <em>base_path</em>==<code>&quot;foo/bar&quot;</code> and
+<em>per_arrelement_path</em>==<code>&quot;hi/ho&quot;</code>, an array
+<code>[x,y,z]</code> will be written to an <a href="../../XML.html">XML</a>
+structure that looks like this:</p>
+
+<pre>&lt;foo&gt;
+ &lt;bar&gt;
+  &lt;hi&gt;
+   &lt;ho&gt;
+    [marshalled object x]
+   &lt;/ho&gt;
+  &lt;/hi&gt;
+  &lt;hi&gt;
+   &lt;ho&gt;
+    [marshalled object y]
+   &lt;/ho&gt;
+  &lt;/hi&gt;
+  &lt;hi&gt;
+   &lt;ho&gt;
+    [marshalled object z]
+   &lt;/ho&gt;
+  &lt;/hi&gt;
+ &lt;/bar&gt;
+&lt;/foo&gt;</pre>
+
+  </section>
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+
+    
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Class Methods</h3>
+       </header>
+
+    
+      <div id="method-c-new" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">new</span><span
+            class="method-args">(*args)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Initializer. Called with keyword arguments and either 1 or 2 paths; the
+hindmost path argument passed is delegated to <em>per_arrelement_path</em>;
+the preceding path argument (if present, “” by default) is delegated to
+<em>base_path</em>.</p>
+          
+          
+            <div class="method-calls-super">
+              Calls superclass method
+              <a href="SubObjectBaseNode.html#method-c-new">XML::Mapping::SubObjectBaseNode.new</a>
+            </div>
+          
+
+          
+          <div class="method-source-code" id="new-source">
+            <pre><span class="ruby-comment"># File lib/xml/mapping/standard_nodes.rb, line 263</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
+  <span class="ruby-identifier">path</span>,<span class="ruby-identifier">path2</span>,<span class="ruby-operator">*</span><span class="ruby-identifier">args</span> = <span class="ruby-keyword">super</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
+  <span class="ruby-identifier">base_path</span>,<span class="ruby-identifier">per_arrelement_path</span> = <span class="ruby-keyword">if</span> <span class="ruby-identifier">path2</span>
+                                    [<span class="ruby-identifier">path</span>,<span class="ruby-identifier">path2</span>]
+                                  <span class="ruby-keyword">else</span>
+                                    [<span class="ruby-string">&quot;.&quot;</span>,<span class="ruby-identifier">path</span>]
+                                  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">per_arrelement_path</span>=<span class="ruby-identifier">per_arrelement_path</span>[<span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-value">-1</span>] <span class="ruby-keyword">if</span> <span class="ruby-identifier">per_arrelement_path</span>[<span class="ruby-value">0</span>]<span class="ruby-operator">==</span><span class="ruby-value">?/</span>
+  <span class="ruby-ivar">@base_path</span> = <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XXPath</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">base_path</span>)
+  <span class="ruby-ivar">@per_arrelement_path</span> = <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XXPath</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">per_arrelement_path</span>)
+  <span class="ruby-ivar">@reader_path</span> = <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XXPath</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">base_path</span><span class="ruby-operator">+</span><span class="ruby-string">&quot;/&quot;</span><span class="ruby-operator">+</span><span class="ruby-identifier">per_arrelement_path</span>)
+  <span class="ruby-identifier">args</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="http://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="http://rdoc.rubyforge.org">RDoc</a> 4.1.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+

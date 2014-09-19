@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>Table of Contents - XML::Mapping -- Simple, extensible Ruby-to-XML (and back) mapper</title>
+
+<link href="./fonts.css" rel="stylesheet">
+<link href="./rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+</script>
+
+<script src="./js/jquery.js"></script>
+<script src="./js/navigation.js"></script>
+<script src="./js/search_index.js"></script>
+<script src="./js/search.js"></script>
+<script src="./js/searcher.js"></script>
+<script src="./js/darkfish.js"></script>
+
+
+<body id="top" class="table-of-contents">
+<main role="main">
+<h1 class="class">Table of Contents - XML::Mapping -- Simple, extensible Ruby-to-XML (and back) mapper</h1>
+
+<h2 id="pages">Pages</h2>
+<ul>
+  <li class="file">
+    <a href="README_md.html">README</a>
+
+    <ul>
+      <li><a href="README_md.html#label-XML-MAPPING%3A+XML-to-object+%28and+back%29+Mapper+for+Ruby%2C+including+XPath+Interpreter">XML-MAPPING: XML-to-object (and back) Mapper for Ruby, including XPath Interpreter</a>
+      <li><a href="README_md.html#label-Trivial+Example">Trivial Example</a>
+      <li><a href="README_md.html#label-sample+document">sample document</a>
+      <li><a href="README_md.html#label-mapping+class">mapping class</a>
+      <li><a href="README_md.html#label-usage">usage</a>
+    </ul>
+  </li>
+    <li class="file">
+    <a href="TODO_txt.html">TODO</a>
+  </li>
+    <li class="file">
+    <a href="doc/xpath_impl_notes_txt.html">xpath_impl_notes</a>
+
+    <ul>
+      <li><a href="doc/xpath_impl_notes_txt.html#label-latest+design+%2812%2F2004%29">latest design (12/2004)</a>
+    </ul>
+  </li>
+    <li class="file">
+    <a href="user_manual_md.html">user_manual</a>
+
+    <ul>
+      <li><a href="user_manual_md.html#label-XML-MAPPING%3A+XML-to-object+%28and+back%29+Mapper+for+Ruby%2C+including+XPath+Interpreter">XML-MAPPING: XML-to-object (and back) Mapper for Ruby, including XPath Interpreter</a>
+      <li><a href="user_manual_md.html#label-Download">Download</a>
+      <li><a href="user_manual_md.html#label-Contents+of+this+Document">Contents of this Document</a>
+      <li><a href="user_manual_md.html#label-Example">Example</a>
+      <li><a href="user_manual_md.html#label-Input+Document%3A">Input Document:</a>
+      <li><a href="user_manual_md.html#label-Mapping+Class+Declaration%3A">Mapping Class Declaration:</a>
+      <li><a href="user_manual_md.html#label-Usage%3A">Usage:</a>
+      <li><a href="user_manual_md.html#label-Single-attribute+Nodes">Single-attribute Nodes</a>
+      <li><a href="user_manual_md.html#label-Default+Values">Default Values</a>
+      <li><a href="user_manual_md.html#label-Single-attribute+Nodes+with+Sub-objects">Single-attribute Nodes with Sub-objects</a>
+      <li><a href="user_manual_md.html#label-Polymorphic+Sub-objects%2C+Marshallers%2FUnmarshallers">Polymorphic Sub-objects, Marshallers/Unmarshallers</a>
+      <li><a href="user_manual_md.html#label-Attribute+Handling+Details%2C+Augmenting+Existing+Classes">Attribute Handling Details, Augmenting Existing Classes</a>
+      <li><a href="user_manual_md.html#label-Other+Nodes">Other Nodes</a>
+      <li><a href="user_manual_md.html#label-choice_node">choice_node</a>
+      <li><a href="user_manual_md.html#label-Readers%2FWriters">Readers/Writers</a>
+      <li><a href="user_manual_md.html#label-Multiple+Mappings+per+Class">Multiple Mappings per Class</a>
+      <li><a href="user_manual_md.html#label-Defining+your+own+Node+Types">Defining your own Node Types</a>
+      <li><a href="user_manual_md.html#label-Example">Example</a>
+      <li><a href="user_manual_md.html#label-Element+order+in+created+XML+documents">Element order in created XML documents</a>
+      <li><a href="user_manual_md.html#label-Node+Types+Are+Ruby+Classes">Node Types Are Ruby Classes</a>
+      <li><a href="user_manual_md.html#label-How+Node+Types+Work">How Node Types Work</a>
+      <li><a href="user_manual_md.html#label-Node+Initialization">Node Initialization</a>
+      <li><a href="user_manual_md.html#label-Node+Operation+during+Marshalling+and+Unmarshalling">Node Operation during Marshalling and Unmarshalling</a>
+      <li><a href="user_manual_md.html#label-Basic+Node+Types+Overview">Basic Node Types Overview</a>
+      <li><a href="user_manual_md.html#label-Node">Node</a>
+      <li><a href="user_manual_md.html#label-SingleAttributeNode">SingleAttributeNode</a>
+      <li><a href="user_manual_md.html#label-SubObjectBaseNode">SubObjectBaseNode</a>
+      <li><a href="user_manual_md.html#label-XPath+Interpreter">XPath Interpreter</a>
+      <li><a href="user_manual_md.html#label-License">License</a>
+    </ul>
+  </li>
+    <li class="file">
+    <a href="user_manual_xxpath_md.html">user_manual_xxpath</a>
+
+    <ul>
+      <li><a href="user_manual_xxpath_md.html#label-XML-XXPATH">XML-XXPATH</a>
+      <li><a href="user_manual_xxpath_md.html#label-Overview%2C+Motivation">Overview, Motivation</a>
+      <li><a href="user_manual_xxpath_md.html#label-Usage">Usage</a>
+      <li><a href="user_manual_xxpath_md.html#label-Read+Access">Read Access</a>
+      <li><a href="user_manual_xxpath_md.html#label-Write+Access">Write Access</a>
+      <li><a href="user_manual_xxpath_md.html#label-Pathological+Cases">Pathological Cases</a>
+      <li><a href="user_manual_xxpath_md.html#label-Implentation+notes">Implentation notes</a>
+      <li><a href="user_manual_xxpath_md.html#label-License">License</a>
+    </ul>
+  </li>
+  
+</ul>
+
+<h2 id="classes">Classes and Modules</h2>
+<ul>
+  <li class="module">
+    <a href="Kernel.html">Kernel</a>
+  </li>
+  <li class="class">
+    <a href="Numeric.html">Numeric</a>
+  </li>
+  <li class="class">
+    <a href="REXML/Parent.html">REXML::Parent</a>
+  </li>
+  <li class="class">
+    <a href="String.html">String</a>
+  </li>
+  <li class="module">
+    <a href="XML.html">XML</a>
+  </li>
+  <li class="class">
+    <a href="XML/Mapping/ArrayNode.html">XML::Mapping::ArrayNode</a>
+  </li>
+  <li class="class">
+    <a href="XML/Mapping/BooleanNode.html">XML::Mapping::BooleanNode</a>
+  </li>
+  <li class="class">
+    <a href="XML/Mapping/ChoiceNode.html">XML::Mapping::ChoiceNode</a>
+  </li>
+  <li class="module">
+    <a href="XML/Mapping/ClassMethods.html">XML::Mapping::ClassMethods</a>
+  </li>
+  <li class="module">
+    <a href="XML/Mapping/Classes_by_rootelt_names.html">XML::Mapping::Classes_by_rootelt_names</a>
+  </li>
+  <li class="class">
+    <a href="XML/Mapping/HashNode.html">XML::Mapping::HashNode</a>
+  </li>
+  <li class="class">
+    <a href="XML/Mapping/Node.html">XML::Mapping::Node</a>
+  </li>
+  <li class="class">
+    <a href="XML/Mapping/NumericNode.html">XML::Mapping::NumericNode</a>
+  </li>
+  <li class="class">
+    <a href="XML/Mapping/ObjectNode.html">XML::Mapping::ObjectNode</a>
+  </li>
+  <li class="class">
+    <a href="XML/Mapping/SingleAttributeNode.html">XML::Mapping::SingleAttributeNode</a>
+  </li>
+  <li class="class">
+    <a href="XML/Mapping/SingleAttributeNode/NoAttrValueSet.html">XML::Mapping::SingleAttributeNode::NoAttrValueSet</a>
+  </li>
+  <li class="class">
+    <a href="XML/Mapping/SubObjectBaseNode.html">XML::Mapping::SubObjectBaseNode</a>
+  </li>
+  <li class="class">
+    <a href="XML/Mapping/TextNode.html">XML::Mapping::TextNode</a>
+  </li>
+  <li class="class">
+    <a href="XML/MappingError.html">XML::MappingError</a>
+  </li>
+  <li class="class">
+    <a href="XML/XXPath.html">XML::XXPath</a>
+  </li>
+  <li class="module">
+    <a href="XML/XXPath/Accessors.html">XML::XXPath::Accessors</a>
+  </li>
+  <li class="class">
+    <a href="XML/XXPath/Accessors/Attribute.html">XML::XXPath::Accessors::Attribute</a>
+  </li>
+  <li class="module">
+    <a href="XML/XXPath/Accessors/UnspecifiednessSupport.html">XML::XXPath::Accessors::UnspecifiednessSupport</a>
+  </li>
+  <li class="module">
+    <a href="XML/XXPath/XML.html">XML::XXPath::XML</a>
+  </li>
+  <li class="module">
+    <a href="XML/XXPath/XML/XXPath.html">XML::XXPath::XML::XXPath</a>
+  </li>
+  <li class="module">
+    <a href="XML/XXPath/XML/XXPath/REXML.html">XML::XXPath::XML::XXPath::REXML</a>
+  </li>
+  <li class="class">
+    <a href="XML/XXPathError.html">XML::XXPathError</a>
+  </li>
+  <li class="module">
+    <a href="XML/XXPathMethods.html">XML::XXPathMethods</a>
+  </li>
+</ul>
+
+<h2 id="methods">Methods</h2>
+<ul>
+
+  <li class="method">
+    <a href="XML/Mapping.html#method-c-add_node_class">::add_node_class</a>
+    &mdash;
+    <span class="container">XML::Mapping</span>
+
+  <li class="method">
+    <a href="XML/XXPath/Accessors/UnspecifiednessSupport.html#method-c-append_features">::append_features</a>
+    &mdash;
+    <span class="container">XML::XXPath::Accessors::UnspecifiednessSupport</span>
+
+  <li class="method">
+    <a href="XML/Mapping.html#method-c-class_and_mapping_for_root_elt_name">::class_and_mapping_for_root_elt_name</a>
+    &mdash;
+    <span class="container">XML::Mapping</span>
+
+  <li class="method">
+    <a href="XML/Mapping.html#method-c-class_for_root_elt_name">::class_for_root_elt_name</a>
+    &mdash;
+    <span class="container">XML::Mapping</span>
+
+  <li class="method">
+    <a href="Numeric.html#method-c-load_from_xml">::load_from_xml</a>
+    &mdash;
+    <span class="container">Numeric</span>
+
+  <li class="method">
+    <a href="String.html#method-c-load_from_xml">::load_from_xml</a>
+    &mdash;
+    <span class="container">String</span>
+
+  <li class="method">
+    <a href="XML/Mapping.html#method-c-load_object_from_file">::load_object_from_file</a>
+    &mdash;
+    <span class="container">XML::Mapping</span>
+
+  <li class="method">
+    <a href="XML/Mapping.html#method-c-load_object_from_xml">::load_object_from_xml</a>
+    &mdash;
+    <span class="container">XML::Mapping</span>
+
+  <li class="method">
+    <a href="XML/Mapping/HashNode.html#method-c-new">::new</a>
+    &mdash;
+    <span class="container">XML::Mapping::HashNode</span>
+
+  <li class="method">
+    <a href="XML/Mapping/ChoiceNode.html#method-c-new">::new</a>
+    &mdash;
+    <span class="container">XML::Mapping::ChoiceNode</span>
+
+  <li class="method">
+    <a href="XML/Mapping.html#method-c-new">::new</a>
+    &mdash;
+    <span class="container">XML::Mapping</span>
+
+  <li class="method">
+    <a href="XML/Mapping/SingleAttributeNode.html#method-c-new">::new</a>
+    &mdash;
+    <span class="container">XML::Mapping::SingleAttributeNode</span>
+
+  <li class="method">
+    <a href="XML/Mapping/ArrayNode.html#method-c-new">::new</a>
+    &mdash;
+    <span class="container">XML::Mapping::ArrayNode</span>
+
+  <li class="method">
+    <a href="XML/XXPath.html#method-c-new">::new</a>
+    &mdash;
+    <span class="container">XML::XXPath</span>
+
+  <li class="method">
+    <a href="XML/Mapping/Node.html#method-c-new">::new</a>
+    &mdash;
+    <span class="container">XML::Mapping::Node</span>
+
+  <li class="method">
+    <a href="XML/XXPath/Accessors/Attribute.html#method-c-new">::new</a>
+    &mdash;
+    <span class="container">XML::XXPath::Accessors::Attribute</span>
+
+  <li class="method">
+    <a href="XML/XXPath/Accessors/Attribute.html#method-c-new">::new</a>
+    &mdash;
+    <span class="container">XML::XXPath::Accessors::Attribute</span>
+
+  <li class="method">
+    <a href="XML/Mapping/TextNode.html#method-c-new">::new</a>
+    &mdash;
+    <span class="container">XML::Mapping::TextNode</span>
+
+  <li class="method">
+    <a href="XML/Mapping/BooleanNode.html#method-c-new">::new</a>
+    &mdash;
+    <span class="container">XML::Mapping::BooleanNode</span>
+
+  <li class="method">
+    <a href="XML/Mapping/SubObjectBaseNode.html#method-c-new">::new</a>
+    &mdash;
+    <span class="container">XML::Mapping::SubObjectBaseNode</span>
+
+  <li class="method">
+    <a href="XML/Mapping/ObjectNode.html#method-c-new">::new</a>
+    &mdash;
+    <span class="container">XML::Mapping::ObjectNode</span>
+
+  <li class="method">
+    <a href="XML/Mapping/NumericNode.html#method-c-new">::new</a>
+    &mdash;
+    <span class="container">XML::Mapping::NumericNode</span>
+
+  <li class="method">
+    <a href="XML/XXPath/Accessors/Attribute.html#method-i-3D-3D">#==</a>
+    &mdash;
+    <span class="container">XML::XXPath::Accessors::Attribute</span>
+
+  <li class="method">
+    <a href="XML/Mapping/ClassMethods.html#method-i-add_accessor">#add_accessor</a>
+    &mdash;
+    <span class="container">XML::Mapping::ClassMethods</span>
+
+  <li class="method">
+    <a href="XML/XXPath.html#method-i-all">#all</a>
+    &mdash;
+    <span class="container">XML::XXPath</span>
+
+  <li class="method">
+    <a href="XML/Mapping/ClassMethods.html#method-i-all_xml_mapping_nodes">#all_xml_mapping_nodes</a>
+    &mdash;
+    <span class="container">XML::Mapping::ClassMethods</span>
+
+  <li class="method">
+    <a href="XML/XXPathMethods.html#method-i-all_xpath">#all_xpath</a>
+    &mdash;
+    <span class="container">XML::XXPathMethods</span>
+
+  <li class="method">
+    <a href="XML/Mapping/Classes_by_rootelt_names.html#method-i-classes_for">#classes_for</a>
+    &mdash;
+    <span class="container">XML::Mapping::Classes_by_rootelt_names</span>
+
+  <li class="method">
+    <a href="XML/Mapping/Classes_by_rootelt_names.html#method-i-create_classes_for">#create_classes_for</a>
+    &mdash;
+    <span class="container">XML::Mapping::Classes_by_rootelt_names</span>
+
+  <li class="method">
+    <a href="XML/XXPath.html#method-i-create_new">#create_new</a>
+    &mdash;
+    <span class="container">XML::XXPath</span>
+
+  <li class="method">
+    <a href="XML/XXPathMethods.html#method-i-create_new_xpath">#create_new_xpath</a>
+    &mdash;
+    <span class="container">XML::XXPathMethods</span>
+
+  <li class="method">
+    <a href="XML/Mapping/ClassMethods.html#method-i-default_mapping">#default_mapping</a>
+    &mdash;
+    <span class="container">XML::Mapping::ClassMethods</span>
+
+  <li class="method">
+    <a href="XML/Mapping/ClassMethods.html#method-i-default_root_element_name">#default_root_element_name</a>
+    &mdash;
+    <span class="container">XML::Mapping::ClassMethods</span>
+
+  <li class="method">
+    <a href="XML/Mapping/SingleAttributeNode.html#method-i-default_when_xpath_err">#default_when_xpath_err</a>
+    &mdash;
+    <span class="container">XML::Mapping::SingleAttributeNode</span>
+
+  <li class="method">
+    <a href="XML/XXPath.html#method-i-each">#each</a>
+    &mdash;
+    <span class="container">XML::XXPath</span>
+
+  <li class="method">
+    <a href="REXML/Parent.html#method-i-each_on_axis">#each_on_axis</a>
+    &mdash;
+    <span class="container">REXML::Parent</span>
+
+  <li class="method">
+    <a href="REXML/Parent.html#method-i-each_on_axis_child">#each_on_axis_child</a>
+    &mdash;
+    <span class="container">REXML::Parent</span>
+
+  <li class="method">
+    <a href="REXML/Parent.html#method-i-each_on_axis_descendant">#each_on_axis_descendant</a>
+    &mdash;
+    <span class="container">REXML::Parent</span>
+
+  <li class="method">
+    <a href="REXML/Parent.html#method-i-each_on_axis_self">#each_on_axis_self</a>
+    &mdash;
+    <span class="container">REXML::Parent</span>
+
+  <li class="method">
+    <a href="XML/XXPathMethods.html#method-i-each_xpath">#each_xpath</a>
+    &mdash;
+    <span class="container">XML::XXPathMethods</span>
+
+  <li class="method">
+    <a href="XML/Mapping/Classes_by_rootelt_names.html#method-i-ensure_exists">#ensure_exists</a>
+    &mdash;
+    <span class="container">XML::Mapping::Classes_by_rootelt_names</span>
+
+  <li class="method">
+    <a href="XML/Mapping/SingleAttributeNode.html#method-i-extract_attr_value">#extract_attr_value</a>
+    &mdash;
+    <span class="container">XML::Mapping::SingleAttributeNode</span>
+
+  <li class="method">
+    <a href="XML/Mapping.html#method-i-fill_from_xml">#fill_from_xml</a>
+    &mdash;
+    <span class="container">XML::Mapping</span>
+
+  <li class="method">
+    <a href="Numeric.html#method-i-fill_into_xml">#fill_into_xml</a>
+    &mdash;
+    <span class="container">Numeric</span>
+
+  <li class="method">
+    <a href="XML/Mapping.html#method-i-fill_into_xml">#fill_into_xml</a>
+    &mdash;
+    <span class="container">XML::Mapping</span>
+
+  <li class="method">
+    <a href="String.html#method-i-fill_into_xml">#fill_into_xml</a>
+    &mdash;
+    <span class="container">String</span>
+
+  <li class="method">
+    <a href="XML/XXPath.html#method-i-first">#first</a>
+    &mdash;
+    <span class="container">XML::XXPath</span>
+
+  <li class="method">
+    <a href="XML/XXPathMethods.html#method-i-first_xpath">#first_xpath</a>
+    &mdash;
+    <span class="container">XML::XXPathMethods</span>
+
+  <li class="method">
+    <a href="XML/Mapping/SingleAttributeNode.html#method-i-initialize_impl">#initialize_impl</a>
+    &mdash;
+    <span class="container">XML::Mapping::SingleAttributeNode</span>
+
+  <li class="method">
+    <a href="XML/Mapping.html#method-i-initialize_xml_mapping">#initialize_xml_mapping</a>
+    &mdash;
+    <span class="container">XML::Mapping</span>
+
+  <li class="method">
+    <a href="XML/Mapping/ChoiceNode.html#method-i-is_present_in-3F">#is_present_in?</a>
+    &mdash;
+    <span class="container">XML::Mapping::ChoiceNode</span>
+
+  <li class="method">
+    <a href="XML/Mapping/SingleAttributeNode.html#method-i-is_present_in-3F">#is_present_in?</a>
+    &mdash;
+    <span class="container">XML::Mapping::SingleAttributeNode</span>
+
+  <li class="method">
+    <a href="XML/Mapping/Node.html#method-i-is_present_in-3F">#is_present_in?</a>
+    &mdash;
+    <span class="container">XML::Mapping::Node</span>
+
+  <li class="method">
+    <a href="XML/Mapping/ClassMethods.html#method-i-load_from_file">#load_from_file</a>
+    &mdash;
+    <span class="container">XML::Mapping::ClassMethods</span>
+
+  <li class="method">
+    <a href="XML/Mapping/ClassMethods.html#method-i-load_from_xml">#load_from_xml</a>
+    &mdash;
+    <span class="container">XML::Mapping::ClassMethods</span>
+
+  <li class="method">
+    <a href="XML/Mapping/Node.html#method-i-obj_initializing">#obj_initializing</a>
+    &mdash;
+    <span class="container">XML::Mapping::Node</span>
+
+  <li class="method">
+    <a href="XML/Mapping/ChoiceNode.html#method-i-obj_initializing">#obj_initializing</a>
+    &mdash;
+    <span class="container">XML::Mapping::ChoiceNode</span>
+
+  <li class="method">
+    <a href="XML/Mapping/ChoiceNode.html#method-i-obj_to_xml">#obj_to_xml</a>
+    &mdash;
+    <span class="container">XML::Mapping::ChoiceNode</span>
+
+  <li class="method">
+    <a href="XML/Mapping/Node.html#method-i-obj_to_xml">#obj_to_xml</a>
+    &mdash;
+    <span class="container">XML::Mapping::Node</span>
+
+  <li class="method">
+    <a href="XML/Mapping.html#method-i-post_load">#post_load</a>
+    &mdash;
+    <span class="container">XML::Mapping</span>
+
+  <li class="method">
+    <a href="XML/Mapping.html#method-i-post_save">#post_save</a>
+    &mdash;
+    <span class="container">XML::Mapping</span>
+
+  <li class="method">
+    <a href="XML/Mapping.html#method-i-pre_load">#pre_load</a>
+    &mdash;
+    <span class="container">XML::Mapping</span>
+
+  <li class="method">
+    <a href="XML/Mapping.html#method-i-pre_save">#pre_save</a>
+    &mdash;
+    <span class="container">XML::Mapping</span>
+
+  <li class="method">
+    <a href="XML/Mapping/Classes_by_rootelt_names.html#method-i-remove_class">#remove_class</a>
+    &mdash;
+    <span class="container">XML::Mapping::Classes_by_rootelt_names</span>
+
+  <li class="method">
+    <a href="XML/Mapping/ClassMethods.html#method-i-root_element_name">#root_element_name</a>
+    &mdash;
+    <span class="container">XML::Mapping::ClassMethods</span>
+
+  <li class="method">
+    <a href="XML/Mapping.html#method-i-save_to_file">#save_to_file</a>
+    &mdash;
+    <span class="container">XML::Mapping</span>
+
+  <li class="method">
+    <a href="XML/Mapping.html#method-i-save_to_xml">#save_to_xml</a>
+    &mdash;
+    <span class="container">XML::Mapping</span>
+
+  <li class="method">
+    <a href="XML/Mapping/SingleAttributeNode.html#method-i-set_attr_value">#set_attr_value</a>
+    &mdash;
+    <span class="container">XML::Mapping::SingleAttributeNode</span>
+
+  <li class="method">
+    <a href="XML/XXPath/Accessors/Attribute.html#method-i-text">#text</a>
+    &mdash;
+    <span class="container">XML::XXPath::Accessors::Attribute</span>
+
+  <li class="method">
+    <a href="String.html#method-i-text">#text</a>
+    &mdash;
+    <span class="container">String</span>
+
+  <li class="method">
+    <a href="Numeric.html#method-i-text">#text</a>
+    &mdash;
+    <span class="container">Numeric</span>
+
+  <li class="method">
+    <a href="XML/XXPath/Accessors/Attribute.html#method-i-text-3D">#text=</a>
+    &mdash;
+    <span class="container">XML::XXPath::Accessors::Attribute</span>
+
+  <li class="method">
+    <a href="XML/XXPathMethods.html#method-i-to_xxpath">#to_xxpath</a>
+    &mdash;
+    <span class="container">XML::XXPathMethods</span>
+
+  <li class="method">
+    <a href="XML/XXPath/Accessors/UnspecifiednessSupport.html#method-i-unspecified-3D">#unspecified=</a>
+    &mdash;
+    <span class="container">XML::XXPath::Accessors::UnspecifiednessSupport</span>
+
+  <li class="method">
+    <a href="XML/XXPath/Accessors/UnspecifiednessSupport.html#method-i-unspecified-3F">#unspecified?</a>
+    &mdash;
+    <span class="container">XML::XXPath::Accessors::UnspecifiednessSupport</span>
+
+  <li class="method">
+    <a href="XML/Mapping/ClassMethods.html#method-i-use_mapping">#use_mapping</a>
+    &mdash;
+    <span class="container">XML::Mapping::ClassMethods</span>
+
+  <li class="method">
+    <a href="Kernel.html#method-i-warn">#warn</a>
+    &mdash;
+    <span class="container">Kernel</span>
+
+  <li class="method">
+    <a href="XML/Mapping/ClassMethods.html#method-i-xml_mapping_nodes">#xml_mapping_nodes</a>
+    &mdash;
+    <span class="container">XML::Mapping::ClassMethods</span>
+
+  <li class="method">
+    <a href="XML/Mapping/Node.html#method-i-xml_to_obj">#xml_to_obj</a>
+    &mdash;
+    <span class="container">XML::Mapping::Node</span>
+
+  <li class="method">
+    <a href="XML/Mapping/ChoiceNode.html#method-i-xml_to_obj">#xml_to_obj</a>
+    &mdash;
+    <span class="container">XML::Mapping::ChoiceNode</span>
+</ul>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="http://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="http://rdoc.rubyforge.org">RDoc</a> 4.1.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+

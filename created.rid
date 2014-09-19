@@ -1,1 +1,15 @@
-Tue Aug 08 01:33:54 CEST 2006
+Fri, 19 Sep 2014 14:01:43 +0200
+user_manual.md	Fri, 19 Sep 2014 14:01:43 +0200
+README.md	Fri, 19 Sep 2014 09:14:11 +0200
+user_manual_xxpath.md	Fri, 19 Sep 2014 14:01:43 +0200
+TODO.txt	Fri, 19 Sep 2014 04:57:27 +0200
+doc/xpath_impl_notes.txt	Mon, 15 Sep 2014 01:36:21 +0200
+lib/xml/mapping.rb	Fri, 19 Sep 2014 14:00:46 +0200
+lib/xml/mapping/base.rb	Mon, 15 Sep 2014 01:36:21 +0200
+lib/xml/mapping/core_classes_mapping.rb	Mon, 15 Sep 2014 01:36:21 +0200
+lib/xml/mapping/standard_nodes.rb	Mon, 15 Sep 2014 01:36:21 +0200
+lib/xml/mapping/version.rb	Fri, 19 Sep 2014 13:48:02 +0200
+lib/xml/rexml_ext.rb	Mon, 15 Sep 2014 01:36:21 +0200
+lib/xml/xxpath.rb	Mon, 15 Sep 2014 01:36:21 +0200
+lib/xml/xxpath/steps.rb	Mon, 15 Sep 2014 01:36:21 +0200
+lib/xml/xxpath_methods.rb	Mon, 15 Sep 2014 01:36:21 +0200

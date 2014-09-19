@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>module XML::Mapping::ClassMethods - XML::Mapping -- Simple, extensible Ruby-to-XML (and back) mapper</title>
+
+<link href="../../fonts.css" rel="stylesheet">
+<link href="../../rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../../";
+</script>
+
+<script src="../../js/jquery.js"></script>
+<script src="../../js/navigation.js"></script>
+<script src="../../js/search_index.js"></script>
+<script src="../../js/search.js"></script>
+<script src="../../js/searcher.js"></script>
+<script src="../../js/darkfish.js"></script>
+
+
+<body id="top" role="document" class="module">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="../../index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="../../table_of_contents.html#pages">Pages</a>
+    <a href="../../table_of_contents.html#classes">Classes</a>
+    <a href="../../table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    
+    
+    
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    
+    <li ><a href="#method-i-add_accessor">#add_accessor</a>
+    
+    <li ><a href="#method-i-all_xml_mapping_nodes">#all_xml_mapping_nodes</a>
+    
+    <li ><a href="#method-i-default_mapping">#default_mapping</a>
+    
+    <li ><a href="#method-i-default_root_element_name">#default_root_element_name</a>
+    
+    <li ><a href="#method-i-load_from_file">#load_from_file</a>
+    
+    <li ><a href="#method-i-load_from_xml">#load_from_xml</a>
+    
+    <li ><a href="#method-i-root_element_name">#root_element_name</a>
+    
+    <li ><a href="#method-i-use_mapping">#use_mapping</a>
+    
+    <li ><a href="#method-i-xml_mapping_nodes">#xml_mapping_nodes</a>
+    
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="module-XML::Mapping::ClassMethods">
+  <h1 id="module-XML::Mapping::ClassMethods" class="module">
+    module XML::Mapping::ClassMethods
+  </h1>
+
+  <section class="description">
+    
+<p>The instance methods of this module are automatically added as class
+methods to a class that includes XML::Mapping.</p>
+
+  </section>
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+
+    
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Instance Methods</h3>
+       </header>
+
+    
+      <div id="method-i-add_accessor" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">add_accessor</span><span
+            class="method-args">(name)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Add getter and setter methods for a new attribute named <em>name</em> (must
+be a symbol or a string) to this class, taking care not to replace existing
+getters/setters.  This is a convenience method intended to be called from
+<a href="Node.html">Node</a> class initializers.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="add_accessor-source">
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 307</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">add_accessor</span>(<span class="ruby-identifier">name</span>)
+  <span class="ruby-comment"># existing methods search. Search for symbols and strings</span>
+  <span class="ruby-comment">#  to be compatible with Ruby 1.8 and 1.9.</span>
+  <span class="ruby-identifier">methods</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">instance_methods</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">methods</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">kind_of?</span> <span class="ruby-constant">Symbol</span>
+    <span class="ruby-identifier">getter</span> = <span class="ruby-value">:&quot;#{name}&quot;</span>
+    <span class="ruby-identifier">setter</span> = <span class="ruby-value">:&quot;#{name}=&quot;</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">getter</span> = <span class="ruby-node">&quot;#{name}&quot;</span>
+    <span class="ruby-identifier">setter</span> = <span class="ruby-node">&quot;#{name}=&quot;</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">unless</span> <span class="ruby-identifier">methods</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">getter</span>)
+    <span class="ruby-keyword">self</span>.<span class="ruby-identifier">module_eval</span> <span class="ruby-value">&lt;&lt;-EOS
+      attr_reader :#{name}
+    EOS</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">unless</span> <span class="ruby-identifier">methods</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">setter</span>)
+    <span class="ruby-keyword">self</span>.<span class="ruby-identifier">module_eval</span> <span class="ruby-value">&lt;&lt;-EOS
+      attr_writer :#{name}
+    EOS</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-all_xml_mapping_nodes" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">all_xml_mapping_nodes</span><span
+            class="method-args">(options={:mapping=>nil,:create=>true})</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>enumeration of all nodes in effect when marshalling/unmarshalling this
+class, that is, nodes defined for this class as well as for its
+superclasses.  The nodes are returned in the order of their definition,
+starting with the topmost superclass that has nodes defined. keyword
+arguments are the same as for <a
+href="ClassMethods.html#method-i-xml_mapping_nodes">xml_mapping_nodes</a>.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="all_xml_mapping_nodes-source">
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 393</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">all_xml_mapping_nodes</span>(<span class="ruby-identifier">options</span>={<span class="ruby-value">:mapping=</span><span class="ruby-operator">&gt;</span><span class="ruby-keyword">nil</span>,<span class="ruby-value">:create=</span><span class="ruby-operator">&gt;</span><span class="ruby-keyword">true</span>})
+  <span class="ruby-comment"># TODO: we could return a dynamic Enumerable here, or cache</span>
+  <span class="ruby-comment"># the array...</span>
+  <span class="ruby-identifier">result</span> = []
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">superclass</span> <span class="ruby-keyword">and</span> <span class="ruby-identifier">superclass</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-value">:all_xml_mapping_nodes</span>)
+    <span class="ruby-identifier">result</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">superclass</span>.<span class="ruby-identifier">all_xml_mapping_nodes</span> <span class="ruby-identifier">options</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">result</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">xml_mapping_nodes</span> <span class="ruby-identifier">options</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-default_mapping" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">default_mapping</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>return the current default mapping (:_default initially, or the value set
+with the latest call to <a
+href="ClassMethods.html#method-i-use_mapping">#use_mapping</a>)</p>
+          
+          
+
+          
+          <div class="method-source-code" id="default_mapping-source">
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 299</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">default_mapping</span>
+  <span class="ruby-ivar">@default_mapping</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-default_root_element_name" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">default_root_element_name</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>The default root element name for this class. Equals the class name, with
+all parent module names stripped, and with capital letters converted to
+lowercase and preceded by a dash; e.g. “Foo::Bar::MySampleClass” becomes
+“my-sample-class”.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="default_root_element_name-source">
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 434</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">default_root_element_name</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">name</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&#39;::&#39;</span>)[<span class="ruby-value">-1</span>].<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp">/^(.)/</span>){<span class="ruby-node">$1</span>.<span class="ruby-identifier">downcase</span>}.<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp">/(.)([A-Z])/</span>){<span class="ruby-node">$1</span><span class="ruby-operator">+</span><span class="ruby-string">&quot;-&quot;</span><span class="ruby-operator">+</span><span class="ruby-node">$2</span>.<span class="ruby-identifier">downcase</span>}
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-load_from_file" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">load_from_file</span><span
+            class="method-args">(filename, options={:mapping=>:_default})</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Create a new instance of this class from the <a
+href="../../XML.html">XML</a> contained in the file named
+<em>filename</em>. Calls <a
+href="ClassMethods.html#method-i-load_from_xml">#load_from_xml</a>
+internally.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="load_from_file-source">
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 332</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">load_from_file</span>(<span class="ruby-identifier">filename</span>, <span class="ruby-identifier">options</span>={<span class="ruby-value">:mapping=</span><span class="ruby-operator">&gt;</span><span class="ruby-value">:_default</span>})
+  <span class="ruby-identifier">xml</span> = <span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">filename</span>))
+  <span class="ruby-identifier">load_from_xml</span> <span class="ruby-identifier">xml</span>.<span class="ruby-identifier">root</span>, <span class="ruby-value">:mapping=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">options</span>[<span class="ruby-value">:mapping</span>]
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-load_from_xml" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">load_from_xml</span><span
+            class="method-args">(xml, options={:mapping=>:_default})</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Create a new instance of this class from the <a
+href="../../XML.html">XML</a> contained in <em>xml</em> (a REXML::Element).</p>
+
+<p>Allocates a new object, then calls fill_from_xml(<em>xml</em>) on it.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="load_from_xml-source">
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 342</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">load_from_xml</span>(<span class="ruby-identifier">xml</span>, <span class="ruby-identifier">options</span>={<span class="ruby-value">:mapping=</span><span class="ruby-operator">&gt;</span><span class="ruby-value">:_default</span>})
+  <span class="ruby-identifier">raise</span>(<span class="ruby-constant">MappingError</span>, <span class="ruby-node">&quot;undefined mapping: #{options[:mapping].inspect}&quot;</span>)            <span class="ruby-keyword">unless</span> <span class="ruby-identifier">xml_mapping_nodes_hash</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-identifier">options</span>[<span class="ruby-value">:mapping</span>])
+  <span class="ruby-comment"># create the new object. It is recommended that the class</span>
+  <span class="ruby-comment"># have a no-argument initializer, so try new first. If that</span>
+  <span class="ruby-comment"># doesn&#39;t work, try allocate, which bypasses the initializer.</span>
+  <span class="ruby-keyword">begin</span>
+    <span class="ruby-identifier">obj</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">new</span>
+    <span class="ruby-comment">#TODO: this will normally invoke our base XML::Mapping#initialize, which calls</span>
+    <span class="ruby-comment">#  obj.initialize_xml_mapping, which is called below again (with the correct :mapping parameter).</span>
+    <span class="ruby-comment">#  obj.initialize_xml_mapping calls obj_initializing on all nodes.</span>
+    <span class="ruby-comment">#  So obj_initializing may be called on the nodes twice for this initialization.</span>
+    <span class="ruby-comment">#  Maybe document this for node writers?</span>
+  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">ArgumentError</span> <span class="ruby-comment"># TODO: this may hide real errors.</span>
+                       <span class="ruby-comment">#   how to statically check whether</span>
+                       <span class="ruby-comment">#   self self.new accepts an empty</span>
+                       <span class="ruby-comment">#   argument list?</span>
+    <span class="ruby-identifier">obj</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">allocate</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">initialize_xml_mapping</span> <span class="ruby-value">:mapping=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">options</span>[<span class="ruby-value">:mapping</span>]
+  <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">fill_from_xml</span> <span class="ruby-identifier">xml</span>, <span class="ruby-value">:mapping=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">options</span>[<span class="ruby-value">:mapping</span>]
+  <span class="ruby-identifier">obj</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-root_element_name" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">root_element_name</span><span
+            class="method-args">(name=nil, options={:mapping=>@default_mapping})</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>The “root element name” of this class (combined getter/setter method).</p>
+
+<p>The root element name is the name of the root element of the <a
+href="../../XML.html">XML</a> tree returned by &lt;this
+class&gt;.#save_to_xml (or, more specifically, &lt;this
+class&gt;.#pre_save). By default, this method returns the <a
+href="ClassMethods.html#method-i-default_root_element_name">default_root_element_name</a>;
+you may call this method with an argument to set the root element name to
+something other than the default. The option argument :mapping specifies
+the mapping the root element is/will be defined in, it defaults to the
+current default mapping (:_default initially, or the value set with the
+latest call to <a
+href="ClassMethods.html#method-i-use_mapping">#use_mapping</a>)</p>
+          
+          
+
+          
+          <div class="method-source-code" id="root_element_name-source">
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 417</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">root_element_name</span>(<span class="ruby-identifier">name</span>=<span class="ruby-keyword">nil</span>, <span class="ruby-identifier">options</span>={<span class="ruby-value">:mapping=</span><span class="ruby-operator">&gt;</span><span class="ruby-ivar">@default_mapping</span>})
+  <span class="ruby-keyword">if</span> <span class="ruby-constant">Hash</span><span class="ruby-operator">===</span><span class="ruby-identifier">name</span>    <span class="ruby-comment"># ugly...</span>
+    <span class="ruby-identifier">options</span>=<span class="ruby-identifier">name</span>; <span class="ruby-identifier">name</span>=<span class="ruby-keyword">nil</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-ivar">@root_element_names</span> <span class="ruby-operator">||=</span> {}
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">name</span>
+    <span class="ruby-constant">Classes_by_rootelt_names</span>.<span class="ruby-identifier">remove_class</span> <span class="ruby-identifier">root_element_name</span>, <span class="ruby-identifier">options</span>[<span class="ruby-value">:mapping</span>], <span class="ruby-keyword">self</span>
+    <span class="ruby-ivar">@root_element_names</span>[<span class="ruby-identifier">options</span>[<span class="ruby-value">:mapping</span>]] = <span class="ruby-identifier">name</span>
+    <span class="ruby-constant">Classes_by_rootelt_names</span>.<span class="ruby-identifier">create_classes_for</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">options</span>[<span class="ruby-value">:mapping</span>]) <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-keyword">self</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-ivar">@root_element_names</span>[<span class="ruby-identifier">options</span>[<span class="ruby-value">:mapping</span>]] <span class="ruby-operator">||</span> <span class="ruby-identifier">default_root_element_name</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-use_mapping" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">use_mapping</span><span
+            class="method-args">(mapping)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Make <em>mapping</em> the mapping to be used by default in future node
+declarations in this class. The default can be overwritten on a per-node
+basis by passing a :mapping option parameter to the node factory method</p>
+
+<p>The initial default mapping in a mapping class is :_default</p>
+          
+          
+
+          
+          <div class="method-source-code" id="use_mapping-source">
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 290</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">use_mapping</span> <span class="ruby-identifier">mapping</span>
+  <span class="ruby-ivar">@default_mapping</span> = <span class="ruby-identifier">mapping</span>
+  <span class="ruby-identifier">xml_mapping_nodes_hash</span>[<span class="ruby-identifier">mapping</span>] <span class="ruby-operator">||=</span> []  <span class="ruby-comment"># create empty mapping node list if</span>
+                                          <span class="ruby-comment"># there wasn&#39;t one before so future calls</span>
+                                          <span class="ruby-comment"># to load/save_xml etc. w/ this mapping don&#39;t raise</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-xml_mapping_nodes" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">xml_mapping_nodes</span><span
+            class="method-args">(options={:mapping=>nil,:create=>true})</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>array of all nodes defined in this class, in the order of their definition.
+Option :create specifies whether or not an empty array should be created
+and returned if there was none before (if not, an exception is raised).
+:mapping specifies the mapping the returned nodes must have been defined
+in; nil means return all nodes regardless of their mapping</p>
+          
+          
+
+          
+          <div class="method-source-code" id="xml_mapping_nodes-source">
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 373</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">xml_mapping_nodes</span>(<span class="ruby-identifier">options</span>={<span class="ruby-value">:mapping=</span><span class="ruby-operator">&gt;</span><span class="ruby-keyword">nil</span>,<span class="ruby-value">:create=</span><span class="ruby-operator">&gt;</span><span class="ruby-keyword">true</span>})
+  <span class="ruby-keyword">unless</span> <span class="ruby-identifier">options</span>[<span class="ruby-value">:mapping</span>]
+    <span class="ruby-keyword">return</span> <span class="ruby-identifier">xml_mapping_nodes_hash</span>.<span class="ruby-identifier">values</span>.<span class="ruby-identifier">inject</span>([]){<span class="ruby-operator">|</span><span class="ruby-identifier">a1</span>,<span class="ruby-identifier">a2</span><span class="ruby-operator">|</span><span class="ruby-identifier">a1</span><span class="ruby-operator">+</span><span class="ruby-identifier">a2</span>}
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">options</span>[<span class="ruby-value">:create</span>] = <span class="ruby-keyword">true</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">options</span>[<span class="ruby-value">:create</span>].<span class="ruby-identifier">nil?</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">options</span>[<span class="ruby-value">:create</span>]
+    <span class="ruby-identifier">xml_mapping_nodes_hash</span>[<span class="ruby-identifier">options</span>[<span class="ruby-value">:mapping</span>]] <span class="ruby-operator">||=</span> []
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">xml_mapping_nodes_hash</span>[<span class="ruby-identifier">options</span>[<span class="ruby-value">:mapping</span>]] <span class="ruby-operator">||</span>
+      <span class="ruby-identifier">raise</span>(<span class="ruby-constant">MappingError</span>, <span class="ruby-node">&quot;undefined mapping: #{options[:mapping].inspect}&quot;</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="http://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="http://rdoc.rubyforge.org">RDoc</a> 4.1.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>module XML::XXPathMethods - XML::Mapping -- Simple, extensible Ruby-to-XML (and back) mapper</title>
+
+<link href="../fonts.css" rel="stylesheet">
+<link href="../rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../";
+</script>
+
+<script src="../js/jquery.js"></script>
+<script src="../js/navigation.js"></script>
+<script src="../js/search_index.js"></script>
+<script src="../js/search.js"></script>
+<script src="../js/searcher.js"></script>
+<script src="../js/darkfish.js"></script>
+
+
+<body id="top" role="document" class="module">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="../index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="../table_of_contents.html#pages">Pages</a>
+    <a href="../table_of_contents.html#classes">Classes</a>
+    <a href="../table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    
+    
+    
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    
+    <li ><a href="#method-i-all_xpath">#all_xpath</a>
+    
+    <li ><a href="#method-i-create_new_xpath">#create_new_xpath</a>
+    
+    <li ><a href="#method-i-each_xpath">#each_xpath</a>
+    
+    <li ><a href="#method-i-first_xpath">#first_xpath</a>
+    
+    <li ><a href="#method-i-to_xxpath">#to_xxpath</a>
+    
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="module-XML::XXPathMethods">
+  <h1 id="module-XML::XXPathMethods" class="module">
+    module XML::XXPathMethods
+  </h1>
+
+  <section class="description">
+    
+<p>set of convenience wrappers around XML::XPath&#39;s instance methods, for
+people who frequently use XML::XPath directly. This module is included into
+the REXML node classes and adds methods to them that enable you to write a
+call like</p>
+
+<pre>path.first(xml_element)</pre>
+
+<p>as the more pleasant-looking variant</p>
+
+<pre>xml_element.first_xpath(path)</pre>
+
+<p>with the added bonus that <em>path</em> may not only be an <a
+href="XXPath.html">XML::XXPath</a> instance, but also just a <a
+href="../String.html">String</a> containing the XPath expression.</p>
+
+<p>Please note that the names of all the added methods are suffixed with
+“_xpath” to avoid name clashes with REXML methods. Please note also that
+this was changed recently, so older versions of xml-mapping (version &lt;
+0.9) used method names without _xpath appended and thus would be
+incompatible with this one here.</p>
+
+<p>As a special convenience, if you&#39;re using an older version of REXML
+that doesn&#39;t have the new methods yet, methods without _xpath in their
+names will also (additionally) be added to the REXML classes. This will
+enable code that relied on the old names to keep on working as long as
+REXML isn&#39;t updated, at which point that code will fail and must be
+changed to used the methods suffixed with _xpath.</p>
+
+  </section>
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+
+    
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Instance Methods</h3>
+       </header>
+
+    
+      <div id="method-i-all_xpath" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">all_xpath</span><span
+            class="method-args">(path,options={})</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>see <a href="XXPath.html#method-i-all">XML::XXPath#all</a></p>
+          
+          
+
+          
+          <div class="method-source-code" id="all_xpath-source">
+            <pre><span class="ruby-comment"># File lib/xml/xxpath_methods.rb, line 47</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">all_xpath</span>(<span class="ruby-identifier">path</span>,<span class="ruby-identifier">options</span>={})
+  <span class="ruby-identifier">to_xxpath</span>(<span class="ruby-identifier">path</span>).<span class="ruby-identifier">all</span> <span class="ruby-keyword">self</span>, <span class="ruby-identifier">options</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-create_new_xpath" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">create_new_xpath</span><span
+            class="method-args">(path)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>see <a href="XXPath.html#method-i-create_new">XML::XXPath#create_new</a></p>
+          
+          
+
+          
+          <div class="method-source-code" id="create_new_xpath-source">
+            <pre><span class="ruby-comment"># File lib/xml/xxpath_methods.rb, line 52</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">create_new_xpath</span>(<span class="ruby-identifier">path</span>)
+  <span class="ruby-identifier">to_xxpath</span>(<span class="ruby-identifier">path</span>).<span class="ruby-identifier">create_new</span> <span class="ruby-keyword">self</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-each_xpath" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">each_xpath</span><span
+            class="method-args">(path,options={},&block)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>see <a href="XXPath.html#method-i-each">XML::XXPath#each</a></p>
+          
+          
+
+          
+          <div class="method-source-code" id="each_xpath-source">
+            <pre><span class="ruby-comment"># File lib/xml/xxpath_methods.rb, line 37</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">each_xpath</span>(<span class="ruby-identifier">path</span>,<span class="ruby-identifier">options</span>={},<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+  <span class="ruby-identifier">to_xxpath</span>(<span class="ruby-identifier">path</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword">self</span>, <span class="ruby-identifier">options</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-first_xpath" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">first_xpath</span><span
+            class="method-args">(path,options={})</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>see <a href="XXPath.html#method-i-first">XML::XXPath#first</a></p>
+          
+          
+
+          
+          <div class="method-source-code" id="first_xpath-source">
+            <pre><span class="ruby-comment"># File lib/xml/xxpath_methods.rb, line 42</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">first_xpath</span>(<span class="ruby-identifier">path</span>,<span class="ruby-identifier">options</span>={})
+  <span class="ruby-identifier">to_xxpath</span>(<span class="ruby-identifier">path</span>).<span class="ruby-identifier">first</span> <span class="ruby-keyword">self</span>, <span class="ruby-identifier">options</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-to_xxpath" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">to_xxpath</span><span
+            class="method-args">(path)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="to_xxpath-source">
+            <pre><span class="ruby-comment"># File lib/xml/xxpath_methods.rb, line 75</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">to_xxpath</span>(<span class="ruby-identifier">path</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-constant">String</span><span class="ruby-operator">===</span><span class="ruby-identifier">path</span>
+    <span class="ruby-constant">XXPath</span>.<span class="ruby-identifier">new</span> <span class="ruby-identifier">path</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">path</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="http://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="http://rdoc.rubyforge.org">RDoc</a> 4.1.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+

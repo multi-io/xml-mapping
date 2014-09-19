@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>class XML::Mapping::SingleAttributeNode - XML::Mapping -- Simple, extensible Ruby-to-XML (and back) mapper</title>
+
+<link href="../../fonts.css" rel="stylesheet">
+<link href="../../rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../../";
+</script>
+
+<script src="../../js/jquery.js"></script>
+<script src="../../js/navigation.js"></script>
+<script src="../../js/search_index.js"></script>
+<script src="../../js/search.js"></script>
+<script src="../../js/searcher.js"></script>
+<script src="../../js/darkfish.js"></script>
+
+
+<body id="top" role="document" class="class">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="../../index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="../../table_of_contents.html#pages">Pages</a>
+    <a href="../../table_of_contents.html#classes">Classes</a>
+    <a href="../../table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    <div id="parent-class-section" class="nav-section">
+  <h3>Parent</h3>
+
+  
+  <p class="link"><a href="Node.html">XML::Mapping::Node</a>
+  
+</div>
+
+    
+    
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    
+    <li class="calls-super" ><a href="#method-c-new">::new</a>
+    
+    <li ><a href="#method-i-default_when_xpath_err">#default_when_xpath_err</a>
+    
+    <li ><a href="#method-i-extract_attr_value">#extract_attr_value</a>
+    
+    <li ><a href="#method-i-initialize_impl">#initialize_impl</a>
+    
+    <li ><a href="#method-i-is_present_in-3F">#is_present_in?</a>
+    
+    <li ><a href="#method-i-set_attr_value">#set_attr_value</a>
+    
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="class-XML::Mapping::SingleAttributeNode">
+  <h1 id="class-XML::Mapping::SingleAttributeNode" class="class">
+    class XML::Mapping::SingleAttributeNode
+  </h1>
+
+  <section class="description">
+    
+<p>Base class for node types that map some <a href="../../XML.html">XML</a>
+data to a single attribute of their mapping class.</p>
+
+<p>All node types that come with xml-mapping except one (ChoiceNode) inherit
+from <a href="SingleAttributeNode.html">SingleAttributeNode</a>.</p>
+
+  </section>
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+
+    
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Class Methods</h3>
+       </header>
+
+    
+      <div id="method-c-new" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">new</span><span
+            class="method-args">(*args)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Initializer. <em>owner</em> is the owning mapping class (gets passed to the
+superclass initializer and therefore put into @owner). The second parameter
+(and hence the first parameter to the node factory method),
+<em>attrname</em>, is a symbol that names the mapping class attribute this
+node should map to. It gets stored into @attrname, and the attribute (an
+r/w attribute of name attrname) is added to the mapping class (using
+attr_accessor).</p>
+
+<p>In the initializer, two option arguments – :optional and :default_value –
+are processed in SingleAttributeNode:</p>
+
+<p>Supplying :default_value=&gt;<em>obj</em> makes <em>obj</em> the _default
+value_ for this attribute. When unmarshalling (loading) an object from an
+<a href="../../XML.html">XML</a> source, the attribute will be set to this
+value if nothing was provided in the <a href="../../XML.html">XML</a>; when
+marshalling (saving), the attribute won&#39;t be saved if it is set to the
+default value.</p>
+
+<p>Providing just :optional=&gt;true is equivalent to providing
+:default_value=&gt;nil.</p>
+          
+          
+            <div class="method-calls-super">
+              Calls superclass method
+              <a href="Node.html#method-c-new">XML::Mapping::Node.new</a>
+            </div>
+          
+
+          
+          <div class="method-source-code" id="new-source">
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 650</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
+  <span class="ruby-ivar">@attrname</span>,<span class="ruby-operator">*</span><span class="ruby-identifier">args</span> = <span class="ruby-keyword">super</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
+  <span class="ruby-ivar">@owner</span>.<span class="ruby-identifier">add_accessor</span> <span class="ruby-ivar">@attrname</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-ivar">@options</span>[<span class="ruby-value">:optional</span>] <span class="ruby-keyword">and</span> <span class="ruby-keyword">not</span>(<span class="ruby-ivar">@options</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-value">:default_value</span>))
+    <span class="ruby-ivar">@options</span>[<span class="ruby-value">:default_value</span>] = <span class="ruby-keyword">nil</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">initialize_impl</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
+  <span class="ruby-identifier">args</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Instance Methods</h3>
+       </header>
+
+    
+      <div id="method-i-default_when_xpath_err" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">default_when_xpath_err</span><span
+            class="method-args">() { || ... }</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>utility method to be used by implementations of <a
+href="SingleAttributeNode.html#method-i-extract_attr_value">extract_attr_value</a>.
+Calls the supplied block, catching <a
+href="../XXPathError.html">XML::XXPathError</a> and mapping it to <a
+href="SingleAttributeNode/NoAttrValueSet.html">NoAttrValueSet</a>. This is
+for the common case that an implementation considers an attribute value not
+to be present in the <a href="../../XML.html">XML</a> if some specific
+sub-path does not exist.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="default_when_xpath_err-source">
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 740</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">default_when_xpath_err</span> <span class="ruby-comment"># :yields:</span>
+  <span class="ruby-keyword">begin</span>
+    <span class="ruby-keyword">yield</span>
+  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XXPathError</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">err</span>
+    <span class="ruby-identifier">raise</span> <span class="ruby-constant">NoAttrValueSet</span>, <span class="ruby-node">&quot;Attribute #{@attrname} not set (XXPathError: #{err})&quot;</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-extract_attr_value" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">extract_attr_value</span><span
+            class="method-args">(xml)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>(to be overridden by subclasses) Extract and return the value of the
+attribute this node is responsible for (@attrname) from <em>xml</em>. If
+the implementation decides that the attribute value is “unset” in
+<em>xml</em>, it should raise <a
+href="SingleAttributeNode/NoAttrValueSet.html">NoAttrValueSet</a> in order
+to initiate proper handling of possibly supplied :optional and
+:default_value options (you may use <a
+href="SingleAttributeNode.html#method-i-default_when_xpath_err">default_when_xpath_err</a>
+for this purpose).</p>
+          
+          
+
+          
+          <div class="method-source-code" id="extract_attr_value-source">
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 701</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">extract_attr_value</span>(<span class="ruby-identifier">xml</span>)
+  <span class="ruby-identifier">raise</span> <span class="ruby-string">&quot;abstract method called&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-initialize_impl" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">initialize_impl</span><span
+            class="method-args">(*args)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>this method was retained for compatibility with xml-mapping 0.8.</p>
+
+<p>It used to be the initializer to be implemented by subclasses. The
+arguments (args) are those still unprocessed by SingleAttributeNode&#39;s
+initializer.</p>
+
+<p>In xml-mapping 0.9 and up, you should just override initialize() and call
+super.initialize. The returned array is the same args array.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="initialize_impl-source">
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 667</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize_impl</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-is_present_in-3F" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">is_present_in?</span><span
+            class="method-args">(obj)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>(overridden) returns true if and only if the value of this node&#39;s
+attribute in <em>obj</em> is non-nil.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="is_present_in-3F-source">
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 749</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">is_present_in?</span> <span class="ruby-identifier">obj</span>
+  <span class="ruby-keyword">nil</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{@attrname}&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-set_attr_value" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">set_attr_value</span><span
+            class="method-args">(xml, value)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>(to be overridden by subclasses) Write <em>value</em>, which is the current
+value of the attribute this node is responsible for (@attrname), into (the
+correct sub-nodes, attributes, whatever) of <em>xml</em>.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="set_attr_value-source">
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 722</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">set_attr_value</span>(<span class="ruby-identifier">xml</span>, <span class="ruby-identifier">value</span>)
+  <span class="ruby-identifier">raise</span> <span class="ruby-string">&quot;abstract method called&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="http://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="http://rdoc.rubyforge.org">RDoc</a> 4.1.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+
