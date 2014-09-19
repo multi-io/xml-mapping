@@ -192,3 +192,24 @@ Gem::PackageTask.new(spec) do |p|
   p.need_tar = true
   p.need_zip = true
 end
+
+
+
+require 'tmpdir'
+
+def system_checked(*args)
+  system(*args) or raise "failed to run: #{args.inspect}"
+end
+
+desc "updates gh-pages branch in the git with the latest rdoc"
+task :ghpublish => [:rdoc] do
+  revision = `git rev-parse HEAD`.chomp
+  Dir.mktmpdir do |dir|
+    # --no-checkout also deletes all files in the target's index
+    system_checked("git clone --branch gh-pages --no-checkout . #{dir}")
+    cp_r FileList.new('doc/api/*'), dir
+    system_checked("cd #{dir} && git add . && git commit -m 'upgrade to #{revision}'")
+    system_checked("git fetch #{dir}")
+    system_checked("git branch -f gh-pages FETCH_HEAD")
+  end
+end
