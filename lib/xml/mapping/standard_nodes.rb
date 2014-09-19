@@ -48,14 +48,22 @@ module XML
         @path = XML::XXPath.new(path)
         args
       end
+
       def extract_attr_value(xml) # :nodoc:
         txt = default_when_xpath_err{ @path.first(xml).text }
-        begin
-          Integer(txt)
-        rescue ArgumentError
-          Float(txt)
+
+        if txt.nil? or txt.empty?
+          raise 'No default value for empty numeric value' if @options[:default_value].nil?
+          @options[:default_value]
+        else
+          begin
+            Integer(txt)
+          rescue ArgumentError
+            Float(txt)
+          end
         end
       end
+
       def set_attr_value(xml, value) # :nodoc:
         raise RuntimeError, "Not an integer: #{value}" unless Numeric===value
         @path.first(xml,:ensure_created=>true).text = value.to_s
