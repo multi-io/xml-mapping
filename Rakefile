@@ -3,8 +3,6 @@
 
 $:.unshift "."
 
-#require 'build_lib/rdoc_ext'
-
 require 'rubygems'
 require 'rake'
 require 'rake/clean'
@@ -16,18 +14,8 @@ require 'rake/contrib/sshpublisher'
 
 require File.dirname(__FILE__)+"/lib/xml/mapping/version"
 
-# yeah -- it's just stupid that these are private
-
-class Rake::PackageTask
-  public :tgz_file, :zip_file
-end
-
-class Rake::GemPackageTask
-  #public :gem_file
-end
-
 FILE_RDOC_MAIN = 'user_manual.md'
-FILES_RDOC_EXTRA = [FILE_RDOC_MAIN] + %w{README.md user_manual_xxpath.md ChangeLog TODO.txt doc/xpath_impl_notes.txt}
+FILES_RDOC_EXTRA = [FILE_RDOC_MAIN] + %w{README.md user_manual_xxpath.md TODO.txt doc/xpath_impl_notes.txt}
 FILES_RDOC_INCLUDES=`git ls-files examples`.split("\n").map{|f| f.gsub(/.intin.rb$/, '.intout')}
 
 
@@ -178,62 +166,29 @@ spec = Gem::Specification.new do |s|
   s.name = 'xml-mapping'
   s.version = XML::Mapping::VERSION
   s.platform = Gem::Platform::RUBY
-  s.summary =
-    "An easy to use, extensible library for mapping Ruby objects to XML and back. Includes an XPath interpreter."
-
-  # Rubygems' RDoc support is incomplete... Can't seem to find a way
-  # to set the start page, or a set of files that should be includable
-  # but not processed by rdoc directly
+  s.summary = "XML-Object mapper for Ruby"
+  s.description =
+    "An easy to use, extensible library for semi-automatically mapping Ruby objects to XML and back. Includes an XPath interpreter."
   s.files += FILES_RDOC_EXTRA
-  s.files += Dir.glob("{lib,examples,test}/**/*").delete_if do |item|
-    item.include?("CVS") || item =~ /~$/
-  end
-  s.files += %w{LICENSE Rakefile install.rb}
+  s.files += FILES_RDOC_INCLUDES
+  s.files += `git ls-files lib test`.split("\n")
+  s.files += %w{LICENSE Rakefile}
   s.extra_rdoc_files = FILES_RDOC_EXTRA
   s.rdoc_options += %w{--include examples}
-
   s.require_path = 'lib'
-  # s.autorequire = 'xml/mapping'
-
-  # s.add_dependency 'rexml'
-
-  s.has_rdoc=true
-
+  s.add_development_dependency 'rake', '~> 0'
   s.test_file = 'test/all_tests.rb'
-
   s.author = 'Olaf Klischat'
   s.email = 'olaf.klischat@gmail.com'
-  s.homepage = "http://xml-mapping.rubyforge.org"
+  s.homepage = "https://github.com/multi-io/xml-mapping"
   s.rubyforge_project = "xml-mapping"
+  s.licenses = ['Apache-2.0']
 end
 
 
 
-if false
-
-Rake::GemPackageTask.new(spec) do |p|
+Gem::PackageTask.new(spec) do |p|
   p.gem_spec = spec
   p.need_tar = true
   p.need_zip = true
-
-  # (indirectly) add :rdoc, :test as prerequisites to :package task
-  # created by GemPackageTask
-  file "#{p.package_dir}/#{p.tgz_file}"  => [ "test_run", :rdoc ]
-  file "#{p.package_dir}/#{p.zip_file}" => [ "test_run", :rdoc ]
-  #file "#{p.package_dir}/#{p.gem_file}" => [ "test_run", :rdoc ]
-end
-
-
-
-# run "rake package" to generate tgz, zip, gem in pkg/
-
-
-
-task :rfpub_rdoc => [:rdoc] do
-  p=Rake::SshDirPublisher.new('rubyforge.org',
-                              '/var/www/gforge-projects/xml-mapping/',
-                              'doc/api')
-  p.upload
-end
-
 end

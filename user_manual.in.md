@@ -1082,4 +1082,5 @@ and the user_manual_xxpath file.
 
 ## License
 
-Ruby's.
+xml-mapping is licensed under the Apache License, version 2.0. See the
+LICENSE file for details.
