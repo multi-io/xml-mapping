@@ -1,5 +1,5 @@
-This directory contains the example code snippets from the main README
+This directory contains the example code snippets from the user manual
 file (each time the documentation is regenerated, they're included in
-the README, executed, and their output is checked for correctness and
-included in the README as well). So, if you've read the README, you've
-already seen all the examples from this directory.
+the user manual, executed, and their output is checked for correctness
+and included in the manual as well). So, if you've read the user
+manual, you've already seen all the examples from this directory.

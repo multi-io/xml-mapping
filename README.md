@@ -51,7 +51,7 @@ semi-automatically map Ruby objects to XML trees and vice versa.
 
 This is the most trivial example -- the mapper supports arbitrary
 array and hash (map) nodes, object (reference) nodes and arrays/hashes
-of those, polymorphic mappings, multiple mapping per class, fully
+of those, polymorphic mappings, multiple mappings per class, fully
 programmable mappings and arbitrary user-defined node types. Read the
 [project documentation](http://multi-io.github.io/xml-mapping/
 "Project Page") for more information.

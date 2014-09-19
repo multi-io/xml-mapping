@@ -2,3 +2,5 @@
 *.intout
 *.lock
 doc/api
+user_manual.md
+user_manual_xxpath.md

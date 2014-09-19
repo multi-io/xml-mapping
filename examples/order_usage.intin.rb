@@ -1,9 +1,7 @@
 #:invisible:
 $:.unshift "../lib"
-begin
-  Object.send(:remove_const, "Address")  # name clash with company_usage...
-rescue
-end
+load "cleanup.rb"
+
 require 'order'
 
 require 'xml/xxpath_methods'

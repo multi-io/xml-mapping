@@ -635,7 +635,7 @@ In the following example, we define two mappings (the default one and
 a mapping named <tt>:other</tt>) for +Person+ objects with a name, an
 age and an address:
 
-  :include: examples/person_mm.intout
+  :include: person_mm.intout
 
 In this example, each of the two mappings contains nodes that map the
 same set of Ruby attributes (name, age and address). This is probably

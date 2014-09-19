@@ -9,7 +9,6 @@ require 'rubygems'
 require 'rake'
 require 'rake/clean'
 require 'rake/testtask'
-#require 'build_lib/my_rdoctask'
 require 'rdoc/task'
 require 'rake/packagetask'
 require 'rubygems/package_task'
@@ -27,34 +26,9 @@ class Rake::GemPackageTask
   #public :gem_file
 end
 
-FILE_RDOC_MAIN = 'README.md'
-FILES_RDOC_EXTRA = [FILE_RDOC_MAIN] + %w{user_manual.md user_manual_xxpath.md ChangeLog TODO.txt doc/xpath_impl_notes.txt}
-FILES_RDOC_INCLUDES=%w{examples/company.xml
-                       examples/company.rb
-                       examples/company_usage.intout
-                       examples/order.xml
-                       examples/order.rb
-                       examples/order_usage.intout
-                       examples/stringarray_usage.intout
-                       examples/stringarray.xml
-                       examples/documents_folders_usage.intout
-                       examples/documents_folders.xml
-                       examples/time_node_w_marshallers.intout
-                       examples/time_node_w_marshallers.xml
-                       examples/time_augm.intout
-                       examples/time_augm_loading.intout
-                       examples/xpath_usage.intout
-                       examples/xpath_ensure_created.intout
-                       examples/xpath_create_new.intout
-                       examples/xpath_pathological.intout
-                       examples/xpath_docvsroot.intout
-                       examples/order_signature_enhanced_usage.intout
-                       examples/order_signature_enhanced.xml
-                       examples/person.intout
-                       examples/publication.intout
-                       examples/reader.intout
-                       examples/person_mm.intout
-                      }
+FILE_RDOC_MAIN = 'user_manual.md'
+FILES_RDOC_EXTRA = [FILE_RDOC_MAIN] + %w{README.md user_manual_xxpath.md ChangeLog TODO.txt doc/xpath_impl_notes.txt}
+FILES_RDOC_INCLUDES=`git ls-files examples`.split("\n").map{|f| f.gsub(/.intin.rb$/, '.intout')}
 
 
 desc "Default Task"
@@ -79,7 +53,7 @@ RDoc::Task.new do |rdoc|
   rdoc.rdoc_dir = 'doc/api'
   rdoc.title    = "XML::Mapping -- Simple, extensible Ruby-to-XML (and back) mapper"
   rdoc.options += %w{--line-numbers --include examples}
-  #rdoc.main = FILE_RDOC_MAIN
+  rdoc.main = FILE_RDOC_MAIN
   rdoc.rdoc_files.include(*FILES_RDOC_EXTRA)
   rdoc.rdoc_files.include('lib/**/*.rb')
 
@@ -88,6 +62,38 @@ RDoc::Task.new do |rdoc|
   #   prerequisite of its rdoc task (<rdoc_dir>/index.html)
   file "#{rdoc.rdoc_dir}/index.html" => (FileList.new("examples/**/*.rb") + FILES_RDOC_INCLUDES)
 end
+
+
+## need to process :include: statements manually so we can
+## have the resulting markdown in the gem
+### can't use a rule (recursion issues)
+%w{user_manual.md user_manual_xxpath.md}.each do |out_name|
+  in_name = "#{File.basename(out_name,'.md')}.in.md"
+  CLEAN << out_name
+  file out_name => in_name do
+    begin
+      File.open(out_name, "w") do |fout|
+        File.open(in_name, "r") do |fin|
+          fin.each_line do |l|
+            if m=l.match(/:include: (.*)/)
+              File.open("examples/#{m[1]}") do |fincluded|
+                fincluded.each_line do |linc|
+                  fout.puts "    #{linc}"
+                end
+              end
+            else
+              fout.write l
+            end
+          end
+        end
+      end
+    rescue Exception
+      File.delete out_name
+      raise
+    end
+  end
+end
+
 
 #rule '.intout' => ['.intin.rb', *FileList.new("lib/**/*.rb")] do |task|  # doesn't work -- see below
 rule '.intout' => ['.intin.rb'] do |task|
@@ -156,6 +162,7 @@ end
 # have to add additional prerequisites manually because it appears
 # that rules can only define a single prerequisite :-\
 FILES_RDOC_INCLUDES.select{|f|f=~/.intout$/}.each do |f|
+  CLEAN << f
   file f => FileList.new("lib/**/*.rb")
   file f => FileList.new("examples/**/*.rb")
 end
