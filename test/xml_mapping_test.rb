@@ -46,6 +46,22 @@ class XmlMappingTest < Test::Unit::TestCase
     assert_equal 18, @c.offices[1].address.number
   end
 
+  def test_int_node_default_value
+    require 'number'
+    xml = REXML::Document.new(File.new(File.dirname(__FILE__) + "/fixtures/number.xml"))
+
+    assert_raise RuntimeError, 'No default value for empty numeric value' do
+      Number.load_from_xml(xml.root, :mapping => :no_default)
+    end
+
+    num = nil
+    assert_nothing_raised do
+      num = Number.load_from_xml(xml.root, :mapping => :with_default)
+    end
+
+    assert_equal 0, num.value
+  end
+
   def test_getter_boolean_node
     path=XML::XXPath.new("offices/office[2]/classified")
     assert_equal(path.first(@xml.root).text == "yes",
