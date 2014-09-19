@@ -1,6 +1,6 @@
-= XML-XXPATH
+# XML-XXPATH
 
-== Overview, Motivation
+## Overview, Motivation
 
 Xml-xxpath is an (incomplete) XPath interpreter that is at the moment
 bundled with xml-mapping. It is built on top of REXML. xml-mapping
@@ -83,7 +83,7 @@ below the node the expression is applied to (as if you had written
 "./" or ".//", respectively).
 
 
-== Usage
+## Usage
 
 Xml-xxpath defines the class XML::XXPath. An instance of that class
 wraps an XPath expression, the string representation of which must be
@@ -94,7 +94,7 @@ and get the results, or, in the case of write access, the element is
 updated in-place.
 
 
-=== Read Access
+### Read Access
 
   :include: xpath_usage.intout
 
@@ -135,7 +135,7 @@ against the +firstelt+ element in the example *must not* start with
 "/first" (unless there is a child node that is also named "first").
 
 
-=== Write Access
+### Write Access
 
 You may pass an <tt>:ensure_created=>true</tt> option argument to
 _path_.first(_elt_)/_path_.all(_elt_) calls to make sure that _path_
@@ -176,7 +176,7 @@ XML::Mapping::ArrayNode, which must create a new instance of the
 an XML tree.
 
 
-=== Pathological Cases
+### Pathological Cases
 
 What is created when the Path "*" is to be created inside an empty XML
 element? The name of the element to be created isn't known, but still
@@ -192,11 +192,11 @@ class, as well as into the XML::XXPath::Accessors::Attribute class
 mentioned above.
 
 
-== Implentation notes
+## Implentation notes
 
 <tt>doc/xpath_impl_notes.txt</tt> contains some documentation on the
 implementation of xml-xxpath.
 
-== License
+## License
 
 Ruby's.

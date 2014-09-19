@@ -1,15 +1,15 @@
-= XML-MAPPING: XML-to-object (and back) Mapper for Ruby, including XPath Interpreter
+# XML-MAPPING: XML-to-object (and back) Mapper for Ruby, including XPath Interpreter
 
 Xml-mapping is an easy to use, extensible library that allows you to
 semi-automatically map Ruby objects to XML trees and vice versa.
 
-== Download
+## Download
 
 For downloading the latest version, CVS repository access etc. go to:
 
 http://rubyforge.org/projects/xml-mapping/
 
-== Contents of this Document
+## Contents of this Document
 
 - {Example}[aref:example]
 - {Single-attribute Nodes}[aref:sanodes]
@@ -23,20 +23,20 @@ http://rubyforge.org/projects/xml-mapping/
 - {Defining your own Node Types}[aref:definingnodes]
 - {XPath Interpreter}[aref:xpath]
 
-== {Example}[a:example]
+## {Example}[a:example]
 
 (example document stolen + extended from
 http://www.castor.org/xml-mapping.html)
 
-=== Input Document:
+### Input Document:
 
   :include: order.xml
 
-=== Mapping Class Declaration:
+### Mapping Class Declaration:
 
   :include: order.rb
 
-=== Usage:
+### Usage:
 
   :include: order_usage.intout
 
@@ -55,7 +55,7 @@ from the body of the class definition to define instance attributes
 that are automatically and bidirectionally mapped to subtrees of the
 XML element an instance of the class is mapped to.
 
-== {Single-attribute Nodes}[a:sanodes]
+## {Single-attribute Nodes}[a:sanodes]
 
 For example, in the definition
 
@@ -90,7 +90,7 @@ node". All node types that come with xml-mapping except one
 nodes.
 
 
-=== {Default Values}[a:defaultvalues]
+### {Default Values}[a:defaultvalues]
 
 For each single-attribute node you may define a <i>default value</i>
 which will be set if there was no value defined for the attribute in
@@ -147,7 +147,7 @@ This implies that:
 
 
 
-=== {Single-attribute Nodes with Sub-objects}[a:subobjnodes]
+### {Single-attribute Nodes with Sub-objects}[a:subobjnodes]
 
 Single-attribute nodes of type +array_node+, +hash_node+, and
 +object_node+ recursively map one or more subtrees of their XML to
@@ -229,7 +229,7 @@ As a side node, this feature actually makes +text_node+ and
 "path", :class=>String</tt>.
 
 
-==== Polymorphic Sub-objects, Marshallers/Unmarshallers
+#### Polymorphic Sub-objects, Marshallers/Unmarshallers
 
 Besides the <tt>:class</tt> keyword argument, there are alternative
 ways for a single-attribute node with sub-objects to specify the way
@@ -383,7 +383,7 @@ functionality of a node type while retaining another part.
 
 
 
-=== {Attribute Handling Details, Augmenting Existing Classes}[a:attrdefns]
+### {Attribute Handling Details, Augmenting Existing Classes}[a:attrdefns]
 
 I'll shed some more light on how single-attribute nodes add mapped
 attributes to Ruby classes. An attribute declaration like
@@ -448,7 +448,7 @@ class:
   :include: time_augm_loading.intout
 
 
-== {Other Nodes}[a:onodes]
+## {Other Nodes}[a:onodes]
 
 All nodes I've shown so far (node types text_node, numeric_node,
 boolean_node, object_node, array_node, and hash_node) were
@@ -457,7 +457,7 @@ of such a node is an attribute name, and the attribute of that name is
 the only piece of the state of instances of the node's mapping class
 that gets read/written by the node.
 
-=== {choice_node}[a:choice_node]
+### {choice_node}[a:choice_node]
 
 There is one node type distributed with xml-mapping that is not a
 single-attribute node: +choice_node+. A +choice_node+ allows you to
@@ -528,7 +528,7 @@ sub-element. Of course, this is because that alternative appears first
 in the choice_node.
 
 
-=== {Readers/Writers}[a:readerswriters]
+### {Readers/Writers}[a:readerswriters]
 
 Finally, _all_ nodes support keyword arguments :reader and :writer
 which allow you to extend or completely override the reading and/or
@@ -608,7 +608,7 @@ the (sensibly parameterized) code from your readers/writers to your
 node types.
 
 
-== {Multiple Mappings per Class}[a:mappings]
+## {Multiple Mappings per Class}[a:mappings]
 
 Sometimes you might want to represent the same Ruby object in multiple
 alternative ways in XML. For example, the name of a "Person" object
@@ -656,7 +656,7 @@ specify a different mapping for the sub-object(s) using the option
 
 
 
-== {Defining your own Node Types}[a:definingnodes]
+## {Defining your own Node Types}[a:definingnodes]
 
 It's easy to write additional node types and register them with the
 xml-mapping library (the following node types come with xml-mapping:
@@ -665,7 +665,7 @@ xml-mapping library (the following node types come with xml-mapping:
 
 I'll first show an example, then some more theoretical insight.
 
-=== Example
+### Example
 
 Let's say we want to extend the +Signature+ class from the example to
 include the time at which the signature was created. We want the new
@@ -798,7 +798,7 @@ _xml_. If it was not, it is created (preferably at the end of _xml_'s
 list of sub-nodes), and returned. See below[aref:xpath] for a more
 detailed documentation of the XPath interpreter.
 
-=== Element order in created XML documents
+### Element order in created XML documents
 
 As just said, XML::XXPath, when used to create new XML nodes,
 generally appends those nodes to the end of the list of subnodes of
@@ -821,7 +821,7 @@ The following is a more systematic overview of the basic node
 types. The description is self-contained, so some information from the
 previous section will be repeated.
 
-=== Node Types Are Ruby Classes
+### Node Types Are Ruby Classes
 
 A node type is implemented as a Ruby class derived from
 XML::Mapping::Node or one of its subclasses.
@@ -863,12 +863,12 @@ built-in nodes is not very long or complicated; you may consider
 reading it in addition to this text to gain a better understanding.
 
 
-=== How Node Types Work
+### How Node Types Work
 
 The xml-mapping core "operates" node types as follows:
 
 
-==== Node Initialization
+#### Node Initialization
 
 As said above, when a node class is registered with xml-mapping by
 calling <tt>XML::Mapping.add_node_class TheNodeClass</tt>, xml-mapping
@@ -928,7 +928,7 @@ per node definition, and that instance lives in the mapping class the
 node was defined in.
 
 
-==== Node Operation during Marshalling and Unmarshalling
+#### Node Operation during Marshalling and Unmarshalling
 
 When an instance of a mapping class is created or filled from an XML
 tree, xml-mapping will call +xml_to_obj+ on all nodes defined in that
@@ -951,7 +951,7 @@ the instance and put it into the appropriate XML elements/XML attr
 etc. of the XML tree.
 
 
-=== Basic Node Types Overview
+### Basic Node Types Overview
 
 The following is an overview of how initialization and
 marshalling/unmarshalling is implemented in the node base classes
@@ -959,7 +959,7 @@ marshalling/unmarshalling is implemented in the node base classes
 
 TODO: summary table: member var name; introduced in class; meaning
 
-==== Node
+#### Node
 
 In _initialize_, the mapping class and the option arguments are
 stripped from the argument list. The mapping class is stored in
@@ -990,7 +990,7 @@ The marshalling/unmarshalling methods
 +Node+ (they just raise an exception).
 
 
-==== SingleAttributeNode
+#### SingleAttributeNode
 
 In _initialize_, the attribute name is stripped from the argument list
 and stored in @attrname, and an attribute of that name is added to the
@@ -1028,7 +1028,7 @@ XML. SingleAttributeNode will catch this exception and put the default
 value, if it was defined, into the attribute.
 
 
-==== SubObjectBaseNode
+#### SubObjectBaseNode
 
 The initializer will set up additional member variables @sub_mapping,
 @marshaller, and @unmarshaller.
@@ -1045,7 +1045,7 @@ procs are there to be called from <tt>extract_attr_value</tt> or
 <tt>set_attr_value</tt> whenever the need arises.
 
 
-== {XPath Interpreter}[a:xpath]
+## {XPath Interpreter}[a:xpath]
 
 XML::XXPath is an XPath parser. It is used in xml-mapping node type
 definitions, but can just as well be utilized stand-alone (it does not
@@ -1076,9 +1076,9 @@ you create the path "/foo/bar[3]/baz[@key='hiho']" in the XML document
   </foo>
 
 XML::XXPath is explained in more detail in the reference documentation
-and the README_XPATH file.
+and the user_manual_xxpath file.
 
 
-== License
+## License
 
 Ruby's.

@@ -27,8 +27,8 @@ class Rake::GemPackageTask
   #public :gem_file
 end
 
-FILE_RDOC_MAIN = 'README'
-FILES_RDOC_EXTRA = [FILE_RDOC_MAIN] + %w{README_XPATH ChangeLog TODO.txt doc/xpath_impl_notes.txt}
+FILE_RDOC_MAIN = 'README.md'
+FILES_RDOC_EXTRA = [FILE_RDOC_MAIN] + %w{user_manual.md user_manual_xxpath.md ChangeLog TODO.txt doc/xpath_impl_notes.txt}
 FILES_RDOC_INCLUDES=%w{examples/company.xml
                        examples/company.rb
                        examples/company_usage.intout
