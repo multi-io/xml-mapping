@@ -1,3 +1,5 @@
+- consider switching from REXML to nokogiri and/or, maybe, ox.
+
 - XML::XXPath: Write a real XPath parser eventually
 
 - XML::XXPath: avoid duplicates in path.all(node) result arrays when

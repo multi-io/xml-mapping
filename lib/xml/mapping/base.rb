@@ -85,7 +85,7 @@ module XML
     # can't really use a class variable for this because it must be
     # shared by all class methods mixed into classes by including
     # Mapping. See
-    # http://user.cs.tu-berlin.de/~klischat/mydocs/ruby/mixin_class_methods_global_state.txt.html
+    # http://multi-io.github.io/mydocs-pub/ruby/mixin_class_methods_global_state.txt.html
     # for a more detailed discussion.
     Classes_by_rootelt_names = {}  #:nodoc:
     class << Classes_by_rootelt_names
@@ -258,8 +258,9 @@ module XML
     # The XML is obtained by calling #save_to_xml.
     def save_to_file(filename, options={:mapping=>:_default})
       xml = save_to_xml :mapping=>options[:mapping]
+      formatter = options[:formatter] || self.class.mapping_output_formatter
       File.open(filename,"w") do |f|
-        REXML::Formatters::Transitive.new(2,false).write(xml,f)
+        formatter.write(xml, f)
       end
     end
 
@@ -435,6 +436,17 @@ module XML
         self.name.split('::')[-1].gsub(/^(.)/){$1.downcase}.gsub(/(.)([A-Z])/){$1+"-"+$2.downcase}
       end
 
+      # the formatter to be used for output formatting when writing
+      # xml to character streams (Files/IOs). Combined
+      # getter/setter. Defaults to simple (compact/no-whitespace)
+      # formatting, may be overridden on a per-call base via options
+      def mapping_output_formatter(formatter=nil)
+        # TODO make it per-mapping
+        if formatter
+          @mapping_output_formatter = formatter
+        end
+        @mapping_output_formatter ||= REXML::Formatters::Default.new
+      end
     end
 
 

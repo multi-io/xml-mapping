@@ -356,4 +356,29 @@ class XmlMappingTest < Test::Unit::TestCase
     assert_equal 'no',     xml2.root.elements[5].elements[3].elements[1].text
   end
 
+
+  def test_file_io
+    require 'tmpdir'
+    Dir.mktmpdir do |dir|
+      @c.save_to_file "#{dir}/out.xml"
+      c2 = Company.load_from_file "#{dir}/out.xml"
+      assert_equal @c, c2, 'read back object equals original'
+
+      @c.save_to_file "#{dir}/out_default.xml", :formatter=>REXML::Formatters::Default.new
+
+      assert FileUtils.compare_file("#{dir}/out.xml", "#{dir}/out_default.xml"), 'default formatter is Formatters::Default'
+      assert File.open("#{dir}/out_default.xml").readlines.grep(/^\s/).empty?, 'default formatter produces no indentations'
+
+      @c.save_to_file "#{dir}/out_pretty.xml", :formatter=>REXML::Formatters::Pretty.new
+      assert not(File.open("#{dir}/out_pretty.xml").readlines.grep(/^\s/).empty?), 'pretty formatter does produce indentations'
+
+      Company.class_eval <<-EOS
+        mapping_output_formatter REXML::Formatters::Pretty.new
+      EOS
+
+      @c.save_to_file "#{dir}/out2.xml"
+      assert FileUtils.compare_file("#{dir}/out2.xml", "#{dir}/out_pretty.xml"), 'default formatter can be changed on a per-class basis'
+    end
+  end
+
 end
