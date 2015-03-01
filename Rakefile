@@ -45,10 +45,7 @@ RDoc::Task.new do |rdoc|
   rdoc.rdoc_files.include(*FILES_RDOC_EXTRA)
   rdoc.rdoc_files.include('lib/**/*.rb')
 
-  # additional file dependencies for the rdoc task
-  #   this somewhat of a black art because RDocTask doesn't document the
-  #   prerequisite of its rdoc task (<rdoc_dir>/index.html)
-  file "#{rdoc.rdoc_dir}/index.html" => (FileList.new("examples/**/*.rb") + FILES_RDOC_INCLUDES)
+  task :rdoc => (FileList.new("examples/**/*.rb") + FILES_RDOC_INCLUDES)
 end
 
 
