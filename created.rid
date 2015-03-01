@@ -1,15 +1,15 @@
-Fri, 19 Sep 2014 14:01:43 +0200
-user_manual.md	Fri, 19 Sep 2014 14:01:43 +0200
-README.md	Fri, 19 Sep 2014 09:14:11 +0200
-user_manual_xxpath.md	Fri, 19 Sep 2014 14:01:43 +0200
-TODO.txt	Fri, 19 Sep 2014 04:57:27 +0200
-doc/xpath_impl_notes.txt	Mon, 15 Sep 2014 01:36:21 +0200
-lib/xml/mapping.rb	Fri, 19 Sep 2014 14:00:46 +0200
-lib/xml/mapping/base.rb	Mon, 15 Sep 2014 01:36:21 +0200
-lib/xml/mapping/core_classes_mapping.rb	Mon, 15 Sep 2014 01:36:21 +0200
-lib/xml/mapping/standard_nodes.rb	Mon, 15 Sep 2014 01:36:21 +0200
-lib/xml/mapping/version.rb	Fri, 19 Sep 2014 13:48:02 +0200
-lib/xml/rexml_ext.rb	Mon, 15 Sep 2014 01:36:21 +0200
-lib/xml/xxpath.rb	Mon, 15 Sep 2014 01:36:21 +0200
-lib/xml/xxpath/steps.rb	Mon, 15 Sep 2014 01:36:21 +0200
-lib/xml/xxpath_methods.rb	Mon, 15 Sep 2014 01:36:21 +0200
+Sun, 01 Mar 2015 15:34:17 +0100
+user_manual.md	Sun, 01 Mar 2015 15:34:16 +0100
+README.md	Mon, 23 Feb 2015 00:01:13 +0100
+user_manual_xxpath.md	Sun, 01 Mar 2015 15:31:06 +0100
+TODO.txt	Sun, 01 Mar 2015 11:32:46 +0100
+doc/xpath_impl_notes.txt	Mon, 23 Feb 2015 00:01:13 +0100
+lib/xml/mapping.rb	Mon, 23 Feb 2015 00:01:13 +0100
+lib/xml/mapping/base.rb	Sun, 01 Mar 2015 11:32:46 +0100
+lib/xml/mapping/core_classes_mapping.rb	Mon, 23 Feb 2015 00:01:13 +0100
+lib/xml/mapping/standard_nodes.rb	Sun, 01 Mar 2015 12:15:22 +0100
+lib/xml/mapping/version.rb	Mon, 23 Feb 2015 00:01:13 +0100
+lib/xml/rexml_ext.rb	Mon, 23 Feb 2015 00:01:13 +0100
+lib/xml/xxpath.rb	Mon, 23 Feb 2015 00:01:13 +0100
+lib/xml/xxpath/steps.rb	Mon, 23 Feb 2015 00:01:13 +0100
+lib/xml/xxpath_methods.rb	Mon, 23 Feb 2015 00:01:13 +0100

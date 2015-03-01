@@ -6,19 +6,16 @@
 
 <title>user_manual_xxpath - XML::Mapping -- Simple, extensible Ruby-to-XML (and back) mapper</title>
 
-<link href="./fonts.css" rel="stylesheet">
-<link href="./rdoc.css" rel="stylesheet">
-
 <script type="text/javascript">
   var rdoc_rel_prefix = "./";
 </script>
 
 <script src="./js/jquery.js"></script>
-<script src="./js/navigation.js"></script>
-<script src="./js/search_index.js"></script>
-<script src="./js/search.js"></script>
-<script src="./js/searcher.js"></script>
 <script src="./js/darkfish.js"></script>
+
+<link href="./css/fonts.css" rel="stylesheet">
+<link href="./css/rdoc.css" rel="stylesheet">
+
 
 
 <body id="top" role="document" class="file">
@@ -59,7 +56,7 @@
 
   <ul class="link-list" role="directory">
     <li><a href="#label-XML-XXPATH">XML-XXPATH</a>
-    <li><a href="#label-Overview%2C+Motivation">Overview, Motivation</a>
+    <li><a href="#label-Overview-2C+Motivation">Overview, Motivation</a>
     <li><a href="#label-Usage">Usage</a>
     <li><a href="#label-Read+Access">Read Access</a>
     <li><a href="#label-Write+Access">Write Access</a>
@@ -94,20 +91,20 @@
 
 <main role="main" aria-label="Page user_manual_xxpath.md">
 
-<h1 id="label-XML-XXPATH">XML-XXPATH<span><a href="#label-XML-XXPATH">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+<h1 id="label-XML-XXPATH">XML-XXPATH<span><a href="#label-XML-XXPATH">&para;</a> <a href="#top">&uarr;</a></span></h1>
 
-<h2 id="label-Overview%2C+Motivation">Overview, Motivation<span><a href="#label-Overview%2C+Motivation">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="label-Overview-2C+Motivation">Overview, Motivation<span><a href="#label-Overview-2C+Motivation">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>Xml-xxpath is an (incomplete) XPath interpreter that is at the moment
-bundled with xml-mapping. It is built on top of REXML. xml-mapping uses
-xml-xxpath extensively for implementing its node types – see the <a
-href="README_md.html">README</a> file and the reference documentation (and
-the source code) for details. xml-xxpath, however, does not depend on
-xml-mapping at all, and is useful in its own right – maybe I&#39;ll later
-distribute it as a seperate library instead of bundling it. For the time
-being, if you want to use this XPath implementation stand-alone, you can
-just rip the files <code>lib/xml/xxpath.rb</code>,
-<code>lib/xml/xxpath/steps.rb</code>, and
+bundled with xml-mapping. It is built on top of <a
+href="REXML.html">REXML</a>. xml-mapping uses xml-xxpath extensively for
+implementing its node types – see the <a href="README_md.html">README</a>
+file and the reference documentation (and the source code) for details.
+xml-xxpath, however, does not depend on xml-mapping at all, and is useful
+in its own right – maybe I&#39;ll later distribute it as a seperate library
+instead of bundling it. For the time being, if you want to use this XPath
+implementation stand-alone, you can just rip the files
+<code>lib/xml/xxpath.rb</code>, <code>lib/xml/xxpath/steps.rb</code>, and
 <code>lib/xml/xxpath_methods.rb</code> out of the xml-mapping distribution
 and use them on their own (they do not depend on anything else).</p>
 
@@ -140,10 +137,11 @@ href="XML.html">XML</a> document</p>
 <p>This feature is used by xml-mapping when writing (marshalling) Ruby objects
 to <a href="XML.html">XML</a>, and is actually the reason why I
 couldn&#39;t just use any of the existing XPath implementations, e.g. the
-one that comes with REXML. Also, the whole xml-xxpath implementation is
-just 300 lines of Ruby code, it is quite fast (paths are precompiled), and
-xml-xxpath returns matched elements in the order they appeared in the
-source document – I&#39;ve heard REXML::XPath doesn&#39;t do that :)</p>
+one that comes with <a href="REXML.html">REXML</a>. Also, the whole
+xml-xxpath implementation is just 300 lines of Ruby code, it is quite fast
+(paths are precompiled), and xml-xxpath returns matched elements in the
+order they appeared in the source document – I&#39;ve heard REXML::XPath
+doesn&#39;t do that :)</p>
 
 <p>Some basic knowledge of XPath is helpful for reading this document.</p>
 
@@ -179,21 +177,21 @@ expressions beginning with “/” or “//” will still only find nodes below 
 node the expression is applied to (as if you had written “./” or “.//”,
 respectively).</p>
 
-<h2 id="label-Usage">Usage<span><a href="#label-Usage">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="label-Usage">Usage<span><a href="#label-Usage">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>Xml-xxpath defines the class <a href="XML/XXPath.html">XML::XXPath</a>. An
 instance of that class wraps an XPath expression, the string representation
 of which must be supplied when constructing the instance. You then call
 instance methods like <em>first</em>, <em>all</em> or <em>create_new</em>
-on the instance, supplying the REXML Element the XPath expression should be
-applied to, and get the results, or, in the case of write access, the
-element is updated in-place.</p>
+on the instance, supplying the <a href="REXML.html">REXML</a> Element the
+XPath expression should be applied to, and get the results, or, in the case
+of write access, the element is updated in-place.</p>
 
-<h3 id="label-Read+Access">Read Access<span><a href="#label-Read+Access">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+<h3 id="label-Read+Access">Read Access<span><a href="#label-Read+Access">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;xml/xxpath&#39;</span>
+<pre>require &#39;xml/xxpath&#39;
 
-<span class="ruby-identifier">d</span>=<span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span> <span class="ruby-value">&lt;&lt;EOS
+d=REXML::Document.new &lt;&lt;EOS
   &lt;foo&gt;
     &lt;bar&gt;
       &lt;baz key=&quot;work&quot;&gt;Java&lt;/baz&gt;
@@ -208,57 +206,59 @@ element is updated in-place.</p>
       &lt;baz key=&quot;play&quot;&gt;poker&lt;/baz&gt;
     &lt;/more&gt;
   &lt;/foo&gt;
-EOS</span>
+EOS
 
-<span class="ruby-comment">####read access</span>
-<span class="ruby-identifier">path</span>=<span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XXPath</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;/foo/bar[2]/baz&quot;</span>)
+####read access
+path=XML::XXPath.new(&quot;/foo/bar[2]/baz&quot;)
 
-<span class="ruby-comment">## path.all(document) gives all elements matching path in document</span>
-<span class="ruby-identifier">path</span>.<span class="ruby-identifier">all</span>(<span class="ruby-identifier">d</span>)
-=<span class="ruby-operator">&gt;</span> [<span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span> <span class="ruby-identifier">key</span>=<span class="ruby-string">&#39;ab&#39;</span><span class="ruby-operator">&gt;</span> <span class="ruby-operator">...</span> <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/&gt;, &lt;baz key=&#39;play&#39;&gt; ... &lt;/</span><span class="ruby-operator">&gt;</span>, <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span> <span class="ruby-identifier">key</span>=<span class="ruby-string">&#39;xy&#39;</span><span class="ruby-operator">&gt;</span> <span class="ruby-operator">...</span> <span class="ruby-operator">&lt;</span><span class="ruby-node">/&gt;]
+## path.all(document) gives all elements matching path in document
+path.all(d)
+=&gt; [&lt;baz key=&#39;ab&#39;&gt; ... &lt;/&gt;, &lt;baz key=&#39;play&#39;&gt; ... &lt;/&gt;, &lt;baz key=&#39;xy&#39;&gt; ... &lt;/&gt;]
 
 ## loop over them
 path.each(d){|elt| puts elt.text}
 hello
 scrabble
 goodbye
-=&gt; [&lt;baz key=&#39;ab&#39;&gt; ... &lt;/</span><span class="ruby-operator">&gt;</span>, <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span> <span class="ruby-identifier">key</span>=<span class="ruby-string">&#39;play&#39;</span><span class="ruby-operator">&gt;</span> <span class="ruby-operator">...</span> <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/&gt;, &lt;baz key=&#39;xy&#39;&gt; ... &lt;/</span><span class="ruby-operator">&gt;</span>]
+=&gt; [&lt;baz key=&#39;ab&#39;&gt; ... &lt;/&gt;, &lt;baz key=&#39;play&#39;&gt; ... &lt;/&gt;, &lt;baz key=&#39;xy&#39;&gt; ... &lt;/&gt;]
 
-<span class="ruby-comment">## the first of those</span>
-<span class="ruby-identifier">path</span>.<span class="ruby-identifier">first</span>(<span class="ruby-identifier">d</span>)
-=<span class="ruby-operator">&gt;</span> <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span> <span class="ruby-identifier">key</span>=<span class="ruby-string">&#39;ab&#39;</span><span class="ruby-operator">&gt;</span> <span class="ruby-operator">...</span> <span class="ruby-operator">&lt;</span><span class="ruby-node">/&gt;
+## the first of those
+path.first(d)
+=&gt; &lt;baz key=&#39;ab&#39;&gt; ... &lt;/&gt;
 
 ## no match here (only three &quot;baz&quot; elements)
-path2=XML::XXPath.new(&quot;/</span><span class="ruby-identifier">foo</span><span class="ruby-operator">/</span><span class="ruby-identifier">bar</span>[<span class="ruby-value">2</span>]<span class="ruby-operator">/</span><span class="ruby-identifier">baz</span>[<span class="ruby-value">4</span>]<span class="ruby-node">&quot;)
+path2=XML::XXPath.new(&quot;/foo/bar[2]/baz[4]&quot;)
 path2.all(d)
 =&gt; []
 
-## &quot;</span><span class="ruby-identifier">first</span><span class="ruby-node">&quot; raises XML::XXPathError in such cases...
+## &quot;first&quot; raises XML::XXPathError in such cases...
 path2.first(d)
 XML::XXPathError: path not found: /foo/bar[2]/baz[4]
-    from /home/olaf/xml-mapping/lib/xml/xxpath.rb:75:in `first&#39;
+    from /Users/oklischat/xml-mapping/lib/xml/xxpath.rb:75:in `first&#39;
 
 ##...unless we allow nil returns
 path2.first(d,:allow_nil=&gt;true)
 =&gt; nil
 
 ##attribute nodes can also be returned
-keysPath=XML::XXPath.new(&quot;</span><span class="ruby-operator">/</span><span class="ruby-identifier">foo</span>  <span class="ruby-operator">/</span>  <span class="ruby-ivar">@key</span><span class="ruby-string">&quot;)
+keysPath=XML::XXPath.new(&quot;/foo  /  @key&quot;)
 
 keysPath.all(d).map{|attr|attr.text}
-=&gt; [&quot;</span><span class="ruby-identifier">work</span><span class="ruby-string">&quot;, &quot;</span><span class="ruby-identifier">play</span><span class="ruby-string">&quot;, &quot;</span><span class="ruby-identifier">ab</span><span class="ruby-string">&quot;, &quot;</span><span class="ruby-identifier">play</span><span class="ruby-string">&quot;, &quot;</span><span class="ruby-identifier">xy</span><span class="ruby-string">&quot;, &quot;</span><span class="ruby-identifier">play</span><span class="ruby-string">&quot;]
-</span></pre>
+=&gt; [&quot;work&quot;, &quot;play&quot;, &quot;ab&quot;, &quot;play&quot;, &quot;xy&quot;, &quot;play&quot;]</pre>
 
 <p>The objects supplied to the <code>all()</code>, <code>first()</code>, and
-<code>each()</code> calls must be REXML element nodes, i.e. they must
-support messages like <code>elements</code>, <code>attributes</code> etc
-(instances of REXML::Element and its subclasses do this). The calls return
-the found elements as instances of REXML::Element or <a
+<code>each()</code> calls must be <a href="REXML.html">REXML</a> element
+nodes, i.e. they must support messages like <code>elements</code>,
+<code>attributes</code> etc (instances of <a
+href="REXML/Element.html">REXML::Element</a> and its subclasses do this).
+The calls return the found elements as instances of <a
+href="REXML/Element.html">REXML::Element</a> or <a
 href="XML/XXPath/Accessors/Attribute.html">XML::XXPath::Accessors::Attribute</a>.
 The latter is a wrapper around attribute nodes that is largely
-call-compatible to REXML::Element. This is so you can write things like
-<code>path.each{|node|puts node.text}</code> without having to special-case
-anything even if the path matches attributes, not just elements.</p>
+call-compatible to <a href="REXML/Element.html">REXML::Element</a>. This is
+so you can write things like <code>path.each{|node|puts node.text}</code>
+without having to special-case anything even if the path matches
+attributes, not just elements.</p>
 
 <p>As you can see, you can re-use path objects, applying them to different <a
 href="XML.html">XML</a> elements at will. You should do this because the
@@ -270,9 +270,9 @@ which makes it more efficient.</p>
 element and its sub-elements, starting with the first one. This is shown by
 the following code:</p>
 
-<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;xml/xxpath&#39;</span>
+<pre>require &#39;xml/xxpath&#39;
 
-<span class="ruby-identifier">d</span>=<span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span> <span class="ruby-value">&lt;&lt;EOS
+d=REXML::Document.new &lt;&lt;EOS
   &lt;foo&gt;
     &lt;bar x=&quot;hello&quot;&gt;
       &lt;first&gt;
@@ -281,45 +281,45 @@ the following code:</p>
     &lt;/bar&gt;
     &lt;bar x=&quot;goodbye&quot;/&gt;
   &lt;/foo&gt;
-EOS</span>
+EOS
 
-<span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XXPath</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;/foo/bar&quot;</span>).<span class="ruby-identifier">all</span>(<span class="ruby-identifier">d</span>)
-=<span class="ruby-operator">&gt;</span> [<span class="ruby-operator">&lt;</span><span class="ruby-identifier">bar</span> <span class="ruby-identifier">x</span>=<span class="ruby-string">&#39;hello&#39;</span><span class="ruby-operator">&gt;</span> <span class="ruby-operator">...</span> <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/&gt;, &lt;bar x=&#39;goodbye&#39;/</span><span class="ruby-operator">&gt;</span>]
+XML::XXPath.new(&quot;/foo/bar&quot;).all(d)
+=&gt; [&lt;bar x=&#39;hello&#39;&gt; ... &lt;/&gt;, &lt;bar x=&#39;goodbye&#39;/&gt;]
 
-<span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XXPath</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;/bar&quot;</span>).<span class="ruby-identifier">all</span>(<span class="ruby-identifier">d</span>)
-=<span class="ruby-operator">&gt;</span> []
-
-<span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XXPath</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;/foo/bar&quot;</span>).<span class="ruby-identifier">all</span>(<span class="ruby-identifier">d</span>.<span class="ruby-identifier">root</span>)
-=<span class="ruby-operator">&gt;</span> []
-
-<span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XXPath</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;/bar&quot;</span>).<span class="ruby-identifier">all</span>(<span class="ruby-identifier">d</span>.<span class="ruby-identifier">root</span>)
-=<span class="ruby-operator">&gt;</span> [<span class="ruby-operator">&lt;</span><span class="ruby-identifier">bar</span> <span class="ruby-identifier">x</span>=<span class="ruby-string">&#39;hello&#39;</span><span class="ruby-operator">&gt;</span> <span class="ruby-operator">...</span> <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/&gt;, &lt;bar x=&#39;goodbye&#39;/</span><span class="ruby-operator">&gt;</span>]
-
-<span class="ruby-identifier">firstelt</span> = <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XXPath</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;/foo/bar/first&quot;</span>).<span class="ruby-identifier">first</span>(<span class="ruby-identifier">d</span>)
-=<span class="ruby-operator">&gt;</span> <span class="ruby-operator">&lt;</span><span class="ruby-identifier">first</span><span class="ruby-operator">&gt;</span> <span class="ruby-operator">...</span> <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/&gt;
-
-XML::XXPath.new(&quot;/</span><span class="ruby-identifier">first</span><span class="ruby-operator">/</span><span class="ruby-identifier">second</span><span class="ruby-string">&quot;).all(firstelt)
+XML::XXPath.new(&quot;/bar&quot;).all(d)
 =&gt; []
 
-XML::XXPath.new(&quot;</span><span class="ruby-operator">/</span><span class="ruby-identifier">second</span><span class="ruby-string">&quot;).all(firstelt)
-=&gt; [&lt;second&gt; ... &lt;/&gt;]
-</span></pre>
+XML::XXPath.new(&quot;/foo/bar&quot;).all(d.root)
+=&gt; []
 
-<p>A REXML <code>Document</code> object is a REXML <code>Element</code> object
-whose <code>elements</code> collection consists only of a single member –
-the document&#39;s root node. The first path element of the XPath – “foo”
-in the example – is matched against that. That is why the path “/bar” in
-the example doesn&#39;t match anything when matched against the document
+XML::XXPath.new(&quot;/bar&quot;).all(d.root)
+=&gt; [&lt;bar x=&#39;hello&#39;&gt; ... &lt;/&gt;, &lt;bar x=&#39;goodbye&#39;/&gt;]
+
+firstelt = XML::XXPath.new(&quot;/foo/bar/first&quot;).first(d)
+=&gt; &lt;first&gt; ... &lt;/&gt;
+
+XML::XXPath.new(&quot;/first/second&quot;).all(firstelt)
+=&gt; []
+
+XML::XXPath.new(&quot;/second&quot;).all(firstelt)
+=&gt; [&lt;second&gt; ... &lt;/&gt;]</pre>
+
+<p>A <a href="REXML.html">REXML</a> <code>Document</code> object is a <a
+href="REXML.html">REXML</a> <code>Element</code> object whose
+<code>elements</code> collection consists only of a single member – the
+document&#39;s root node. The first path element of the XPath – “foo” in
+the example – is matched against that. That is why the path “/bar” in the
+example doesn&#39;t match anything when matched against the document
 <code>d</code> itself.</p>
 
-<p>An ordinary REXML <code>Element</code> object that represents a node
-somewhere inside an <a href="XML.html">XML</a> tree has an
-<code>elements</code> collection that consists of all the element&#39;s
+<p>An ordinary <a href="REXML.html">REXML</a> <code>Element</code> object that
+represents a node somewhere inside an <a href="XML.html">XML</a> tree has
+an <code>elements</code> collection that consists of all the element&#39;s
 direct sub-elements. That is why XPath patterns matched against the
 <code>firstelt</code> element in the example <em>must not</em> start with
 “/first” (unless there is a child node that is also named “first”).</p>
 
-<h3 id="label-Write+Access">Write Access<span><a href="#label-Write+Access">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+<h3 id="label-Write+Access">Write Access<span><a href="#label-Write+Access">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
 <p>You may pass an <code>:ensure_created=&gt;true</code> option argument to
 <em>path</em>.first(<em>elt</em>) / <em>path</em>.all(<em>elt</em>) calls
@@ -342,37 +342,37 @@ possible etc.)</p>
 
 <p>Examples:</p>
 
-<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;xml/xxpath&#39;</span>
+<pre>require &#39;xml/xxpath&#39;
 
-<span class="ruby-identifier">d</span>=<span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span> <span class="ruby-value">&lt;&lt;EOS
+d=REXML::Document.new &lt;&lt;EOS
   &lt;foo&gt;
     &lt;bar&gt;
       &lt;baz key=&quot;work&quot;&gt;Java&lt;/baz&gt;
       &lt;baz key=&quot;play&quot;&gt;Ruby&lt;/baz&gt;
     &lt;/bar&gt;
   &lt;/foo&gt;
-EOS</span>
+EOS
 
-<span class="ruby-identifier">rootelt</span>=<span class="ruby-identifier">d</span>.<span class="ruby-identifier">root</span>
+rootelt=d.root
 
-<span class="ruby-comment">#### ensuring that a specific path exists inside the document</span>
+#### ensuring that a specific path exists inside the document
 
-<span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XXPath</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;/bar/baz[@key=&#39;work&#39;]&quot;</span>).<span class="ruby-identifier">first</span>(<span class="ruby-identifier">rootelt</span>,:<span class="ruby-identifier">ensure_created=</span><span class="ruby-operator">&gt;</span><span class="ruby-keyword">true</span>)
-=<span class="ruby-operator">&gt;</span> <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span> <span class="ruby-identifier">key</span>=<span class="ruby-string">&#39;work&#39;</span><span class="ruby-operator">&gt;</span> <span class="ruby-operator">...</span> <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/&gt;
+XML::XXPath.new(&quot;/bar/baz[@key=&#39;work&#39;]&quot;).first(rootelt,:ensure_created=&gt;true)
+=&gt; &lt;baz key=&#39;work&#39;&gt; ... &lt;/&gt;
 d.write($stdout,2)
 
 &lt;foo&gt;
   &lt;bar&gt;
     &lt;baz key=&#39;work&#39;&gt;
       Java
-    &lt;/</span><span class="ruby-identifier">baz</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span> <span class="ruby-identifier">key</span>=<span class="ruby-string">&#39;play&#39;</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-constant">Ruby</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/baz&gt;
-  &lt;/</span><span class="ruby-identifier">bar</span><span class="ruby-operator">&gt;</span>
-<span class="ruby-operator">&lt;</span><span class="ruby-node">/foo&gt;### no change (path existed before)
+    &lt;/baz&gt;
+    &lt;baz key=&#39;play&#39;&gt;
+      Ruby
+    &lt;/baz&gt;
+  &lt;/bar&gt;
+&lt;/foo&gt;### no change (path existed before)
 
-XML::XXPath.new(&quot;/</span><span class="ruby-identifier">bar</span><span class="ruby-operator">/</span><span class="ruby-identifier">baz</span>[<span class="ruby-ivar">@key</span>=<span class="ruby-string">&#39;42&#39;</span>]<span class="ruby-node">&quot;).first(rootelt,:ensure_created=&gt;true)
+XML::XXPath.new(&quot;/bar/baz[@key=&#39;42&#39;]&quot;).first(rootelt,:ensure_created=&gt;true)
 =&gt; &lt;baz key=&#39;42&#39;/&gt;
 d.write($stdout,2)
 
@@ -388,7 +388,7 @@ d.write($stdout,2)
   &lt;/bar&gt;
 &lt;/foo&gt;### path was added
 
-XML::XXPath.new(&quot;</span><span class="ruby-operator">/</span><span class="ruby-identifier">bar</span><span class="ruby-operator">/</span><span class="ruby-identifier">baz</span>[<span class="ruby-ivar">@key</span>=<span class="ruby-string">&#39;42&#39;</span>]<span class="ruby-node">&quot;).first(rootelt,:ensure_created=&gt;true)
+XML::XXPath.new(&quot;/bar/baz[@key=&#39;42&#39;]&quot;).first(rootelt,:ensure_created=&gt;true)
 =&gt; &lt;baz key=&#39;42&#39;/&gt;
 d.write($stdout,2)
 
@@ -404,7 +404,7 @@ d.write($stdout,2)
   &lt;/bar&gt;
 &lt;/foo&gt;### no change this time
 
-XML::XXPath.new(&quot;</span><span class="ruby-operator">/</span><span class="ruby-identifier">bar</span><span class="ruby-operator">/</span><span class="ruby-identifier">baz</span>[<span class="ruby-ivar">@key2</span>=<span class="ruby-string">&#39;hello&#39;</span>]<span class="ruby-node">&quot;).first(rootelt,:ensure_created=&gt;true)
+XML::XXPath.new(&quot;/bar/baz[@key2=&#39;hello&#39;]&quot;).first(rootelt,:ensure_created=&gt;true)
 =&gt; &lt;baz key=&#39;work&#39; key2=&#39;hello&#39;&gt; ... &lt;/&gt;
 d.write($stdout,2)
 
@@ -418,10 +418,10 @@ d.write($stdout,2)
     &lt;/baz&gt;
     &lt;baz key=&#39;42&#39;/&gt;
   &lt;/bar&gt;
-&lt;/foo&gt;### this fit in the 1st &quot;</span><span class="ruby-identifier">baz</span><span class="ruby-node">&quot; element since
-### there was no &quot;</span><span class="ruby-identifier">key2</span><span class="ruby-string">&quot; attribute there before.
+&lt;/foo&gt;### this fit in the 1st &quot;baz&quot; element since
+### there was no &quot;key2&quot; attribute there before.
 
-XML::XXPath.new(&quot;</span><span class="ruby-operator">/</span><span class="ruby-identifier">bar</span><span class="ruby-operator">/</span><span class="ruby-identifier">baz</span>[<span class="ruby-value">2</span>]<span class="ruby-node">&quot;).first(rootelt,:ensure_created=&gt;true)
+XML::XXPath.new(&quot;/bar/baz[2]&quot;).first(rootelt,:ensure_created=&gt;true)
 =&gt; &lt;baz key=&#39;play&#39;&gt; ... &lt;/&gt;
 d.write($stdout,2)
 
@@ -437,8 +437,8 @@ d.write($stdout,2)
   &lt;/bar&gt;
 &lt;/foo&gt;### no change
 
-XML::XXPath.new(&quot;</span><span class="ruby-operator">/</span><span class="ruby-identifier">bar</span><span class="ruby-operator">/</span><span class="ruby-identifier">baz</span>[<span class="ruby-value">6</span>]<span class="ruby-operator">/</span><span class="ruby-ivar">@haha</span><span class="ruby-node">&quot;).first(rootelt,:ensure_created=&gt;true)
-=&gt; #&lt;XML::XXPath::Accessors::Attribute:0x007fb014a51d08 @parent=&lt;baz haha=&#39;[unset]&#39;/&gt;, @name=&quot;</span><span class="ruby-identifier">haha</span><span class="ruby-node">&quot;&gt;
+XML::XXPath.new(&quot;/bar/baz[6]/@haha&quot;).first(rootelt,:ensure_created=&gt;true)
+=&gt; #&lt;XML::XXPath::Accessors::Attribute:0x007ff64a13ed48 @parent=&lt;baz haha=&#39;[unset]&#39;/&gt;, @name=&quot;haha&quot;&gt;
 d.write($stdout,2)
 
 &lt;foo&gt;
@@ -454,10 +454,10 @@ d.write($stdout,2)
     &lt;baz/&gt;
     &lt;baz haha=&#39;[unset]&#39;/&gt;
   &lt;/bar&gt;
-&lt;/foo&gt;### for there to be a 6th &quot;</span><span class="ruby-identifier">baz</span><span class="ruby-string">&quot; element, there must be 1st..5th &quot;</span><span class="ruby-identifier">baz</span><span class="ruby-string">&quot; elements
+&lt;/foo&gt;### for there to be a 6th &quot;baz&quot; element, there must be 1st..5th &quot;baz&quot; elements
 
-XML::XXPath.new(&quot;</span><span class="ruby-operator">/</span><span class="ruby-identifier">bar</span><span class="ruby-operator">/</span><span class="ruby-identifier">baz</span>[<span class="ruby-value">6</span>]<span class="ruby-operator">/</span><span class="ruby-ivar">@haha</span><span class="ruby-node">&quot;).first(rootelt,:ensure_created=&gt;true)
-=&gt; #&lt;XML::XXPath::Accessors::Attribute:0x007fb014a479c0 @parent=&lt;baz haha=&#39;[unset]&#39;/&gt;, @name=&quot;</span><span class="ruby-identifier">haha</span><span class="ruby-node">&quot;&gt;
+XML::XXPath.new(&quot;/bar/baz[6]/@haha&quot;).first(rootelt,:ensure_created=&gt;true)
+=&gt; #&lt;XML::XXPath::Accessors::Attribute:0x007ff64a12e240 @parent=&lt;baz haha=&#39;[unset]&#39;/&gt;, @name=&quot;haha&quot;&gt;
 d.write($stdout,2)
 
 &lt;foo&gt;
@@ -473,8 +473,7 @@ d.write($stdout,2)
     &lt;baz/&gt;
     &lt;baz haha=&#39;[unset]&#39;/&gt;
   &lt;/bar&gt;
-&lt;/foo&gt;### no change this time
-</span></pre>
+&lt;/foo&gt;### no change this time</pre>
 
 <p>Alternatively, you may pass a <code>:create_new=&gt;true</code> option
 argument or call <code>create_new</code>
@@ -487,208 +486,207 @@ any path element).</p>
 
 <p>Examples:</p>
 
-<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;xml/xxpath&#39;</span>
+<pre>require &#39;xml/xxpath&#39;
 
-<span class="ruby-identifier">d</span>=<span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span> <span class="ruby-value">&lt;&lt;EOS
+d=REXML::Document.new &lt;&lt;EOS
   &lt;foo&gt;
     &lt;bar&gt;
       &lt;baz key=&quot;work&quot;&gt;Java&lt;/baz&gt;
       &lt;baz key=&quot;play&quot;&gt;Ruby&lt;/baz&gt;
     &lt;/bar&gt;
   &lt;/foo&gt;
-EOS</span>
+EOS
 
-<span class="ruby-identifier">rootelt</span>=<span class="ruby-identifier">d</span>.<span class="ruby-identifier">root</span>
+rootelt=d.root
 
-<span class="ruby-identifier">path1</span>=<span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XXPath</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;/bar/baz[@key=&#39;work&#39;]&quot;</span>)
+path1=XML::XXPath.new(&quot;/bar/baz[@key=&#39;work&#39;]&quot;)
 
-<span class="ruby-identifier">path1</span>.<span class="ruby-identifier">create_new</span>(<span class="ruby-identifier">rootelt</span>)
-=<span class="ruby-operator">&gt;</span> <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span> <span class="ruby-identifier">key</span>=<span class="ruby-string">&#39;work&#39;</span><span class="ruby-operator">/</span><span class="ruby-operator">&gt;</span>
-<span class="ruby-identifier">d</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">$stdout</span>,<span class="ruby-value">2</span>)
+path1.create_new(rootelt)
+=&gt; &lt;baz key=&#39;work&#39;/&gt;
+d.write($stdout,2)
 
-<span class="ruby-operator">&lt;</span><span class="ruby-identifier">foo</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-identifier">bar</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span> <span class="ruby-identifier">key</span>=<span class="ruby-string">&#39;work&#39;</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-constant">Java</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/baz&gt;
+&lt;foo&gt;
+  &lt;bar&gt;
+    &lt;baz key=&#39;work&#39;&gt;
+      Java
+    &lt;/baz&gt;
     &lt;baz key=&#39;play&#39;&gt;
       Ruby
-    &lt;/</span><span class="ruby-identifier">baz</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/bar&gt;
+    &lt;/baz&gt;
+  &lt;/bar&gt;
   &lt;bar&gt;
-    &lt;baz key=&#39;work&#39;/</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/bar&gt;
-&lt;/</span><span class="ruby-identifier">foo</span><span class="ruby-operator">&gt;</span><span class="ruby-comment">### a new element is created for *each* path element, regardless of</span>
-<span class="ruby-comment">### what existed before. So a new &quot;bar&quot; element was added, with a new</span>
-<span class="ruby-comment">### &quot;baz&quot; element inside it</span>
+    &lt;baz key=&#39;work&#39;/&gt;
+  &lt;/bar&gt;
+&lt;/foo&gt;### a new element is created for *each* path element, regardless of
+### what existed before. So a new &quot;bar&quot; element was added, with a new
+### &quot;baz&quot; element inside it
 
-<span class="ruby-comment">### same call again...</span>
-<span class="ruby-identifier">path1</span>.<span class="ruby-identifier">create_new</span>(<span class="ruby-identifier">rootelt</span>)
-=<span class="ruby-operator">&gt;</span> <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span> <span class="ruby-identifier">key</span>=<span class="ruby-string">&#39;work&#39;</span><span class="ruby-operator">/</span><span class="ruby-operator">&gt;</span>
-<span class="ruby-identifier">d</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">$stdout</span>,<span class="ruby-value">2</span>)
+### same call again...
+path1.create_new(rootelt)
+=&gt; &lt;baz key=&#39;work&#39;/&gt;
+d.write($stdout,2)
 
-<span class="ruby-operator">&lt;</span><span class="ruby-identifier">foo</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-identifier">bar</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span> <span class="ruby-identifier">key</span>=<span class="ruby-string">&#39;work&#39;</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-constant">Java</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/baz&gt;
+&lt;foo&gt;
+  &lt;bar&gt;
+    &lt;baz key=&#39;work&#39;&gt;
+      Java
+    &lt;/baz&gt;
     &lt;baz key=&#39;play&#39;&gt;
       Ruby
-    &lt;/</span><span class="ruby-identifier">baz</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/bar&gt;
+    &lt;/baz&gt;
+  &lt;/bar&gt;
   &lt;bar&gt;
-    &lt;baz key=&#39;work&#39;/</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/bar&gt;
+    &lt;baz key=&#39;work&#39;/&gt;
+  &lt;/bar&gt;
   &lt;bar&gt;
-    &lt;baz key=&#39;work&#39;/</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/bar&gt;
-&lt;/</span><span class="ruby-identifier">foo</span><span class="ruby-operator">&gt;</span><span class="ruby-comment">### same procedure -- new elements added for each path element</span>
+    &lt;baz key=&#39;work&#39;/&gt;
+  &lt;/bar&gt;
+&lt;/foo&gt;### same procedure -- new elements added for each path element
 
-<span class="ruby-comment">## get reference to 1st &quot;baz&quot; element</span>
-<span class="ruby-identifier">firstbazelt</span>=<span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XXPath</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;/bar/baz&quot;</span>).<span class="ruby-identifier">first</span>(<span class="ruby-identifier">rootelt</span>)
-=<span class="ruby-operator">&gt;</span> <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span> <span class="ruby-identifier">key</span>=<span class="ruby-string">&#39;work&#39;</span><span class="ruby-operator">&gt;</span> <span class="ruby-operator">...</span> <span class="ruby-operator">&lt;</span><span class="ruby-node">/&gt;
+## get reference to 1st &quot;baz&quot; element
+firstbazelt=XML::XXPath.new(&quot;/bar/baz&quot;).first(rootelt)
+=&gt; &lt;baz key=&#39;work&#39;&gt; ... &lt;/&gt;
 
 path2=XML::XXPath.new(&quot;@key2&quot;)
 
 path2.create_new(firstbazelt)
-=&gt; #&lt;XML::XXPath::Accessors::Attribute:0x007fb014e37210 @parent=&lt;baz key=&#39;work&#39; key2=&#39;[unset]&#39;&gt; ... &lt;/</span><span class="ruby-operator">&gt;</span>, <span class="ruby-ivar">@name</span>=<span class="ruby-string">&quot;key2&quot;</span><span class="ruby-operator">&gt;</span>
-<span class="ruby-identifier">d</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">$stdout</span>,<span class="ruby-value">2</span>)
+=&gt; #&lt;XML::XXPath::Accessors::Attribute:0x007ff649a6bc00 @parent=&lt;baz key=&#39;work&#39; key2=&#39;[unset]&#39;&gt; ... &lt;/&gt;, @name=&quot;key2&quot;&gt;
+d.write($stdout,2)
 
-<span class="ruby-operator">&lt;</span><span class="ruby-identifier">foo</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-identifier">bar</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span> <span class="ruby-identifier">key</span>=<span class="ruby-string">&#39;work&#39;</span> <span class="ruby-identifier">key2</span>=<span class="ruby-string">&#39;[unset]&#39;</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-constant">Java</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/baz&gt;
+&lt;foo&gt;
+  &lt;bar&gt;
+    &lt;baz key=&#39;work&#39; key2=&#39;[unset]&#39;&gt;
+      Java
+    &lt;/baz&gt;
     &lt;baz key=&#39;play&#39;&gt;
       Ruby
-    &lt;/</span><span class="ruby-identifier">baz</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/bar&gt;
+    &lt;/baz&gt;
+  &lt;/bar&gt;
   &lt;bar&gt;
-    &lt;baz key=&#39;work&#39;/</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/bar&gt;
+    &lt;baz key=&#39;work&#39;/&gt;
+  &lt;/bar&gt;
   &lt;bar&gt;
-    &lt;baz key=&#39;work&#39;/</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/bar&gt;
-&lt;/</span><span class="ruby-identifier">foo</span><span class="ruby-operator">&gt;</span><span class="ruby-comment">### ok, new attribute node added</span>
+    &lt;baz key=&#39;work&#39;/&gt;
+  &lt;/bar&gt;
+&lt;/foo&gt;### ok, new attribute node added
 
-<span class="ruby-comment">### same call again...</span>
-<span class="ruby-identifier">path2</span>.<span class="ruby-identifier">create_new</span>(<span class="ruby-identifier">firstbazelt</span>)
-<span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XXPathError</span><span class="ruby-operator">:</span> <span class="ruby-constant">XPath</span> (<span class="ruby-ivar">@key2</span>)<span class="ruby-operator">:</span> <span class="ruby-identifier">create_new</span> <span class="ruby-keyword">and</span> <span class="ruby-identifier">attribute</span> <span class="ruby-identifier">already</span> <span class="ruby-identifier">exists</span>
-    <span class="ruby-identifier">from</span> <span class="ruby-regexp">/home/o</span><span class="ruby-identifier">laf</span><span class="ruby-operator">/</span><span class="ruby-identifier">xml</span><span class="ruby-operator">-</span><span class="ruby-identifier">mapping</span><span class="ruby-operator">/</span><span class="ruby-identifier">lib</span><span class="ruby-operator">/</span><span class="ruby-identifier">xml</span><span class="ruby-operator">/</span><span class="ruby-identifier">xxpath</span><span class="ruby-operator">/</span><span class="ruby-identifier">steps</span>.<span class="ruby-identifier">rb</span>:<span class="ruby-value">215</span><span class="ruby-operator">:</span><span class="ruby-keyword">in</span> <span class="ruby-value">%xcreate_on&#39;
-    from /home/olaf/xml-mapping/lib/xml/xxpath/steps.rb:80:in `</span><span class="ruby-identifier">block</span> <span class="ruby-keyword">in</span> <span class="ruby-identifier">creator</span><span class="ruby-string">&#39;
-    from /home/olaf/xml-mapping/lib/xml/xxpath.rb:91:in `call&#39;</span>
-    <span class="ruby-identifier">from</span> <span class="ruby-regexp">/home/o</span><span class="ruby-identifier">laf</span><span class="ruby-operator">/</span><span class="ruby-identifier">xml</span><span class="ruby-operator">-</span><span class="ruby-identifier">mapping</span><span class="ruby-operator">/</span><span class="ruby-identifier">lib</span><span class="ruby-operator">/</span><span class="ruby-identifier">xml</span><span class="ruby-operator">/</span><span class="ruby-identifier">xxpath</span>.<span class="ruby-identifier">rb</span>:<span class="ruby-value">91</span><span class="ruby-operator">:</span><span class="ruby-keyword">in</span> <span class="ruby-value">%xall&#39;
-    from /home/olaf/xml-mapping/lib/xml/xxpath.rb:70:in `</span><span class="ruby-identifier">first</span><span class="ruby-string">&#39;
-    from /home/olaf/xml-mapping/lib/xml/xxpath.rb:112:in `create_new&#39;</span>
-<span class="ruby-comment">### can&#39;t create that path anew again -- an element can&#39;t have more</span>
-<span class="ruby-comment">### than one attribute with the same name</span>
+### same call again...
+path2.create_new(firstbazelt)
+XML::XXPathError: XPath (@key2): create_new and attribute already exists
+    from /Users/oklischat/xml-mapping/lib/xml/xxpath/steps.rb:215:in `create_on&#39;
+    from /Users/oklischat/xml-mapping/lib/xml/xxpath/steps.rb:80:in `block in creator&#39;
+    from /Users/oklischat/xml-mapping/lib/xml/xxpath.rb:91:in `call&#39;
+    from /Users/oklischat/xml-mapping/lib/xml/xxpath.rb:91:in `all&#39;
+    from /Users/oklischat/xml-mapping/lib/xml/xxpath.rb:70:in `first&#39;
+    from /Users/oklischat/xml-mapping/lib/xml/xxpath.rb:112:in `create_new&#39;
+### can&#39;t create that path anew again -- an element can&#39;t have more
+### than one attribute with the same name
 
-<span class="ruby-comment">### the document hasn&#39;t changed</span>
-<span class="ruby-identifier">d</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">$stdout</span>,<span class="ruby-value">2</span>)
+### the document hasn&#39;t changed
+d.write($stdout,2)
 
-<span class="ruby-operator">&lt;</span><span class="ruby-identifier">foo</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-identifier">bar</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span> <span class="ruby-identifier">key</span>=<span class="ruby-string">&#39;work&#39;</span> <span class="ruby-identifier">key2</span>=<span class="ruby-string">&#39;[unset]&#39;</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-constant">Java</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/baz&gt;
+&lt;foo&gt;
+  &lt;bar&gt;
+    &lt;baz key=&#39;work&#39; key2=&#39;[unset]&#39;&gt;
+      Java
+    &lt;/baz&gt;
     &lt;baz key=&#39;play&#39;&gt;
       Ruby
-    &lt;/</span><span class="ruby-identifier">baz</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/bar&gt;
+    &lt;/baz&gt;
+  &lt;/bar&gt;
   &lt;bar&gt;
-    &lt;baz key=&#39;work&#39;/</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/bar&gt;
+    &lt;baz key=&#39;work&#39;/&gt;
+  &lt;/bar&gt;
   &lt;bar&gt;
-    &lt;baz key=&#39;work&#39;/</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/bar&gt;
-&lt;/</span><span class="ruby-identifier">foo</span><span class="ruby-operator">&gt;</span>
+    &lt;baz key=&#39;work&#39;/&gt;
+  &lt;/bar&gt;
+&lt;/foo&gt;
 
-<span class="ruby-comment">### create_new the same path as in the ensure_created example</span>
-<span class="ruby-identifier">baz6elt</span>=<span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XXPath</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;/bar/baz[6]&quot;</span>).<span class="ruby-identifier">create_new</span>(<span class="ruby-identifier">rootelt</span>)
-=<span class="ruby-operator">&gt;</span> <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span><span class="ruby-operator">/</span><span class="ruby-operator">&gt;</span>
-<span class="ruby-identifier">d</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">$stdout</span>,<span class="ruby-value">2</span>)
+### create_new the same path as in the ensure_created example
+baz6elt=XML::XXPath.new(&quot;/bar/baz[6]&quot;).create_new(rootelt)
+=&gt; &lt;baz/&gt;
+d.write($stdout,2)
 
-<span class="ruby-operator">&lt;</span><span class="ruby-identifier">foo</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-identifier">bar</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span> <span class="ruby-identifier">key</span>=<span class="ruby-string">&#39;work&#39;</span> <span class="ruby-identifier">key2</span>=<span class="ruby-string">&#39;[unset]&#39;</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-constant">Java</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/baz&gt;
+&lt;foo&gt;
+  &lt;bar&gt;
+    &lt;baz key=&#39;work&#39; key2=&#39;[unset]&#39;&gt;
+      Java
+    &lt;/baz&gt;
     &lt;baz key=&#39;play&#39;&gt;
       Ruby
-    &lt;/</span><span class="ruby-identifier">baz</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/bar&gt;
+    &lt;/baz&gt;
+  &lt;/bar&gt;
   &lt;bar&gt;
-    &lt;baz key=&#39;work&#39;/</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/bar&gt;
+    &lt;baz key=&#39;work&#39;/&gt;
+  &lt;/bar&gt;
   &lt;bar&gt;
-    &lt;baz key=&#39;work&#39;/</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/bar&gt;
+    &lt;baz key=&#39;work&#39;/&gt;
+  &lt;/bar&gt;
   &lt;bar&gt;
-    &lt;baz/</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span><span class="ruby-operator">/</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span><span class="ruby-operator">/</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span><span class="ruby-operator">/</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span><span class="ruby-operator">/</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span><span class="ruby-operator">/</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/bar&gt;
-&lt;/</span><span class="ruby-identifier">foo</span><span class="ruby-operator">&gt;</span><span class="ruby-comment">### ok, new &quot;bar&quot; element and 6th &quot;baz&quot; element inside it created</span>
+    &lt;baz/&gt;
+    &lt;baz/&gt;
+    &lt;baz/&gt;
+    &lt;baz/&gt;
+    &lt;baz/&gt;
+    &lt;baz/&gt;
+  &lt;/bar&gt;
+&lt;/foo&gt;### ok, new &quot;bar&quot; element and 6th &quot;baz&quot; element inside it created
 
-<span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XXPath</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;baz[6]&quot;</span>).<span class="ruby-identifier">create_new</span>(<span class="ruby-identifier">baz6elt</span>.<span class="ruby-identifier">parent</span>)
-<span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XXPathError</span><span class="ruby-operator">:</span> <span class="ruby-constant">XPath</span><span class="ruby-operator">:</span> <span class="ruby-identifier">baz</span>[<span class="ruby-value">6</span>]<span class="ruby-operator">:</span> <span class="ruby-identifier">create_new</span> <span class="ruby-keyword">and</span> <span class="ruby-identifier">element</span> <span class="ruby-identifier">already</span> <span class="ruby-identifier">exists</span>
-    <span class="ruby-identifier">from</span> <span class="ruby-regexp">/home/o</span><span class="ruby-identifier">laf</span><span class="ruby-operator">/</span><span class="ruby-identifier">xml</span><span class="ruby-operator">-</span><span class="ruby-identifier">mapping</span><span class="ruby-operator">/</span><span class="ruby-identifier">lib</span><span class="ruby-operator">/</span><span class="ruby-identifier">xml</span><span class="ruby-operator">/</span><span class="ruby-identifier">xxpath</span><span class="ruby-operator">/</span><span class="ruby-identifier">steps</span>.<span class="ruby-identifier">rb</span>:<span class="ruby-value">167</span><span class="ruby-operator">:</span><span class="ruby-keyword">in</span> <span class="ruby-value">%xcreate_on&#39;
-    from /home/olaf/xml-mapping/lib/xml/xxpath/steps.rb:80:in `</span><span class="ruby-identifier">block</span> <span class="ruby-keyword">in</span> <span class="ruby-identifier">creator</span><span class="ruby-string">&#39;
-    from /home/olaf/xml-mapping/lib/xml/xxpath.rb:91:in `call&#39;</span>
-    <span class="ruby-identifier">from</span> <span class="ruby-regexp">/home/o</span><span class="ruby-identifier">laf</span><span class="ruby-operator">/</span><span class="ruby-identifier">xml</span><span class="ruby-operator">-</span><span class="ruby-identifier">mapping</span><span class="ruby-operator">/</span><span class="ruby-identifier">lib</span><span class="ruby-operator">/</span><span class="ruby-identifier">xml</span><span class="ruby-operator">/</span><span class="ruby-identifier">xxpath</span>.<span class="ruby-identifier">rb</span>:<span class="ruby-value">91</span><span class="ruby-operator">:</span><span class="ruby-keyword">in</span> <span class="ruby-value">%xall&#39;
-    from /home/olaf/xml-mapping/lib/xml/xxpath.rb:70:in `</span><span class="ruby-identifier">first</span><span class="ruby-string">&#39;
-    from /home/olaf/xml-mapping/lib/xml/xxpath.rb:112:in `create_new&#39;</span>
-<span class="ruby-comment">### yep, baz[6] already existed and thus couldn&#39;t be created once</span>
-<span class="ruby-comment">### again</span>
+XML::XXPath.new(&quot;baz[6]&quot;).create_new(baz6elt.parent)
+XML::XXPathError: XPath: baz[6]: create_new and element already exists
+    from /Users/oklischat/xml-mapping/lib/xml/xxpath/steps.rb:167:in `create_on&#39;
+    from /Users/oklischat/xml-mapping/lib/xml/xxpath/steps.rb:80:in `block in creator&#39;
+    from /Users/oklischat/xml-mapping/lib/xml/xxpath.rb:91:in `call&#39;
+    from /Users/oklischat/xml-mapping/lib/xml/xxpath.rb:91:in `all&#39;
+    from /Users/oklischat/xml-mapping/lib/xml/xxpath.rb:70:in `first&#39;
+    from /Users/oklischat/xml-mapping/lib/xml/xxpath.rb:112:in `create_new&#39;
+### yep, baz[6] already existed and thus couldn&#39;t be created once
+### again
 
-<span class="ruby-comment">### but of course...</span>
-<span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XXPath</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;/bar/baz[6]&quot;</span>).<span class="ruby-identifier">create_new</span>(<span class="ruby-identifier">rootelt</span>)
-=<span class="ruby-operator">&gt;</span> <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span><span class="ruby-operator">/</span><span class="ruby-operator">&gt;</span>
-<span class="ruby-identifier">d</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">$stdout</span>,<span class="ruby-value">2</span>)
+### but of course...
+XML::XXPath.new(&quot;/bar/baz[6]&quot;).create_new(rootelt)
+=&gt; &lt;baz/&gt;
+d.write($stdout,2)
 
-<span class="ruby-operator">&lt;</span><span class="ruby-identifier">foo</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-identifier">bar</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span> <span class="ruby-identifier">key</span>=<span class="ruby-string">&#39;work&#39;</span> <span class="ruby-identifier">key2</span>=<span class="ruby-string">&#39;[unset]&#39;</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-constant">Java</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/baz&gt;
+&lt;foo&gt;
+  &lt;bar&gt;
+    &lt;baz key=&#39;work&#39; key2=&#39;[unset]&#39;&gt;
+      Java
+    &lt;/baz&gt;
     &lt;baz key=&#39;play&#39;&gt;
       Ruby
-    &lt;/</span><span class="ruby-identifier">baz</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/bar&gt;
+    &lt;/baz&gt;
+  &lt;/bar&gt;
   &lt;bar&gt;
-    &lt;baz key=&#39;work&#39;/</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/bar&gt;
+    &lt;baz key=&#39;work&#39;/&gt;
+  &lt;/bar&gt;
   &lt;bar&gt;
-    &lt;baz key=&#39;work&#39;/</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/bar&gt;
+    &lt;baz key=&#39;work&#39;/&gt;
+  &lt;/bar&gt;
   &lt;bar&gt;
-    &lt;baz/</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span><span class="ruby-operator">/</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span><span class="ruby-operator">/</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span><span class="ruby-operator">/</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span><span class="ruby-operator">/</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span><span class="ruby-operator">/</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/bar&gt;
+    &lt;baz/&gt;
+    &lt;baz/&gt;
+    &lt;baz/&gt;
+    &lt;baz/&gt;
+    &lt;baz/&gt;
+    &lt;baz/&gt;
+  &lt;/bar&gt;
   &lt;bar&gt;
-    &lt;baz/</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span><span class="ruby-operator">/</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span><span class="ruby-operator">/</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span><span class="ruby-operator">/</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span><span class="ruby-operator">/</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">baz</span><span class="ruby-operator">/</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/bar&gt;
-&lt;/</span><span class="ruby-identifier">foo</span><span class="ruby-operator">&gt;</span><span class="ruby-comment">### this works because *all* path elements are newly created</span>
-</pre>
+    &lt;baz/&gt;
+    &lt;baz/&gt;
+    &lt;baz/&gt;
+    &lt;baz/&gt;
+    &lt;baz/&gt;
+    &lt;baz/&gt;
+  &lt;/bar&gt;
+&lt;/foo&gt;### this works because *all* path elements are newly created</pre>
 
 <p>This feature is used in xml-mapping by node types like <a
 href="XML/Mapping/ArrayNode.html">XML::Mapping::ArrayNode</a>, which must
 create a new instance of the “per-array element path” for each element of
 the array to be stored in an <a href="XML.html">XML</a> tree.</p>
 
-<h3 id="label-Pathological+Cases">Pathological Cases<span><a href="#label-Pathological+Cases">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+<h3 id="label-Pathological+Cases">Pathological Cases<span><a href="#label-Pathological+Cases">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
 <p>What is created when the Path “*” is to be created inside an empty <a
 href="XML.html">XML</a> element? The name of the element to be created
@@ -696,37 +694,37 @@ isn&#39;t known, but still some element must be created. The answer is that
 xml-xxpath creates a special “unspecified” element whose name must be set
 by the caller afterwards:</p>
 
-<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;xml/xxpath&#39;</span>
+<pre>require &#39;xml/xxpath&#39;
 
-<span class="ruby-identifier">d</span>=<span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span> <span class="ruby-value">&lt;&lt;EOS
+d=REXML::Document.new &lt;&lt;EOS
   &lt;foo&gt;
     &lt;bar/&gt;
     &lt;bar/&gt;
   &lt;/foo&gt;
-EOS</span>
+EOS
 
-<span class="ruby-identifier">rootelt</span>=<span class="ruby-identifier">d</span>.<span class="ruby-identifier">root</span>
+rootelt=d.root
 
-<span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XXPath</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;*&quot;</span>).<span class="ruby-identifier">all</span>(<span class="ruby-identifier">rootelt</span>)
-=<span class="ruby-operator">&gt;</span> [<span class="ruby-operator">&lt;</span><span class="ruby-identifier">bar</span><span class="ruby-operator">/</span><span class="ruby-operator">&gt;</span>, <span class="ruby-operator">&lt;</span><span class="ruby-identifier">bar</span><span class="ruby-operator">/</span><span class="ruby-operator">&gt;</span>]
-<span class="ruby-comment">### ok</span>
+XML::XXPath.new(&quot;*&quot;).all(rootelt)
+=&gt; [&lt;bar/&gt;, &lt;bar/&gt;]
+### ok
 
-<span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XXPath</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;bar/*&quot;</span>).<span class="ruby-identifier">first</span>(<span class="ruby-identifier">rootelt</span>, :<span class="ruby-identifier">allow_nil=</span><span class="ruby-operator">&gt;</span><span class="ruby-keyword">true</span>)
-=<span class="ruby-operator">&gt;</span> <span class="ruby-keyword">nil</span>
-<span class="ruby-comment">### ok, nothing there</span>
+XML::XXPath.new(&quot;bar/*&quot;).first(rootelt, :allow_nil=&gt;true)
+=&gt; nil
+### ok, nothing there
 
-<span class="ruby-comment">### the same call with :ensure_created=&gt;true</span>
-<span class="ruby-identifier">newelt</span> = <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">XXPath</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;bar/*&quot;</span>).<span class="ruby-identifier">first</span>(<span class="ruby-identifier">rootelt</span>, :<span class="ruby-identifier">ensure_created=</span><span class="ruby-operator">&gt;</span><span class="ruby-keyword">true</span>)
-=<span class="ruby-operator">&gt;</span> <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/&gt;
+### the same call with :ensure_created=&gt;true
+newelt = XML::XXPath.new(&quot;bar/*&quot;).first(rootelt, :ensure_created=&gt;true)
+=&gt; &lt;/&gt;
 
 d.write($stdout,2)
 
 &lt;foo&gt;
   &lt;bar&gt;
-    &lt;/</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/bar&gt;
-  &lt;bar/</span><span class="ruby-operator">&gt;</span>
-<span class="ruby-operator">&lt;</span><span class="ruby-node">/foo&gt;
+    &lt;/&gt;
+  &lt;/bar&gt;
+  &lt;bar/&gt;
+&lt;/foo&gt;
 ### a new &quot;unspecified&quot; element was created
 newelt.unspecified?
 =&gt; true
@@ -743,26 +741,25 @@ d.write($stdout,2)
   &lt;bar&gt;
     &lt;new-one&gt;
       hello!
-    &lt;/ne</span><span class="ruby-identifier">w</span><span class="ruby-operator">-</span><span class="ruby-identifier">one</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/bar&gt;
-  &lt;bar/</span><span class="ruby-operator">&gt;</span>
-<span class="ruby-operator">&lt;</span><span class="ruby-node">/foo&gt;
+    &lt;/new-one&gt;
+  &lt;/bar&gt;
+  &lt;bar/&gt;
+&lt;/foo&gt;
 ### you could also set unspecified to false explicitly, as in:
-newelt.unspecified=true
-</span></pre>
+newelt.unspecified=true</pre>
 
-<p>The “newelt” object in the last example is an ordinary REXML::Element.
-xml-xxpath mixes the “unspecified” attribute into that class, as well as
-into the <a
+<p>The “newelt” object in the last example is an ordinary <a
+href="REXML/Element.html">REXML::Element</a>. xml-xxpath mixes the
+“unspecified” attribute into that class, as well as into the <a
 href="XML/XXPath/Accessors/Attribute.html">XML::XXPath::Accessors::Attribute</a>
 class mentioned above.</p>
 
-<h2 id="label-Implentation+notes">Implentation notes<span><a href="#label-Implentation+notes">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="label-Implentation+notes">Implentation notes<span><a href="#label-Implentation+notes">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p><code>doc/xpath_impl_notes.txt</code> contains some documentation on the
 implementation of xml-xxpath.</p>
 
-<h2 id="label-License">License<span><a href="#label-License">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="label-License">License<span><a href="#label-License">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>Ruby&#39;s.</p>
 </main>
@@ -771,7 +768,7 @@ implementation of xml-xxpath.</p>
 
 <footer id="validator-badges" role="contentinfo">
   <p><a href="http://validator.w3.org/check/referer">Validate</a>
-  <p>Generated by <a href="http://rdoc.rubyforge.org">RDoc</a> 4.1.0.
-  <p>Based on <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+  <p>Generated by <a href="http://docs.seattlerb.org/rdoc/">RDoc</a> 4.2.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
 </footer>
 

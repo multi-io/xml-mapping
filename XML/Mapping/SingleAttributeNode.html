@@ -6,19 +6,16 @@
 
 <title>class XML::Mapping::SingleAttributeNode - XML::Mapping -- Simple, extensible Ruby-to-XML (and back) mapper</title>
 
-<link href="../../fonts.css" rel="stylesheet">
-<link href="../../rdoc.css" rel="stylesheet">
-
 <script type="text/javascript">
   var rdoc_rel_prefix = "../../";
 </script>
 
 <script src="../../js/jquery.js"></script>
-<script src="../../js/navigation.js"></script>
-<script src="../../js/search_index.js"></script>
-<script src="../../js/search.js"></script>
-<script src="../../js/searcher.js"></script>
 <script src="../../js/darkfish.js"></script>
+
+<link href="../../css/fonts.css" rel="stylesheet">
+<link href="../../css/rdoc.css" rel="stylesheet">
+
 
 
 <body id="top" role="document" class="class">
@@ -168,7 +165,7 @@ default value.</p>
 
           
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 650</span>
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 662</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
   <span class="ruby-ivar">@attrname</span>,<span class="ruby-operator">*</span><span class="ruby-identifier">args</span> = <span class="ruby-keyword">super</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
   <span class="ruby-ivar">@owner</span>.<span class="ruby-identifier">add_accessor</span> <span class="ruby-ivar">@attrname</span>
@@ -222,7 +219,7 @@ sub-path does not exist.</p>
 
           
           <div class="method-source-code" id="default_when_xpath_err-source">
-            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 740</span>
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 752</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">default_when_xpath_err</span> <span class="ruby-comment"># :yields:</span>
   <span class="ruby-keyword">begin</span>
     <span class="ruby-keyword">yield</span>
@@ -267,7 +264,7 @@ for this purpose).</p>
 
           
           <div class="method-source-code" id="extract_attr_value-source">
-            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 701</span>
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 713</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">extract_attr_value</span>(<span class="ruby-identifier">xml</span>)
   <span class="ruby-identifier">raise</span> <span class="ruby-string">&quot;abstract method called&quot;</span>
 <span class="ruby-keyword">end</span></pre>
@@ -307,7 +304,7 @@ super.initialize. The returned array is the same args array.</p>
 
           
           <div class="method-source-code" id="initialize_impl-source">
-            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 667</span>
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 679</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize_impl</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
 <span class="ruby-keyword">end</span></pre>
           </div>
@@ -340,7 +337,7 @@ attribute in <em>obj</em> is non-nil.</p>
 
           
           <div class="method-source-code" id="is_present_in-3F-source">
-            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 749</span>
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 761</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">is_present_in?</span> <span class="ruby-identifier">obj</span>
   <span class="ruby-keyword">nil</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">send</span>(<span class="ruby-value">:&quot;#{@attrname}&quot;</span>)
 <span class="ruby-keyword">end</span></pre>
@@ -375,7 +372,7 @@ correct sub-nodes, attributes, whatever) of <em>xml</em>.</p>
 
           
           <div class="method-source-code" id="set_attr_value-source">
-            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 722</span>
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 734</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">set_attr_value</span>(<span class="ruby-identifier">xml</span>, <span class="ruby-identifier">value</span>)
   <span class="ruby-identifier">raise</span> <span class="ruby-string">&quot;abstract method called&quot;</span>
 <span class="ruby-keyword">end</span></pre>
@@ -397,7 +394,7 @@ correct sub-nodes, attributes, whatever) of <em>xml</em>.</p>
 
 <footer id="validator-badges" role="contentinfo">
   <p><a href="http://validator.w3.org/check/referer">Validate</a>
-  <p>Generated by <a href="http://rdoc.rubyforge.org">RDoc</a> 4.1.0.
-  <p>Based on <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+  <p>Generated by <a href="http://docs.seattlerb.org/rdoc/">RDoc</a> 4.2.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
 </footer>
 

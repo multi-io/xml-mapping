@@ -6,19 +6,16 @@
 
 <title>class XML::Mapping::ChoiceNode - XML::Mapping -- Simple, extensible Ruby-to-XML (and back) mapper</title>
 
-<link href="../../fonts.css" rel="stylesheet">
-<link href="../../rdoc.css" rel="stylesheet">
-
 <script type="text/javascript">
   var rdoc_rel_prefix = "../../";
 </script>
 
 <script src="../../js/jquery.js"></script>
-<script src="../../js/navigation.js"></script>
-<script src="../../js/search_index.js"></script>
-<script src="../../js/search.js"></script>
-<script src="../../js/searcher.js"></script>
 <script src="../../js/darkfish.js"></script>
+
+<link href="../../css/fonts.css" rel="stylesheet">
+<link href="../../css/rdoc.css" rel="stylesheet">
+
 
 
 <body id="top" role="document" class="class">
@@ -141,7 +138,7 @@
 
           
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File lib/xml/mapping/standard_nodes.rb, line 364</span>
+            <pre><span class="ruby-comment"># File lib/xml/mapping/standard_nodes.rb, line 371</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
   <span class="ruby-identifier">args</span> = <span class="ruby-keyword">super</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
   <span class="ruby-ivar">@choices</span> = []
@@ -211,7 +208,7 @@
 
           
           <div class="method-source-code" id="is_present_in-3F-source">
-            <pre><span class="ruby-comment"># File lib/xml/mapping/standard_nodes.rb, line 425</span>
+            <pre><span class="ruby-comment"># File lib/xml/mapping/standard_nodes.rb, line 432</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">is_present_in?</span> <span class="ruby-identifier">obj</span>
   <span class="ruby-comment"># TODO: use Enumerable#any?</span>
   <span class="ruby-ivar">@choices</span>.<span class="ruby-identifier">inject</span>(<span class="ruby-keyword">false</span>){<span class="ruby-operator">|</span><span class="ruby-identifier">prev</span>,(<span class="ruby-identifier">path</span>,<span class="ruby-identifier">node</span>)<span class="ruby-operator">|</span> <span class="ruby-identifier">prev</span> <span class="ruby-keyword">or</span> <span class="ruby-identifier">node</span>.<span class="ruby-identifier">is_present_in?</span>(<span class="ruby-identifier">obj</span>)}
@@ -245,7 +242,7 @@
 
           
           <div class="method-source-code" id="obj_initializing-source">
-            <pre><span class="ruby-comment"># File lib/xml/mapping/standard_nodes.rb, line 419</span>
+            <pre><span class="ruby-comment"># File lib/xml/mapping/standard_nodes.rb, line 426</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">obj_initializing</span>(<span class="ruby-identifier">obj</span>,<span class="ruby-identifier">mapping</span>)
   <span class="ruby-ivar">@choices</span>[<span class="ruby-value">0</span>][<span class="ruby-value">1</span>].<span class="ruby-identifier">obj_initializing</span>(<span class="ruby-identifier">obj</span>,<span class="ruby-identifier">mapping</span>)
 <span class="ruby-keyword">end</span></pre>
@@ -278,7 +275,7 @@
 
           
           <div class="method-source-code" id="obj_to_xml-source">
-            <pre><span class="ruby-comment"># File lib/xml/mapping/standard_nodes.rb, line 407</span>
+            <pre><span class="ruby-comment"># File lib/xml/mapping/standard_nodes.rb, line 414</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">obj_to_xml</span>(<span class="ruby-identifier">obj</span>,<span class="ruby-identifier">xml</span>)
   <span class="ruby-ivar">@choices</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path</span>,<span class="ruby-identifier">node</span><span class="ruby-operator">|</span>
     <span class="ruby-keyword">if</span> <span class="ruby-identifier">node</span>.<span class="ruby-identifier">is_present_in?</span> <span class="ruby-identifier">obj</span>
@@ -319,7 +316,7 @@
 
           
           <div class="method-source-code" id="xml_to_obj-source">
-            <pre><span class="ruby-comment"># File lib/xml/mapping/standard_nodes.rb, line 397</span>
+            <pre><span class="ruby-comment"># File lib/xml/mapping/standard_nodes.rb, line 404</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">xml_to_obj</span>(<span class="ruby-identifier">obj</span>,<span class="ruby-identifier">xml</span>)
   <span class="ruby-ivar">@choices</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">path</span>,<span class="ruby-identifier">node</span><span class="ruby-operator">|</span>
     <span class="ruby-keyword">if</span> <span class="ruby-identifier">path</span><span class="ruby-operator">==</span><span class="ruby-value">:else</span> <span class="ruby-keyword">or</span> <span class="ruby-keyword">not</span>(<span class="ruby-identifier">path</span>.<span class="ruby-identifier">all</span>(<span class="ruby-identifier">xml</span>).<span class="ruby-identifier">empty?</span>)
@@ -347,7 +344,7 @@
 
 <footer id="validator-badges" role="contentinfo">
   <p><a href="http://validator.w3.org/check/referer">Validate</a>
-  <p>Generated by <a href="http://rdoc.rubyforge.org">RDoc</a> 4.1.0.
-  <p>Based on <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+  <p>Generated by <a href="http://docs.seattlerb.org/rdoc/">RDoc</a> 4.2.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
 </footer>
 

@@ -6,19 +6,16 @@
 
 <title>user_manual - XML::Mapping -- Simple, extensible Ruby-to-XML (and back) mapper</title>
 
-<link href="./fonts.css" rel="stylesheet">
-<link href="./rdoc.css" rel="stylesheet">
-
 <script type="text/javascript">
   var rdoc_rel_prefix = "./";
 </script>
 
 <script src="./js/jquery.js"></script>
-<script src="./js/navigation.js"></script>
-<script src="./js/search_index.js"></script>
-<script src="./js/search.js"></script>
-<script src="./js/searcher.js"></script>
 <script src="./js/darkfish.js"></script>
+
+<link href="./css/fonts.css" rel="stylesheet">
+<link href="./css/rdoc.css" rel="stylesheet">
+
 
 
 <body id="top" role="document" class="file">
@@ -58,21 +55,21 @@
   <h3>Table of Contents</h3>
 
   <ul class="link-list" role="directory">
-    <li><a href="#label-XML-MAPPING%3A+XML-to-object+%28and+back%29+Mapper+for+Ruby%2C+including+XPath+Interpreter">XML-MAPPING: XML-to-object (and back) Mapper for Ruby, including XPath Interpreter</a>
+    <li><a href="#label-XML-MAPPING-3A+XML-to-object+-28and+back-29+Mapper+for+Ruby-2C+including+XPath+Interpreter">XML-MAPPING: XML-to-object (and back) Mapper for Ruby, including XPath Interpreter</a>
     <li><a href="#label-Download">Download</a>
     <li><a href="#label-Contents+of+this+Document">Contents of this Document</a>
     <li><a href="#label-Example">Example</a>
-    <li><a href="#label-Input+Document%3A">Input Document:</a>
-    <li><a href="#label-Mapping+Class+Declaration%3A">Mapping Class Declaration:</a>
-    <li><a href="#label-Usage%3A">Usage:</a>
+    <li><a href="#label-Input+Document-3A">Input Document:</a>
+    <li><a href="#label-Mapping+Class+Declaration-3A">Mapping Class Declaration:</a>
+    <li><a href="#label-Usage-3A">Usage:</a>
     <li><a href="#label-Single-attribute+Nodes">Single-attribute Nodes</a>
     <li><a href="#label-Default+Values">Default Values</a>
     <li><a href="#label-Single-attribute+Nodes+with+Sub-objects">Single-attribute Nodes with Sub-objects</a>
-    <li><a href="#label-Polymorphic+Sub-objects%2C+Marshallers%2FUnmarshallers">Polymorphic Sub-objects, Marshallers/Unmarshallers</a>
-    <li><a href="#label-Attribute+Handling+Details%2C+Augmenting+Existing+Classes">Attribute Handling Details, Augmenting Existing Classes</a>
+    <li><a href="#label-Polymorphic+Sub-objects-2C+Marshallers-2FUnmarshallers">Polymorphic Sub-objects, Marshallers/Unmarshallers</a>
+    <li><a href="#label-Attribute+Handling+Details-2C+Augmenting+Existing+Classes">Attribute Handling Details, Augmenting Existing Classes</a>
     <li><a href="#label-Other+Nodes">Other Nodes</a>
     <li><a href="#label-choice_node">choice_node</a>
-    <li><a href="#label-Readers%2FWriters">Readers/Writers</a>
+    <li><a href="#label-Readers-2FWriters">Readers/Writers</a>
     <li><a href="#label-Multiple+Mappings+per+Class">Multiple Mappings per Class</a>
     <li><a href="#label-Defining+your+own+Node+Types">Defining your own Node Types</a>
     <li><a href="#label-Example">Example</a>
@@ -115,20 +112,20 @@
 
 <main role="main" aria-label="Page user_manual.md">
 
-<h1 id="label-XML-MAPPING%3A+XML-to-object+%28and+back%29+Mapper+for+Ruby%2C+including+XPath+Interpreter">XML-MAPPING: XML-to-object (and back) Mapper for Ruby, including XPath Interpreter<span><a href="#label-XML-MAPPING%3A+XML-to-object+%28and+back%29+Mapper+for+Ruby%2C+including+XPath+Interpreter">&para;</a> <a href="#documentation">&uarr;</a></span></h1>
+<h1 id="label-XML-MAPPING-3A+XML-to-object+-28and+back-29+Mapper+for+Ruby-2C+including+XPath+Interpreter">XML-MAPPING: XML-to-object (and back) Mapper for Ruby, including XPath Interpreter<span><a href="#label-XML-MAPPING-3A+XML-to-object+-28and+back-29+Mapper+for+Ruby-2C+including+XPath+Interpreter">&para;</a> <a href="#top">&uarr;</a></span></h1>
 
 <p>Xml-mapping is an easy to use, extensible library that allows you to
 semi-automatically map Ruby objects to <a href="XML.html">XML</a> trees and
 vice versa.</p>
 
-<h2 id="label-Download">Download<span><a href="#label-Download">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="label-Download">Download<span><a href="#label-Download">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>For downloading the latest version, git repository access etc. go to:</p>
 
 <p><a
 href="https://github.com/multi-io/xml-mapping">github.com/multi-io/xml-mapping</a></p>
 
-<h2 id="label-Contents+of+this+Document">Contents of this Document<span><a href="#label-Contents+of+this+Document">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="label-Contents+of+this+Document">Contents of this Document<span><a href="#label-Contents+of+this+Document">&para;</a> <a href="#top">&uarr;</a></span></h2>
 <ul><li>
 <p><a href="#label-Example">Example</a></p>
 </li><li>
@@ -140,7 +137,7 @@ href="https://github.com/multi-io/xml-mapping">github.com/multi-io/xml-mapping</
 Nodes with Sub-objects</a></p>
 </li><li>
 <p><a
-href="#label-Attribute+Handling+Details%2C+Augmenting+Existing+Classes">Attribute
+href="#label-Attribute+Handling+Details-2C+Augmenting+Existing+Classes">Attribute
 Handling Details, Augmenting Existing Classes</a></p>
 </li></ul>
 </li><li>
@@ -148,7 +145,7 @@ Handling Details, Augmenting Existing Classes</a></p>
 <ul><li>
 <p><a href="#label-choice_node">choice_node</a></p>
 </li><li>
-<p><a href="#label-Readers%2FWriters">Readers/Writers</a></p>
+<p><a href="#label-Readers-2FWriters">Readers/Writers</a></p>
 </li></ul>
 </li><li>
 <p><a href="#label-Multiple+Mappings+per+Class">Multiple Mappings per
@@ -160,12 +157,12 @@ Types</a></p>
 <p><a href="#label-XPath+Interpreter">XPath Interpreter</a></p>
 </li></ul>
 
-<h2 id="label-Example">Example<span><a href="#label-Example">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="label-Example">Example<span><a href="#label-Example">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>(example document stolen + extended from <a
 href="http://www.castor.org/xml-mapping.html">www.castor.org/xml-mapping.html</a>)</p>
 
-<h3 id="label-Input+Document%3A">Input Document:<span><a href="#label-Input+Document%3A">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+<h3 id="label-Input+Document-3A">Input Document:<span><a href="#label-Input+Document-3A">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
 <pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;
 
@@ -222,7 +219,7 @@ href="http://www.castor.org/xml-mapping.html">www.castor.org/xml-mapping.html</a
 
 &lt;/Order&gt;</pre>
 
-<h3 id="label-Mapping+Class+Declaration%3A">Mapping Class Declaration:<span><a href="#label-Mapping+Class+Declaration%3A">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+<h3 id="label-Mapping+Class+Declaration-3A">Mapping Class Declaration:<span><a href="#label-Mapping+Class+Declaration-3A">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
 <pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;xml/mapping&#39;</span>
 
@@ -287,235 +284,235 @@ href="http://www.castor.org/xml-mapping.html">www.castor.org/xml-mapping.html</a
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h3 id="label-Usage%3A">Usage:<span><a href="#label-Usage%3A">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+<h3 id="label-Usage-3A">Usage:<span><a href="#label-Usage-3A">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
-<pre class="ruby"><span class="ruby-comment">####read access</span>
-<span class="ruby-identifier">o</span>=<span class="ruby-constant">Order</span>.<span class="ruby-identifier">load_from_file</span>(<span class="ruby-string">&quot;order.xml&quot;</span>) 
-=<span class="ruby-operator">&gt;</span> <span class="ruby-comment">#&lt;Order:0x007fb01549d438 @signatures=[#&lt;Signature:0x007fb015493b68 @position=&quot;product manager&quot;, @name=&quot;John Doe&quot;&gt;, #&lt;Signature:0x007fb015492c68 @position=&quot;clerk&quot;, @name=&quot;Jill Smith&quot;&gt;, #&lt;Signature:0x007fb015491a20 @position=&quot;Some Employee&quot;, @name=&quot;Miles O&#39;Brien&quot;&gt;], @reference=&quot;12343-AHSHE-314159&quot;, @client=#&lt;Client:0x007fb01549c998 @work_address=#&lt;Address:0x007fb01549a238 @city=&quot;San Francisco&quot;, @state=&quot;CA&quot;, @zip=94102, @street=&quot;98765, Fulton Street&quot;&gt;, @name=&quot;Jean Smith&quot;, @home_address=#&lt;Address:0x007fb01549bbb0 @city=&quot;San Mateo&quot;, @state=&quot;CA&quot;, @zip=94403, @street=&quot;2000, Alameda de las Pulgas&quot;&gt;&gt;, @items={&quot;RF-0001&quot;=&gt;#&lt;Item:0x007fb0154989b0 @descr=&quot;Stuffed Penguin&quot;, @quantity=10, @unit_price=8.95&gt;, &quot;RF-0034&quot;=&gt;#&lt;Item:0x007fb015496638 @descr=&quot;Chocolate&quot;, @quantity=5, @unit_price=28.5&gt;, &quot;RF-3341&quot;=&gt;#&lt;Item:0x007fb015495300 @descr=&quot;Cookie&quot;, @quantity=30, @unit_price=0.85&gt;}&gt;</span>
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">reference</span> 
-=<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;12343-AHSHE-314159&quot;</span>
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">client</span> 
-=<span class="ruby-operator">&gt;</span> <span class="ruby-comment">#&lt;Client:0x007fb01549c998 @work_address=#&lt;Address:0x007fb01549a238 @city=&quot;San Francisco&quot;, @state=&quot;CA&quot;, @zip=94102, @street=&quot;98765, Fulton Street&quot;&gt;, @name=&quot;Jean Smith&quot;, @home_address=#&lt;Address:0x007fb01549bbb0 @city=&quot;San Mateo&quot;, @state=&quot;CA&quot;, @zip=94403, @street=&quot;2000, Alameda de las Pulgas&quot;&gt;&gt;</span>
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">items</span>.<span class="ruby-identifier">keys</span> 
-=<span class="ruby-operator">&gt;</span> [<span class="ruby-string">&quot;RF-0001&quot;</span>, <span class="ruby-string">&quot;RF-0034&quot;</span>, <span class="ruby-string">&quot;RF-3341&quot;</span>]
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">items</span>[<span class="ruby-string">&quot;RF-0034&quot;</span>].<span class="ruby-identifier">descr</span> 
-=<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;Chocolate&quot;</span>
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">items</span>[<span class="ruby-string">&quot;RF-0034&quot;</span>].<span class="ruby-identifier">total_price</span> 
-=<span class="ruby-operator">&gt;</span> <span class="ruby-value">142.5</span>
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">signatures</span> 
-=<span class="ruby-operator">&gt;</span> [<span class="ruby-comment">#&lt;Signature:0x007fb015493b68 @position=&quot;product manager&quot;, @name=&quot;John Doe&quot;&gt;, #&lt;Signature:0x007fb015492c68 @position=&quot;clerk&quot;, @name=&quot;Jill Smith&quot;&gt;, #&lt;Signature:0x007fb015491a20 @position=&quot;Some Employee&quot;, @name=&quot;Miles O&#39;Brien&quot;&gt;]</span>
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">signatures</span>[<span class="ruby-value">2</span>].<span class="ruby-identifier">name</span> 
-=<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;Miles O&#39;Brien&quot;</span>
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">signatures</span>[<span class="ruby-value">2</span>].<span class="ruby-identifier">position</span> 
-=<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;Some Employee&quot;</span>
-<span class="ruby-comment">## default value was set</span>
+<pre>####read access
+o=Order.load_from_file(&quot;order.xml&quot;) 
+=&gt; #&lt;Order:0x007ff64a0fe8b0 @signatures=[#&lt;Signature:0x007ff64a0ce3e0 @position=&quot;product manager&quot;, @name=&quot;John Doe&quot;&gt;, #&lt;Signature:0x007ff64a0cd210 @position=&quot;clerk&quot;, @name=&quot;Jill Smith&quot;&gt;, #&lt;Signature:0x007ff649a322e8 @position=&quot;Some Employee&quot;, @name=&quot;Miles O&#39;Brien&quot;&gt;], @reference=&quot;12343-AHSHE-314159&quot;, @client=#&lt;Client:0x007ff64a0fd6b8 @work_address=#&lt;Address:0x007ff64a0ed678 @city=&quot;San Francisco&quot;, @state=&quot;CA&quot;, @zip=94102, @street=&quot;98765, Fulton Street&quot;&gt;, @name=&quot;Jean Smith&quot;, @home_address=#&lt;Address:0x007ff64a0efef0 @city=&quot;San Mateo&quot;, @state=&quot;CA&quot;, @zip=94403, @street=&quot;2000, Alameda de las Pulgas&quot;&gt;&gt;, @items={&quot;RF-0001&quot;=&gt;#&lt;Item:0x007ff64a0df550 @descr=&quot;Stuffed Penguin&quot;, @quantity=10, @unit_price=8.95&gt;, &quot;RF-0034&quot;=&gt;#&lt;Item:0x007ff64a0ddbd8 @descr=&quot;Chocolate&quot;, @quantity=5, @unit_price=28.5&gt;, &quot;RF-3341&quot;=&gt;#&lt;Item:0x007ff64a0dc0d0 @descr=&quot;Cookie&quot;, @quantity=30, @unit_price=0.85&gt;}&gt;
+o.reference 
+=&gt; &quot;12343-AHSHE-314159&quot;
+o.client 
+=&gt; #&lt;Client:0x007ff64a0fd6b8 @work_address=#&lt;Address:0x007ff64a0ed678 @city=&quot;San Francisco&quot;, @state=&quot;CA&quot;, @zip=94102, @street=&quot;98765, Fulton Street&quot;&gt;, @name=&quot;Jean Smith&quot;, @home_address=#&lt;Address:0x007ff64a0efef0 @city=&quot;San Mateo&quot;, @state=&quot;CA&quot;, @zip=94403, @street=&quot;2000, Alameda de las Pulgas&quot;&gt;&gt;
+o.items.keys 
+=&gt; [&quot;RF-0001&quot;, &quot;RF-0034&quot;, &quot;RF-3341&quot;]
+o.items[&quot;RF-0034&quot;].descr 
+=&gt; &quot;Chocolate&quot;
+o.items[&quot;RF-0034&quot;].total_price 
+=&gt; 142.5
+o.signatures 
+=&gt; [#&lt;Signature:0x007ff64a0ce3e0 @position=&quot;product manager&quot;, @name=&quot;John Doe&quot;&gt;, #&lt;Signature:0x007ff64a0cd210 @position=&quot;clerk&quot;, @name=&quot;Jill Smith&quot;&gt;, #&lt;Signature:0x007ff649a322e8 @position=&quot;Some Employee&quot;, @name=&quot;Miles O&#39;Brien&quot;&gt;]
+o.signatures[2].name 
+=&gt; &quot;Miles O&#39;Brien&quot;
+o.signatures[2].position 
+=&gt; &quot;Some Employee&quot;
+## default value was set
 
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">total_price</span> 
-=<span class="ruby-operator">&gt;</span> <span class="ruby-value">257.5</span>
+o.total_price 
+=&gt; 257.5
 
-<span class="ruby-comment">####write access</span>
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">client</span>.<span class="ruby-identifier">name</span>=<span class="ruby-string">&quot;James T. Kirk&quot;</span>
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">items</span>[<span class="ruby-string">&#39;RF-4711&#39;</span>] = <span class="ruby-constant">Item</span>.<span class="ruby-identifier">new</span>
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">items</span>[<span class="ruby-string">&#39;RF-4711&#39;</span>].<span class="ruby-identifier">descr</span> = <span class="ruby-string">&#39;power transfer grid&#39;</span>
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">items</span>[<span class="ruby-string">&#39;RF-4711&#39;</span>].<span class="ruby-identifier">quantity</span> = <span class="ruby-value">2</span>
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">items</span>[<span class="ruby-string">&#39;RF-4711&#39;</span>].<span class="ruby-identifier">unit_price</span> = <span class="ruby-value">29.95</span>
+####write access
+o.client.name=&quot;James T. Kirk&quot;
+o.items[&#39;RF-4711&#39;] = Item.new
+o.items[&#39;RF-4711&#39;].descr = &#39;power transfer grid&#39;
+o.items[&#39;RF-4711&#39;].quantity = 2
+o.items[&#39;RF-4711&#39;].unit_price = 29.95
 
-<span class="ruby-identifier">s</span>=<span class="ruby-constant">Signature</span>.<span class="ruby-identifier">new</span>
-<span class="ruby-identifier">s</span>.<span class="ruby-identifier">name</span>=<span class="ruby-string">&#39;Harry Smith&#39;</span>
-<span class="ruby-identifier">s</span>.<span class="ruby-identifier">position</span>=<span class="ruby-string">&#39;general manager&#39;</span>
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">signatures</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">s</span>
-<span class="ruby-identifier">xml</span>=<span class="ruby-identifier">o</span>.<span class="ruby-identifier">save_to_xml</span> <span class="ruby-comment">#convert to REXML node; there&#39;s also o.save_to_file(name) </span>
-=<span class="ruby-operator">&gt;</span> <span class="ruby-operator">&lt;</span><span class="ruby-identifier">order</span> <span class="ruby-identifier">reference</span>=<span class="ruby-string">&#39;12343-AHSHE-314159&#39;</span><span class="ruby-operator">&gt;</span> <span class="ruby-operator">...</span> <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/&gt;
+s=Signature.new
+s.name=&#39;Harry Smith&#39;
+s.position=&#39;general manager&#39;
+o.signatures &lt;&lt; s
+xml=o.save_to_xml #convert to REXML node; there&#39;s also o.save_to_file(name) 
+=&gt; &lt;order reference=&#39;12343-AHSHE-314159&#39;&gt; ... &lt;/&gt;
 xml.write($stdout,2) 
 &lt;order reference=&#39;12343-AHSHE-314159&#39;&gt;
   &lt;Client&gt;
     &lt;Name&gt;
       James T. Kirk
-    &lt;/</span><span class="ruby-constant">Name</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-constant">Address</span> <span class="ruby-identifier">where</span>=<span class="ruby-string">&#39;home&#39;</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-operator">&lt;</span><span class="ruby-constant">City</span><span class="ruby-operator">&gt;</span>
-        <span class="ruby-constant">San</span> <span class="ruby-constant">Mateo</span>
-      <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/City&gt;
+    &lt;/Name&gt;
+    &lt;Address where=&#39;home&#39;&gt;
+      &lt;City&gt;
+        San Mateo
+      &lt;/City&gt;
       &lt;State&gt;
         CA
-      &lt;/</span><span class="ruby-constant">State</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-operator">&lt;</span><span class="ruby-constant">ZIP</span><span class="ruby-operator">&gt;</span>
-        <span class="ruby-value">94403</span>
-      <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/ZIP&gt;
+      &lt;/State&gt;
+      &lt;ZIP&gt;
+        94403
+      &lt;/ZIP&gt;
       &lt;Street&gt;
         2000, Alameda de las Pulgas
-      &lt;/</span><span class="ruby-constant">Street</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/Address&gt;
+      &lt;/Street&gt;
+    &lt;/Address&gt;
     &lt;Address where=&#39;work&#39;&gt;
       &lt;City&gt;
         San Francisco
-      &lt;/</span><span class="ruby-constant">City</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-operator">&lt;</span><span class="ruby-constant">State</span><span class="ruby-operator">&gt;</span>
-        <span class="ruby-constant">CA</span>
-      <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/State&gt;
+      &lt;/City&gt;
+      &lt;State&gt;
+        CA
+      &lt;/State&gt;
       &lt;ZIP&gt;
         94102
-      &lt;/</span><span class="ruby-constant">ZIP</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-operator">&lt;</span><span class="ruby-constant">Street</span><span class="ruby-operator">&gt;</span>
-        <span class="ruby-value">98765</span>, <span class="ruby-constant">Fulton</span> <span class="ruby-constant">Street</span>
-      <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/Street&gt;
-    &lt;/</span><span class="ruby-constant">Address</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/Client&gt;
+      &lt;/ZIP&gt;
+      &lt;Street&gt;
+        98765, Fulton Street
+      &lt;/Street&gt;
+    &lt;/Address&gt;
+  &lt;/Client&gt;
   &lt;Item reference=&#39;RF-0001&#39;&gt;
     &lt;Description&gt;
       Stuffed Penguin
-    &lt;/</span><span class="ruby-constant">Description</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-constant">Quantity</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-value">10</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/Quantity&gt;
+    &lt;/Description&gt;
+    &lt;Quantity&gt;
+      10
+    &lt;/Quantity&gt;
     &lt;UnitPrice&gt;
       8.95
-    &lt;/</span><span class="ruby-constant">UnitPrice</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/Item&gt;
+    &lt;/UnitPrice&gt;
+  &lt;/Item&gt;
   &lt;Item reference=&#39;RF-0034&#39;&gt;
     &lt;Description&gt;
       Chocolate
-    &lt;/</span><span class="ruby-constant">Description</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-constant">Quantity</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-value">5</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/Quantity&gt;
+    &lt;/Description&gt;
+    &lt;Quantity&gt;
+      5
+    &lt;/Quantity&gt;
     &lt;UnitPrice&gt;
       28.5
-    &lt;/</span><span class="ruby-constant">UnitPrice</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/Item&gt;
+    &lt;/UnitPrice&gt;
+  &lt;/Item&gt;
   &lt;Item reference=&#39;RF-3341&#39;&gt;
     &lt;Description&gt;
       Cookie
-    &lt;/</span><span class="ruby-constant">Description</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-constant">Quantity</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-value">30</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/Quantity&gt;
+    &lt;/Description&gt;
+    &lt;Quantity&gt;
+      30
+    &lt;/Quantity&gt;
     &lt;UnitPrice&gt;
       0.85
-    &lt;/</span><span class="ruby-constant">UnitPrice</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/Item&gt;
+    &lt;/UnitPrice&gt;
+  &lt;/Item&gt;
   &lt;Item reference=&#39;RF-4711&#39;&gt;
     &lt;Description&gt;
       power transfer grid
-    &lt;/</span><span class="ruby-constant">Description</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-constant">Quantity</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-value">2</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/Quantity&gt;
+    &lt;/Description&gt;
+    &lt;Quantity&gt;
+      2
+    &lt;/Quantity&gt;
     &lt;UnitPrice&gt;
       29.95
-    &lt;/</span><span class="ruby-constant">UnitPrice</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/Item&gt;
+    &lt;/UnitPrice&gt;
+  &lt;/Item&gt;
   &lt;Signed-By&gt;
     &lt;Signature&gt;
       &lt;Name&gt;
         John Doe
-      &lt;/</span><span class="ruby-constant">Name</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-operator">&lt;</span><span class="ruby-constant">Position</span><span class="ruby-operator">&gt;</span>
-        <span class="ruby-identifier">product</span> <span class="ruby-identifier">manager</span>
-      <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/Position&gt;
-    &lt;/</span><span class="ruby-constant">Signature</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-constant">Signature</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-operator">&lt;</span><span class="ruby-constant">Name</span><span class="ruby-operator">&gt;</span>
-        <span class="ruby-constant">Jill</span> <span class="ruby-constant">Smith</span>
-      <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/Name&gt;
+      &lt;/Name&gt;
+      &lt;Position&gt;
+        product manager
+      &lt;/Position&gt;
+    &lt;/Signature&gt;
+    &lt;Signature&gt;
+      &lt;Name&gt;
+        Jill Smith
+      &lt;/Name&gt;
       &lt;Position&gt;
         clerk
-      &lt;/</span><span class="ruby-constant">Position</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/Signature&gt;
+      &lt;/Position&gt;
+    &lt;/Signature&gt;
     &lt;Signature&gt;
       &lt;Name&gt;
         Miles O&amp;apos;Brien
-      &lt;/</span><span class="ruby-constant">Name</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/Signature&gt;
+      &lt;/Name&gt;
+    &lt;/Signature&gt;
     &lt;Signature&gt;
       &lt;Name&gt;
         Harry Smith
-      &lt;/</span><span class="ruby-constant">Name</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-operator">&lt;</span><span class="ruby-constant">Position</span><span class="ruby-operator">&gt;</span>
-        <span class="ruby-identifier">general</span> <span class="ruby-identifier">manager</span>
-      <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/Position&gt;
-    &lt;/</span><span class="ruby-constant">Signature</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/Signed-By&gt;
-&lt;/o</span><span class="ruby-identifier">rder</span><span class="ruby-operator">&gt;</span>
+      &lt;/Name&gt;
+      &lt;Position&gt;
+        general manager
+      &lt;/Position&gt;
+    &lt;/Signature&gt;
+  &lt;/Signed-By&gt;
+&lt;/order&gt;
 
 
-<span class="ruby-comment">####Starting a new order from scratch</span>
-<span class="ruby-identifier">o</span> = <span class="ruby-constant">Order</span>.<span class="ruby-identifier">new</span> 
-=<span class="ruby-operator">&gt;</span> <span class="ruby-comment">#&lt;Order:0x007fb0153bfef8 @signatures=[]&gt;</span>
-<span class="ruby-comment">## attributes with default values (here: signatures) are set</span>
-<span class="ruby-comment">## automatically</span>
+####Starting a new order from scratch
+o = Order.new 
+=&gt; #&lt;Order:0x007ff64a206050 @signatures=[]&gt;
+## attributes with default values (here: signatures) are set
+## automatically
 
-<span class="ruby-identifier">xml</span>=<span class="ruby-identifier">o</span>.<span class="ruby-identifier">save_to_xml</span> 
-<span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">MappingError</span><span class="ruby-operator">:</span> <span class="ruby-identifier">no</span> <span class="ruby-identifier">value</span>, <span class="ruby-keyword">and</span> <span class="ruby-identifier">no</span> <span class="ruby-identifier">default</span> <span class="ruby-identifier">value</span>, <span class="ruby-keyword">for</span> <span class="ruby-identifier">attribute</span><span class="ruby-operator">:</span> <span class="ruby-identifier">reference</span>
-    <span class="ruby-identifier">from</span> <span class="ruby-regexp">/home/o</span><span class="ruby-identifier">laf</span><span class="ruby-operator">/</span><span class="ruby-identifier">xml</span><span class="ruby-operator">-</span><span class="ruby-identifier">mapping</span><span class="ruby-operator">/</span><span class="ruby-identifier">lib</span><span class="ruby-operator">/</span><span class="ruby-identifier">xml</span><span class="ruby-operator">/</span><span class="ruby-identifier">mapping</span><span class="ruby-operator">/</span><span class="ruby-identifier">base</span>.<span class="ruby-identifier">rb</span>:<span class="ruby-value">712</span><span class="ruby-operator">:</span><span class="ruby-keyword">in</span> <span class="ruby-value">%xobj_to_xml&#39;
-    from /home/olaf/xml-mapping/lib/xml/mapping/base.rb:218:in `</span><span class="ruby-identifier">block</span> <span class="ruby-keyword">in</span> <span class="ruby-identifier">fill_into_xml</span><span class="ruby-string">&#39;
-    from /home/olaf/xml-mapping/lib/xml/mapping/base.rb:217:in `each&#39;</span>
-    <span class="ruby-identifier">from</span> <span class="ruby-regexp">/home/o</span><span class="ruby-identifier">laf</span><span class="ruby-operator">/</span><span class="ruby-identifier">xml</span><span class="ruby-operator">-</span><span class="ruby-identifier">mapping</span><span class="ruby-operator">/</span><span class="ruby-identifier">lib</span><span class="ruby-operator">/</span><span class="ruby-identifier">xml</span><span class="ruby-operator">/</span><span class="ruby-identifier">mapping</span><span class="ruby-operator">/</span><span class="ruby-identifier">base</span>.<span class="ruby-identifier">rb</span>:<span class="ruby-value">217</span><span class="ruby-operator">:</span><span class="ruby-keyword">in</span> <span class="ruby-value">%xfill_into_xml&#39;
-    from /home/olaf/xml-mapping/lib/xml/mapping/base.rb:229:in `</span><span class="ruby-identifier">save_to_xml</span><span class="ruby-string">&#39;
-## can&#39;</span><span class="ruby-identifier">t</span> <span class="ruby-identifier">save</span> <span class="ruby-identifier">as</span> <span class="ruby-identifier">long</span> <span class="ruby-identifier">as</span> <span class="ruby-identifier">there</span> <span class="ruby-identifier">are</span> <span class="ruby-identifier">still</span> <span class="ruby-identifier">unset</span> <span class="ruby-identifier">attributes</span> <span class="ruby-identifier">without</span>
-<span class="ruby-comment">## default values</span>
+xml=o.save_to_xml 
+XML::MappingError: no value, and no default value, for attribute: reference
+    from /Users/oklischat/xml-mapping/lib/xml/mapping/base.rb:724:in `obj_to_xml&#39;
+    from /Users/oklischat/xml-mapping/lib/xml/mapping/base.rb:218:in `block in fill_into_xml&#39;
+    from /Users/oklischat/xml-mapping/lib/xml/mapping/base.rb:217:in `each&#39;
+    from /Users/oklischat/xml-mapping/lib/xml/mapping/base.rb:217:in `fill_into_xml&#39;
+    from /Users/oklischat/xml-mapping/lib/xml/mapping/base.rb:229:in `save_to_xml&#39;
+## can&#39;t save as long as there are still unset attributes without
+## default values
 
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">reference</span> = <span class="ruby-string">&quot;FOOBAR-1234&quot;</span>
+o.reference = &quot;FOOBAR-1234&quot;
 
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">client</span> = <span class="ruby-constant">Client</span>.<span class="ruby-identifier">new</span>
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">client</span>.<span class="ruby-identifier">name</span> = <span class="ruby-string">&#39;Ford Prefect&#39;</span>
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">client</span>.<span class="ruby-identifier">home_address</span> = <span class="ruby-constant">Address</span>.<span class="ruby-identifier">new</span>
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">client</span>.<span class="ruby-identifier">home_address</span>.<span class="ruby-identifier">street</span> = <span class="ruby-string">&#39;42 Park Av.&#39;</span>
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">client</span>.<span class="ruby-identifier">home_address</span>.<span class="ruby-identifier">city</span> = <span class="ruby-string">&#39;small planet&#39;</span>
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">client</span>.<span class="ruby-identifier">home_address</span>.<span class="ruby-identifier">zip</span> = <span class="ruby-value">17263</span>
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">client</span>.<span class="ruby-identifier">home_address</span>.<span class="ruby-identifier">state</span> = <span class="ruby-string">&#39;Betelgeuse system&#39;</span>
+o.client = Client.new
+o.client.name = &#39;Ford Prefect&#39;
+o.client.home_address = Address.new
+o.client.home_address.street = &#39;42 Park Av.&#39;
+o.client.home_address.city = &#39;small planet&#39;
+o.client.home_address.zip = 17263
+o.client.home_address.state = &#39;Betelgeuse system&#39;
 
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">items</span>={<span class="ruby-string">&#39;XY-42&#39;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">Item</span>.<span class="ruby-identifier">new</span>}
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">items</span>[<span class="ruby-string">&#39;XY-42&#39;</span>].<span class="ruby-identifier">descr</span> = <span class="ruby-string">&#39;improbability drive&#39;</span>
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">items</span>[<span class="ruby-string">&#39;XY-42&#39;</span>].<span class="ruby-identifier">quantity</span> = <span class="ruby-value">3</span>
-<span class="ruby-identifier">o</span>.<span class="ruby-identifier">items</span>[<span class="ruby-string">&#39;XY-42&#39;</span>].<span class="ruby-identifier">unit_price</span> = <span class="ruby-value">299.95</span>
+o.items={&#39;XY-42&#39; =&gt; Item.new}
+o.items[&#39;XY-42&#39;].descr = &#39;improbability drive&#39;
+o.items[&#39;XY-42&#39;].quantity = 3
+o.items[&#39;XY-42&#39;].unit_price = 299.95
 
-<span class="ruby-identifier">xml</span>=<span class="ruby-identifier">o</span>.<span class="ruby-identifier">save_to_xml</span>
-<span class="ruby-identifier">xml</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">$stdout</span>,<span class="ruby-value">2</span>)
+xml=o.save_to_xml
+xml.write($stdout,2)
 
-<span class="ruby-operator">&lt;</span><span class="ruby-identifier">order</span> <span class="ruby-identifier">reference</span>=<span class="ruby-string">&#39;FOOBAR-1234&#39;</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-constant">Client</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-constant">Name</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-constant">Ford</span> <span class="ruby-constant">Prefect</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/Name&gt;
+&lt;order reference=&#39;FOOBAR-1234&#39;&gt;
+  &lt;Client&gt;
+    &lt;Name&gt;
+      Ford Prefect
+    &lt;/Name&gt;
     &lt;Address where=&#39;home&#39;&gt;
       &lt;City&gt;
         small planet
-      &lt;/</span><span class="ruby-constant">City</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-operator">&lt;</span><span class="ruby-constant">State</span><span class="ruby-operator">&gt;</span>
-        <span class="ruby-constant">Betelgeuse</span> <span class="ruby-identifier">system</span>
-      <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/State&gt;
+      &lt;/City&gt;
+      &lt;State&gt;
+        Betelgeuse system
+      &lt;/State&gt;
       &lt;ZIP&gt;
         17263
-      &lt;/</span><span class="ruby-constant">ZIP</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-operator">&lt;</span><span class="ruby-constant">Street</span><span class="ruby-operator">&gt;</span>
-        <span class="ruby-value">42</span> <span class="ruby-constant">Park</span> <span class="ruby-constant">Av</span>.
-      <span class="ruby-operator">&lt;</span><span class="ruby-operator">/</span><span class="ruby-constant">Street</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/Address&gt;
-  &lt;/</span><span class="ruby-constant">Client</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-constant">Item</span> <span class="ruby-identifier">reference</span>=<span class="ruby-string">&#39;XY-42&#39;</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-constant">Description</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-identifier">improbability</span> <span class="ruby-identifier">drive</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/Description&gt;
+      &lt;/ZIP&gt;
+      &lt;Street&gt;
+        42 Park Av.
+      &lt;/Street&gt;
+    &lt;/Address&gt;
+  &lt;/Client&gt;
+  &lt;Item reference=&#39;XY-42&#39;&gt;
+    &lt;Description&gt;
+      improbability drive
+    &lt;/Description&gt;
     &lt;Quantity&gt;
       3
-    &lt;/</span><span class="ruby-constant">Quantity</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-constant">UnitPrice</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-value">299.95</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/UnitPrice&gt;
-  &lt;/</span><span class="ruby-constant">Item</span><span class="ruby-operator">&gt;</span>
-<span class="ruby-operator">&lt;</span><span class="ruby-node">/order&gt;
+    &lt;/Quantity&gt;
+    &lt;UnitPrice&gt;
+      299.95
+    &lt;/UnitPrice&gt;
+  &lt;/Item&gt;
+&lt;/order&gt;
 ## the root element name when saving an object to XML will by default
 ## be derived from the class name (in this example, &quot;Order&quot; became
 ## &quot;order&quot;). This can be overridden on a per-class basis; see
-## XML::Mapping::ClassMethods#root_element_name for details.
-</span></pre>
+## XML::Mapping::ClassMethods#root_element_name for details.</pre>
 
-<p>As shown in the example, you have to include XML::Mapping into a class to
-turn it into a “mapping class”. There are no other restrictions imposed on
-mapping classes; you can add attributes and methods to them, include
-additional modules in them, derive them from other classes, derive other
-classes from them etc.pp.</p>
+<p>As shown in the example, you have to include <a
+href="XML/Mapping.html">XML::Mapping</a> into a class to turn it into a
+“mapping class”. There are no other restrictions imposed on mapping
+classes; you can add attributes and methods to them, include additional
+modules in them, derive them from other classes, derive other classes from
+them etc.pp.</p>
 
 <p>An instance of a mapping class can be created from/converted into an <a
 href="XML.html">XML</a> node with methods like <a
@@ -532,7 +529,7 @@ body of the class definition to define instance attributes that are
 automatically and bidirectionally mapped to subtrees of the <a
 href="XML.html">XML</a> element an instance of the class is mapped to.</p>
 
-<h2 id="label-Single-attribute+Nodes">Single-attribute Nodes<span><a href="#label-Single-attribute+Nodes">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="label-Single-attribute+Nodes">Single-attribute Nodes<span><a href="#label-Single-attribute+Nodes">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>For example, in the definition</p>
 
@@ -568,7 +565,7 @@ called a “single-attribute node”. All node types that come with xml-mapping
 except one (<code>choice_node</code>, which I&#39;ll talk about below) are
 single-attribute nodes.</p>
 
-<h3 id="label-Default+Values">Default Values<span><a href="#label-Default+Values">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+<h3 id="label-Default+Values">Default Values<span><a href="#label-Default+Values">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
 <p>For each single-attribute node you may define a <em>default value</em>
 which will be set if there was no value defined for the attribute in the <a
@@ -627,7 +624,7 @@ represented in the <a href="XML.html">XML</a></p>
 <p>attributes without default values must be set explicitly before  saving</p>
 </li></ul>
 
-<h3 id="label-Single-attribute+Nodes+with+Sub-objects">Single-attribute Nodes with Sub-objects<span><a href="#label-Single-attribute+Nodes+with+Sub-objects">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+<h3 id="label-Single-attribute+Nodes+with+Sub-objects">Single-attribute Nodes with Sub-objects<span><a href="#label-Single-attribute+Nodes+with+Sub-objects">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
 <p>Single-attribute nodes of type <code>array_node</code>,
 <code>hash_node</code>, and <code>object_node</code> recursively map one or
@@ -719,45 +716,44 @@ href="XML.html">XML</a> document like this one:</p>
 
 <p>usage:</p>
 
-<pre class="ruby"><span class="ruby-identifier">ppl</span>=<span class="ruby-constant">People</span>.<span class="ruby-identifier">load_from_file</span>(<span class="ruby-string">&quot;stringarray.xml&quot;</span>) 
-=<span class="ruby-operator">&gt;</span> <span class="ruby-comment">#&lt;People:0x007fb015431a58 @names=[&quot;Jim&quot;, &quot;Susan&quot;, &quot;Herbie&quot;, &quot;Nancy&quot;]&gt;</span>
-<span class="ruby-identifier">ppl</span>.<span class="ruby-identifier">names</span> 
-=<span class="ruby-operator">&gt;</span> [<span class="ruby-string">&quot;Jim&quot;</span>, <span class="ruby-string">&quot;Susan&quot;</span>, <span class="ruby-string">&quot;Herbie&quot;</span>, <span class="ruby-string">&quot;Nancy&quot;</span>]
+<pre>ppl=People.load_from_file(&quot;stringarray.xml&quot;) 
+=&gt; #&lt;People:0x007ff64a0cda08 @names=[&quot;Jim&quot;, &quot;Susan&quot;, &quot;Herbie&quot;, &quot;Nancy&quot;]&gt;
+ppl.names 
+=&gt; [&quot;Jim&quot;, &quot;Susan&quot;, &quot;Herbie&quot;, &quot;Nancy&quot;]
 
-<span class="ruby-identifier">ppl</span>.<span class="ruby-identifier">names</span>.<span class="ruby-identifier">concat</span> [<span class="ruby-string">&quot;Mary&quot;</span>,<span class="ruby-string">&quot;Arnold&quot;</span>] 
-=<span class="ruby-operator">&gt;</span> [<span class="ruby-string">&quot;Jim&quot;</span>, <span class="ruby-string">&quot;Susan&quot;</span>, <span class="ruby-string">&quot;Herbie&quot;</span>, <span class="ruby-string">&quot;Nancy&quot;</span>, <span class="ruby-string">&quot;Mary&quot;</span>, <span class="ruby-string">&quot;Arnold&quot;</span>]
-<span class="ruby-identifier">ppl</span>.<span class="ruby-identifier">save_to_xml</span>.<span class="ruby-identifier">write</span> <span class="ruby-identifier">$stdout</span>,<span class="ruby-value">2</span>
+ppl.names.concat [&quot;Mary&quot;,&quot;Arnold&quot;] 
+=&gt; [&quot;Jim&quot;, &quot;Susan&quot;, &quot;Herbie&quot;, &quot;Nancy&quot;, &quot;Mary&quot;, &quot;Arnold&quot;]
+ppl.save_to_xml.write $stdout,2
 
-<span class="ruby-operator">&lt;</span><span class="ruby-identifier">people</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-identifier">names</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">name</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-constant">Jim</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/name&gt;
+&lt;people&gt;
+  &lt;names&gt;
+    &lt;name&gt;
+      Jim
+    &lt;/name&gt;
     &lt;name&gt;
       Susan
-    &lt;/n</span><span class="ruby-identifier">ame</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">name</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-constant">Herbie</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/name&gt;
+    &lt;/name&gt;
+    &lt;name&gt;
+      Herbie
+    &lt;/name&gt;
     &lt;name&gt;
       Nancy
-    &lt;/n</span><span class="ruby-identifier">ame</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">name</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-constant">Mary</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/name&gt;
+    &lt;/name&gt;
+    &lt;name&gt;
+      Mary
+    &lt;/name&gt;
     &lt;name&gt;
       Arnold
-    &lt;/n</span><span class="ruby-identifier">ame</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/names&gt;
-&lt;/</span><span class="ruby-identifier">people</span><span class="ruby-operator">&gt;</span>
-</pre>
+    &lt;/name&gt;
+  &lt;/names&gt;
+&lt;/people&gt;</pre>
 
 <p>As a side node, this feature actually makes <code>text_node</code> and
 <code>numeric_node</code> special cases of <code>object_node</code>. For
 example, <code>text_node :attr, &quot;path&quot;</code> is the same as
 <code>object_node :attr, &quot;path&quot;, :class=&gt;String</code>.</p>
 
-<h4 id="label-Polymorphic+Sub-objects%2C+Marshallers%2FUnmarshallers">Polymorphic Sub-objects, Marshallers/Unmarshallers<span><a href="#label-Polymorphic+Sub-objects%2C+Marshallers%2FUnmarshallers">&para;</a> <a href="#documentation">&uarr;</a></span></h4>
+<h4 id="label-Polymorphic+Sub-objects-2C+Marshallers-2FUnmarshallers">Polymorphic Sub-objects, Marshallers/Unmarshallers<span><a href="#label-Polymorphic+Sub-objects-2C+Marshallers-2FUnmarshallers">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
 <p>Besides the <code>:class</code> keyword argument, there are alternative
 ways for a single-attribute node with sub-objects to specify the way the
@@ -825,52 +821,51 @@ which may again be either a document or a folder:</p>
 
 <p>Usage:</p>
 
-<pre class="ruby"><span class="ruby-identifier">root</span> = <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">Mapping</span>.<span class="ruby-identifier">load_object_from_file</span> <span class="ruby-string">&quot;documents_folders.xml&quot;</span> 
-=<span class="ruby-operator">&gt;</span> <span class="ruby-comment">#&lt;Folder:0x007fb015437098 @entries=[#&lt;Document:0x007fb015436148 @name=&quot;plan&quot;, @contents=&quot; inhale, exhale&quot;&gt;, #&lt;Folder:0x007fb0154352c0 @entries=[#&lt;Folder:0x007fb015434550 @entries=[#&lt;Document:0x007fb015432e30 @name=&quot;README&quot;, @contents=&quot;foo bar baz&quot;&gt;], @name=&quot;xml-mapping&quot;&gt;], @name=&quot;work&quot;&gt;], @name=&quot;home&quot;&gt;</span>
-<span class="ruby-identifier">root</span>.<span class="ruby-identifier">name</span> 
-=<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;home&quot;</span>
-<span class="ruby-identifier">root</span>.<span class="ruby-identifier">entries</span> 
-=<span class="ruby-operator">&gt;</span> [<span class="ruby-comment">#&lt;Document:0x007fb015436148 @name=&quot;plan&quot;, @contents=&quot; inhale, exhale&quot;&gt;, #&lt;Folder:0x007fb0154352c0 @entries=[#&lt;Folder:0x007fb015434550 @entries=[#&lt;Document:0x007fb015432e30 @name=&quot;README&quot;, @contents=&quot;foo bar baz&quot;&gt;], @name=&quot;xml-mapping&quot;&gt;], @name=&quot;work&quot;&gt;]</span>
+<pre>root = XML::Mapping.load_object_from_file &quot;documents_folders.xml&quot; 
+=&gt; #&lt;Folder:0x007ff6499c0f58 @entries=[#&lt;Document:0x007ff6499bb8a0 @name=&quot;plan&quot;, @contents=&quot; inhale, exhale&quot;&gt;, #&lt;Folder:0x007ff6499ba298 @entries=[#&lt;Folder:0x007ff6499b84e8 @entries=[#&lt;Document:0x007ff6499b1fa8 @name=&quot;README&quot;, @contents=&quot;foo bar baz&quot;&gt;], @name=&quot;xml-mapping&quot;&gt;], @name=&quot;work&quot;&gt;], @name=&quot;home&quot;&gt;
+root.name 
+=&gt; &quot;home&quot;
+root.entries 
+=&gt; [#&lt;Document:0x007ff6499bb8a0 @name=&quot;plan&quot;, @contents=&quot; inhale, exhale&quot;&gt;, #&lt;Folder:0x007ff6499ba298 @entries=[#&lt;Folder:0x007ff6499b84e8 @entries=[#&lt;Document:0x007ff6499b1fa8 @name=&quot;README&quot;, @contents=&quot;foo bar baz&quot;&gt;], @name=&quot;xml-mapping&quot;&gt;], @name=&quot;work&quot;&gt;]
 
-<span class="ruby-identifier">root</span>.<span class="ruby-identifier">append</span> <span class="ruby-string">&quot;etc&quot;</span>, <span class="ruby-constant">Folder</span>.<span class="ruby-identifier">new</span>
-<span class="ruby-identifier">root</span>[<span class="ruby-string">&quot;etc&quot;</span>].<span class="ruby-identifier">append</span> <span class="ruby-string">&quot;passwd&quot;</span>, <span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span>
-<span class="ruby-identifier">root</span>[<span class="ruby-string">&quot;etc&quot;</span>][<span class="ruby-string">&quot;passwd&quot;</span>].<span class="ruby-identifier">contents</span> = <span class="ruby-string">&quot;foo:x:2:2:/bin/sh&quot;</span>
-<span class="ruby-identifier">root</span>[<span class="ruby-string">&quot;etc&quot;</span>].<span class="ruby-identifier">append</span> <span class="ruby-string">&quot;hosts&quot;</span>, <span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span>
-<span class="ruby-identifier">root</span>[<span class="ruby-string">&quot;etc&quot;</span>][<span class="ruby-string">&quot;hosts&quot;</span>].<span class="ruby-identifier">contents</span> = <span class="ruby-string">&quot;127.0.0.1 localhost&quot;</span>
+root.append &quot;etc&quot;, Folder.new
+root[&quot;etc&quot;].append &quot;passwd&quot;, Document.new
+root[&quot;etc&quot;][&quot;passwd&quot;].contents = &quot;foo:x:2:2:/bin/sh&quot;
+root[&quot;etc&quot;].append &quot;hosts&quot;, Document.new
+root[&quot;etc&quot;][&quot;hosts&quot;].contents = &quot;127.0.0.1 localhost&quot;
 
-<span class="ruby-identifier">xml</span> = <span class="ruby-identifier">root</span>.<span class="ruby-identifier">save_to_xml</span> 
-=<span class="ruby-operator">&gt;</span> <span class="ruby-operator">&lt;</span><span class="ruby-identifier">folder</span> <span class="ruby-identifier">name</span>=<span class="ruby-string">&#39;home&#39;</span><span class="ruby-operator">&gt;</span> <span class="ruby-operator">...</span> <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/&gt;
+xml = root.save_to_xml 
+=&gt; &lt;folder name=&#39;home&#39;&gt; ... &lt;/&gt;
 xml.write $stdout,2
 
 &lt;folder name=&#39;home&#39;&gt;
   &lt;document name=&#39;plan&#39;&gt;
     &lt;contents&gt;
        inhale, exhale
-    &lt;/</span><span class="ruby-identifier">contents</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/document&gt;
+    &lt;/contents&gt;
+  &lt;/document&gt;
   &lt;folder name=&#39;work&#39;&gt;
     &lt;folder name=&#39;xml-mapping&#39;&gt;
       &lt;document name=&#39;README&#39;&gt;
         &lt;contents&gt;
           foo bar baz
-        &lt;/</span><span class="ruby-identifier">contents</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/document&gt;
-    &lt;/</span><span class="ruby-identifier">folder</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/folder&gt;
+        &lt;/contents&gt;
+      &lt;/document&gt;
+    &lt;/folder&gt;
+  &lt;/folder&gt;
   &lt;folder name=&#39;etc&#39;&gt;
     &lt;document name=&#39;passwd&#39;&gt;
       &lt;contents&gt;
-        foo:x:2:2:/</span><span class="ruby-identifier">bin</span><span class="ruby-operator">/</span><span class="ruby-identifier">sh</span>
-      <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/contents&gt;
-    &lt;/</span><span class="ruby-identifier">document</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">document</span> <span class="ruby-identifier">name</span>=<span class="ruby-string">&#39;hosts&#39;</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-operator">&lt;</span><span class="ruby-identifier">contents</span><span class="ruby-operator">&gt;</span>
-        <span class="ruby-value">127.0</span><span class="ruby-value">.0</span><span class="ruby-value">.1</span> <span class="ruby-identifier">localhost</span>
-      <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/contents&gt;
-    &lt;/</span><span class="ruby-identifier">document</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/folder&gt;
-&lt;/</span><span class="ruby-identifier">folder</span><span class="ruby-operator">&gt;</span>
-</pre>
+        foo:x:2:2:/bin/sh
+      &lt;/contents&gt;
+    &lt;/document&gt;
+    &lt;document name=&#39;hosts&#39;&gt;
+      &lt;contents&gt;
+        127.0.0.1 localhost
+      &lt;/contents&gt;
+    &lt;/document&gt;
+  &lt;/folder&gt;
+&lt;/folder&gt;</pre>
 
 <p>As you see, the <code>Folder#entries</code> attribute is mapped via an
 array_node that does not specify a <code>:class</code> or anything else to
@@ -970,26 +965,26 @@ like this:</p>
 <p>The <code>:unmarshaller</code> proc will be called whenever a
 <code>Signature</code> instance is being read in from an <a
 href="XML.html">XML</a> source. The <code>xml</code> argument passed to the
-proc contains (as a REXML::Element instance) the <a href="XML.html">XML</a>
-subtree corresponding to the node&#39;s attribute&#39;s sub-object
-currently being read. In the case of our <code>object_node</code>, the
-sub-object is just the node&#39;s attribute (<code>signed_on</code>)
-itself, and the subtree is the one rooted at the &lt;signed-on&gt; element
-(if this were e.g. an <code>array_node</code>, the
-<code>:unmarshaller</code> proc would be called once for each array
-element, and <code>xml</code> would hold the subtree corresponding to the
-“current” array element). The proc is expected to extract the
-sub-object&#39;s data from <code>xml</code> and return the sub-object. So
-we have to read the “year”, “month”, and “day” elements, construct a
-<code>Time</code> instance from them and return that. One could just use
-the REXML API to do that, but I&#39;ve decided here to use the XPath
-interpreter that comes with xml-mapping (xml/xxpath), and specifically the
-&#39;xml/xxpath_methods&#39; utility library that adds methods like
-<code>first</code> to REMXML::Element. We call <code>first</code> on
-<code>xml</code> three times, passing XPath expressions to extract the
-“year”/“month”/“day” sub-elements, construct the <code>Time</code> instance
-from that and return it. The XPath library is explained in more detail <a
-href="aref:xpath">below</a>.</p>
+proc contains (as a <a href="REXML/Element.html">REXML::Element</a>
+instance) the <a href="XML.html">XML</a> subtree corresponding to the
+node&#39;s attribute&#39;s sub-object currently being read. In the case of
+our <code>object_node</code>, the sub-object is just the node&#39;s
+attribute (<code>signed_on</code>) itself, and the subtree is the one
+rooted at the &lt;signed-on&gt; element (if this were e.g. an
+<code>array_node</code>, the <code>:unmarshaller</code> proc would be
+called once for each array element, and <code>xml</code> would hold the
+subtree corresponding to the “current” array element). The proc is expected
+to extract the sub-object&#39;s data from <code>xml</code> and return the
+sub-object. So we have to read the “year”, “month”, and “day” elements,
+construct a <code>Time</code> instance from them and return that. One could
+just use the <a href="REXML.html">REXML</a> API to do that, but I&#39;ve
+decided here to use the XPath interpreter that comes with xml-mapping
+(xml/xxpath), and specifically the &#39;xml/xxpath_methods&#39; utility
+library that adds methods like <code>first</code> to REMXML::Element. We
+call <code>first</code> on <code>xml</code> three times, passing XPath
+expressions to extract the “year”/“month”/“day” sub-elements, construct the
+<code>Time</code> instance from that and return it. The XPath library is
+explained in more detail <a href="aref:xpath">below</a>.</p>
 
 <p>The <code>:marshaller</code> proc will be called whenever a
 <code>Signature</code> instance is being written into an <a
@@ -1011,10 +1006,9 @@ possible with all single-attribute nodes with sub-objects, i.e. with
 values, you could use <code>array_node</code> with the same
 :marshaller/:unmarshaller procs as above, for example:</p>
 
-<pre class="ruby"><span class="ruby-identifier">array_node</span> :<span class="ruby-identifier">birthdays</span>, <span class="ruby-string">&quot;birthdays&quot;</span>, <span class="ruby-string">&quot;birthday&quot;</span>,
-           :<span class="ruby-identifier">unmarshaller=</span><span class="ruby-operator">&gt;</span> <span class="ruby-operator">&lt;</span><span class="ruby-identifier">as</span> <span class="ruby-identifier">above</span><span class="ruby-operator">&gt;</span>,
-           :<span class="ruby-identifier">marshaller=</span><span class="ruby-operator">&gt;</span> <span class="ruby-operator">&lt;</span><span class="ruby-identifier">as</span> <span class="ruby-identifier">above</span><span class="ruby-operator">&gt;</span>
-</pre>
+<pre>array_node :birthdays, &quot;birthdays&quot;, &quot;birthday&quot;,
+           :unmarshaller=&gt; &lt;as above&gt;,
+           :marshaller=&gt; &lt;as above&gt;</pre>
 
 <p>You can see that :marshaller/:unmarshaller procs give you more flexibility,
 but they also impose more work because you essentially have to do all the
@@ -1040,12 +1034,13 @@ marshalling) the sub-objects. So, in effect, you can deactivate or
 “short-cut” some part of the marshalling/unmarshalling functionality of a
 node type while retaining another part.</p>
 
-<h3 id="label-Attribute+Handling+Details%2C+Augmenting+Existing+Classes">Attribute Handling Details, Augmenting Existing Classes<span><a href="#label-Attribute+Handling+Details%2C+Augmenting+Existing+Classes">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+<h3 id="label-Attribute+Handling+Details-2C+Augmenting+Existing+Classes">Attribute Handling Details, Augmenting Existing Classes<span><a href="#label-Attribute+Handling+Details-2C+Augmenting+Existing+Classes">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
 <p>I&#39;ll shed some more light on how single-attribute nodes add mapped
 attributes to Ruby classes. An attribute declaration like</p>
 
-<pre>text_node :city, &quot;City&quot;</pre>
+<pre class="ruby"><span class="ruby-identifier">text_node</span> :<span class="ruby-identifier">city</span>, <span class="ruby-string">&quot;City&quot;</span>
+</pre>
 
 <p>maps some portion of the <a href="XML.html">XML</a> tree (here: the “City”
 sub-element) to an attribute (here: “city”) of the class whose body the
@@ -1076,42 +1071,41 @@ you can also take existing classes that contain some “business logic” and
 let&#39;s augment Ruby&#39;s “Time” class with node declarations that
 declare <a href="XML.html">XML</a> mappings for the day, month etc. fields:</p>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Time</span>
-  <span class="ruby-identifier">include</span> <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">Mapping</span>
+<pre>class Time
+  include XML::Mapping
 
-  <span class="ruby-identifier">numeric_node</span> :<span class="ruby-identifier">year</span>, <span class="ruby-string">&quot;year&quot;</span>
-  <span class="ruby-identifier">numeric_node</span> :<span class="ruby-identifier">month</span>, <span class="ruby-string">&quot;month&quot;</span>
-  <span class="ruby-identifier">numeric_node</span> :<span class="ruby-identifier">day</span>, <span class="ruby-string">&quot;mday&quot;</span>
-  <span class="ruby-identifier">numeric_node</span> :<span class="ruby-identifier">hour</span>, <span class="ruby-string">&quot;hours&quot;</span>
-  <span class="ruby-identifier">numeric_node</span> :<span class="ruby-identifier">min</span>, <span class="ruby-string">&quot;minutes&quot;</span>
-  <span class="ruby-identifier">numeric_node</span> :<span class="ruby-identifier">sec</span>, <span class="ruby-string">&quot;seconds&quot;</span>
-<span class="ruby-keyword">end</span>
+  numeric_node :year, &quot;year&quot;
+  numeric_node :month, &quot;month&quot;
+  numeric_node :day, &quot;mday&quot;
+  numeric_node :hour, &quot;hours&quot;
+  numeric_node :min, &quot;minutes&quot;
+  numeric_node :sec, &quot;seconds&quot;
+end
 
 
-<span class="ruby-identifier">nowxml</span>=<span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span>.<span class="ruby-identifier">save_to_xml</span> 
-=<span class="ruby-operator">&gt;</span> <span class="ruby-operator">&lt;</span><span class="ruby-identifier">time</span><span class="ruby-operator">&gt;</span> <span class="ruby-operator">...</span> <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/&gt;
+nowxml=Time.now.save_to_xml 
+=&gt; &lt;time&gt; ... &lt;/&gt;
 nowxml.write($stdout,2)
 &lt;time&gt;
   &lt;year&gt;
-    2014
-  &lt;/</span><span class="ruby-identifier">year</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-identifier">month</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-value">9</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/month&gt;
+    2015
+  &lt;/year&gt;
+  &lt;month&gt;
+    3
+  &lt;/month&gt;
   &lt;mday&gt;
-    19
-  &lt;/m</span><span class="ruby-identifier">day</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-identifier">hours</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-value">14</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/hours&gt;
-  &lt;minutes&gt;
     1
-  &lt;/minu</span><span class="ruby-identifier">tes</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-identifier">seconds</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-value">43</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/seconds&gt;
-&lt;/</span><span class="ruby-identifier">time</span><span class="ruby-operator">&gt;</span>
-</pre>
+  &lt;/mday&gt;
+  &lt;hours&gt;
+    15
+  &lt;/hours&gt;
+  &lt;minutes&gt;
+    31
+  &lt;/minutes&gt;
+  &lt;seconds&gt;
+    6
+  &lt;/seconds&gt;
+&lt;/time&gt;</pre>
 
 <p>Here <a href="XML.html">XML</a> mappings are defined for the existing
 fields <code>year</code>, <code>month</code> etc. Xml-mapping noticed that
@@ -1124,7 +1118,8 @@ fields, which then get written to the output <a href="XML.html">XML</a>.</p>
 href="XML.html">XML</a> trees. What about reading them back in from <a
 href="XML.html">XML</a>? All <a href="XML.html">XML</a> reading operations
 go through <code>&lt;Class&gt;.load_from_xml</code>. The
-<code>load_from_xml</code> class method inherited from XML::Mapping (see <a
+<code>load_from_xml</code> class method inherited from <a
+href="XML/Mapping.html">XML::Mapping</a> (see <a
 href="XML/Mapping/ClassMethods.html#method-i-load_from_xml">XML::Mapping::ClassMethods#load_from_xml</a>)
 allocates a new instance of the class (<code>Time</code>), then calls
 <code>fill_from_xml</code> (i.e. <a
@@ -1155,7 +1150,7 @@ of the <code>Time</code> object. So we have to redefine
 <span class="ruby-keyword">end</span>
 </pre>
 
-<h2 id="label-Other+Nodes">Other Nodes<span><a href="#label-Other+Nodes">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="label-Other+Nodes">Other Nodes<span><a href="#label-Other+Nodes">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>All nodes I&#39;ve shown so far (node types text_node, numeric_node,
 boolean_node, object_node, array_node, and hash_node) were single-attribute
@@ -1164,7 +1159,7 @@ attribute name, and the attribute of that name is the only piece of the
 state of instances of the node&#39;s mapping class that gets read/written
 by the node.</p>
 
-<h3 id="label-choice_node">choice_node<span><a href="#label-choice_node">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+<h3 id="label-choice_node">choice_node<span><a href="#label-choice_node">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
 <p>There is one node type distributed with xml-mapping that is not a
 single-attribute node: <code>choice_node</code>. A <code>choice_node</code>
@@ -1186,26 +1181,25 @@ of the node&#39;s sub-nodes is “present”).</p>
 “contributors” (contained in a sequence of “contr” <a
 href="XML.html">XML</a> elements):</p>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Publication</span>
-  <span class="ruby-identifier">include</span> <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">Mapping</span>
+<pre>class Publication
+  include XML::Mapping
 
-  <span class="ruby-identifier">choice_node</span> :<span class="ruby-keyword">if</span>,    <span class="ruby-string">&#39;@author&#39;</span>, :<span class="ruby-keyword">then</span>, (<span class="ruby-identifier">text_node</span> :<span class="ruby-identifier">author</span>, <span class="ruby-string">&#39;@author&#39;</span>),
-              :<span class="ruby-keyword">elsif</span>, <span class="ruby-string">&#39;contr&#39;</span>,   :<span class="ruby-keyword">then</span>, (<span class="ruby-identifier">array_node</span> :<span class="ruby-identifier">contributors</span>, <span class="ruby-string">&#39;contr&#39;</span>, :<span class="ruby-keyword">class</span>=<span class="ruby-operator">&gt;</span><span class="ruby-constant">String</span>)
-<span class="ruby-keyword">end</span>
+  choice_node :if,    &#39;@author&#39;, :then, (text_node :author, &#39;@author&#39;),
+              :elsif, &#39;contr&#39;,   :then, (array_node :contributors, &#39;contr&#39;, :class=&gt;String)
+end
 
-<span class="ruby-comment">### usage</span>
+### usage
 
-<span class="ruby-identifier">p1</span> = <span class="ruby-constant">Publication</span>.<span class="ruby-identifier">load_from_xml</span>(<span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;&lt;publication author=&quot;Jim&quot;/&gt;&#39;</span>).<span class="ruby-identifier">root</span>)
-=<span class="ruby-operator">&gt;</span> <span class="ruby-comment">#&lt;Publication:0x007fb01548e668 @author=&quot;Jim&quot;&gt;</span>
+p1 = Publication.load_from_xml(REXML::Document.new(&#39;&lt;publication author=&quot;Jim&quot;/&gt;&#39;).root)
+=&gt; #&lt;Publication:0x007ff64a166a78 @author=&quot;Jim&quot;&gt;
 
-<span class="ruby-identifier">p2</span> = <span class="ruby-constant">Publication</span>.<span class="ruby-identifier">load_from_xml</span>(<span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;
+p2 = Publication.load_from_xml(REXML::Document.new(&#39;
 &lt;publication&gt;
   &lt;contr&gt;Chris&lt;/contr&gt;
   &lt;contr&gt;Mel&lt;/contr&gt;
   &lt;contr&gt;Toby&lt;/contr&gt;
-&lt;/publication&gt;&#39;</span>).<span class="ruby-identifier">root</span>)
-=<span class="ruby-operator">&gt;</span> <span class="ruby-comment">#&lt;Publication:0x007fb01547ef38 @contributors=[&quot;Chris&quot;, &quot;Mel&quot;, &quot;Toby&quot;]&gt;</span>
-</pre>
+&lt;/publication&gt;&#39;).root)
+=&gt; #&lt;Publication:0x007ff64a155f48 @contributors=[&quot;Chris&quot;, &quot;Mel&quot;, &quot;Toby&quot;]&gt;</pre>
 
 <p>The symbols :if, :then, and :elsif (but not :else – see below) in the
 <code>choice_node</code>&#39;s node factory method call are ignored; they
@@ -1251,33 +1245,32 @@ name of the person should be stored alternatively in a sub-element named
 of the <code>person</code> element itself. You can achieve this with
 <code>choice_node</code> like this:</p>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Person</span>
-  <span class="ruby-identifier">include</span> <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">Mapping</span>
+<pre>class Person
+  include XML::Mapping
 
-  <span class="ruby-identifier">choice_node</span> :<span class="ruby-keyword">if</span>,    <span class="ruby-string">&#39;name&#39;</span>,  :<span class="ruby-keyword">then</span>, (<span class="ruby-identifier">text_node</span> :<span class="ruby-identifier">name</span>, <span class="ruby-string">&#39;name&#39;</span>),
-              :<span class="ruby-keyword">elsif</span>, <span class="ruby-string">&#39;@name&#39;</span>, :<span class="ruby-keyword">then</span>, (<span class="ruby-identifier">text_node</span> :<span class="ruby-identifier">name</span>, <span class="ruby-string">&#39;@name&#39;</span>),
-              :<span class="ruby-keyword">else</span>,  (<span class="ruby-identifier">text_node</span> :<span class="ruby-identifier">name</span>, <span class="ruby-string">&#39;.&#39;</span>)
-<span class="ruby-keyword">end</span>
+  choice_node :if,    &#39;name&#39;,  :then, (text_node :name, &#39;name&#39;),
+              :elsif, &#39;@name&#39;, :then, (text_node :name, &#39;@name&#39;),
+              :else,  (text_node :name, &#39;.&#39;)
+end
 
-<span class="ruby-comment">### usage</span>
+### usage
 
-<span class="ruby-identifier">p1</span> = <span class="ruby-constant">Person</span>.<span class="ruby-identifier">load_from_xml</span>(<span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;&lt;person name=&quot;Jim&quot;/&gt;&#39;</span>).<span class="ruby-identifier">root</span>)
-=<span class="ruby-operator">&gt;</span> <span class="ruby-comment">#&lt;Person:0x007fb014e95298 @name=&quot;Jim&quot;&gt;</span>
+p1 = Person.load_from_xml(REXML::Document.new(&#39;&lt;person name=&quot;Jim&quot;/&gt;&#39;).root)
+=&gt; #&lt;Person:0x007ff64a1cd660 @name=&quot;Jim&quot;&gt;
 
-<span class="ruby-identifier">p2</span> = <span class="ruby-constant">Person</span>.<span class="ruby-identifier">load_from_xml</span>(<span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;&lt;person&gt;&lt;name&gt;James&lt;/name&gt;&lt;/person&gt;&#39;</span>).<span class="ruby-identifier">root</span>)
-=<span class="ruby-operator">&gt;</span> <span class="ruby-comment">#&lt;Person:0x007fb014e847b8 @name=&quot;James&quot;&gt;</span>
+p2 = Person.load_from_xml(REXML::Document.new(&#39;&lt;person&gt;&lt;name&gt;James&lt;/name&gt;&lt;/person&gt;&#39;).root)
+=&gt; #&lt;Person:0x007ff64a1c54b0 @name=&quot;James&quot;&gt;
 
-<span class="ruby-identifier">p3</span> = <span class="ruby-constant">Person</span>.<span class="ruby-identifier">load_from_xml</span>(<span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;&lt;person&gt;Suzy&lt;/person&gt;&#39;</span>).<span class="ruby-identifier">root</span>)
-=<span class="ruby-operator">&gt;</span> <span class="ruby-comment">#&lt;Person:0x007fb014e6c550 @name=&quot;Suzy&quot;&gt;</span>
+p3 = Person.load_from_xml(REXML::Document.new(&#39;&lt;person&gt;Suzy&lt;/person&gt;&#39;).root)
+=&gt; #&lt;Person:0x007ff64a1b6820 @name=&quot;Suzy&quot;&gt;
 
 
-<span class="ruby-identifier">p1</span>.<span class="ruby-identifier">save_to_xml</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">$stdout</span>)
-<span class="ruby-operator">&lt;</span><span class="ruby-identifier">person</span><span class="ruby-operator">&gt;</span><span class="ruby-operator">&lt;</span><span class="ruby-identifier">name</span><span class="ruby-operator">&gt;</span><span class="ruby-constant">Jim</span><span class="ruby-operator">&lt;</span><span class="ruby-regexp">/name&gt;&lt;/</span><span class="ruby-identifier">person</span><span class="ruby-operator">&gt;</span>
-<span class="ruby-identifier">p2</span>.<span class="ruby-identifier">save_to_xml</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">$stdout</span>)
-<span class="ruby-operator">&lt;</span><span class="ruby-identifier">person</span><span class="ruby-operator">&gt;</span><span class="ruby-operator">&lt;</span><span class="ruby-identifier">name</span><span class="ruby-operator">&gt;</span><span class="ruby-constant">James</span><span class="ruby-operator">&lt;</span><span class="ruby-regexp">/name&gt;&lt;/</span><span class="ruby-identifier">person</span><span class="ruby-operator">&gt;</span>
-<span class="ruby-identifier">p3</span>.<span class="ruby-identifier">save_to_xml</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">$stdout</span>)
-<span class="ruby-operator">&lt;</span><span class="ruby-identifier">person</span><span class="ruby-operator">&gt;</span><span class="ruby-operator">&lt;</span><span class="ruby-identifier">name</span><span class="ruby-operator">&gt;</span><span class="ruby-constant">Suzy</span><span class="ruby-operator">&lt;</span><span class="ruby-regexp">/name&gt;&lt;/</span><span class="ruby-identifier">person</span><span class="ruby-operator">&gt;</span>
-</pre>
+p1.save_to_xml.write($stdout)
+&lt;person&gt;&lt;name&gt;Jim&lt;/name&gt;&lt;/person&gt;
+p2.save_to_xml.write($stdout)
+&lt;person&gt;&lt;name&gt;James&lt;/name&gt;&lt;/person&gt;
+p3.save_to_xml.write($stdout)
+&lt;person&gt;&lt;name&gt;Suzy&lt;/name&gt;&lt;/person&gt;</pre>
 
 <p>Here all sub-nodes of the choice_nodes are single-attribute nodes
 (text_nodes) with the same attribute (<code>name</code>). As you see, when
@@ -1285,7 +1278,7 @@ writing persons to <a href="XML.html">XML</a>, the name is always stored in
 a &lt;name&gt; sub-element. Of course, this is because that alternative
 appears first in the choice_node.</p>
 
-<h3 id="label-Readers%2FWriters">Readers/Writers<span><a href="#label-Readers%2FWriters">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+<h3 id="label-Readers-2FWriters">Readers/Writers<span><a href="#label-Readers-2FWriters">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
 <p>Finally, <em>all</em> nodes support keyword arguments :reader and :writer
 which allow you to extend or completely override the reading and/or writing
@@ -1302,25 +1295,24 @@ href="XML.html">XML</a>).</p>
 
 <p>Here&#39;s a (really contrived) example:</p>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">Foo</span>
-  <span class="ruby-identifier">include</span> <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">Mapping</span>
+<pre>class Foo
+  include XML::Mapping
 
-  <span class="ruby-identifier">text_node</span> :<span class="ruby-identifier">name</span>, <span class="ruby-string">&quot;@name&quot;</span>, :<span class="ruby-identifier">reader=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">proc</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">obj</span>,<span class="ruby-identifier">xml</span>,<span class="ruby-identifier">default_reader</span><span class="ruby-operator">|</span>
-                                       <span class="ruby-identifier">default_reader</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">obj</span>,<span class="ruby-identifier">xml</span>)
-                                       <span class="ruby-identifier">obj</span>.<span class="ruby-identifier">name</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">xml</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-string">&#39;more&#39;</span>]
+  text_node :name, &quot;@name&quot;, :reader=&gt;proc{|obj,xml,default_reader|
+                                       default_reader.call(obj,xml)
+                                       obj.name += xml.attributes[&#39;more&#39;]
                                      },
-                            :<span class="ruby-identifier">writer=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">proc</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">obj</span>,<span class="ruby-identifier">xml</span><span class="ruby-operator">|</span>
-                                       <span class="ruby-identifier">xml</span>.<span class="ruby-identifier">attributes</span>[<span class="ruby-string">&#39;bar&#39;</span>] = <span class="ruby-node">&quot;hi #{obj.name} ho&quot;</span>
+                            :writer=&gt;proc{|obj,xml|
+                                       xml.attributes[&#39;bar&#39;] = &quot;hi #{obj.name} ho&quot;
                                      }
-<span class="ruby-keyword">end</span>
+end
 
-<span class="ruby-identifier">f</span> = <span class="ruby-constant">Foo</span>.<span class="ruby-identifier">load_from_xml</span>(<span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;&lt;foo name=&quot;Jim&quot; more=&quot;XYZ&quot;/&gt;&#39;</span>).<span class="ruby-identifier">root</span>)
-=<span class="ruby-operator">&gt;</span> <span class="ruby-comment">#&lt;Foo:0x007fb015460c40 @name=&quot;JimXYZ&quot;&gt;</span>
+f = Foo.load_from_xml(REXML::Document.new(&#39;&lt;foo name=&quot;Jim&quot; more=&quot;XYZ&quot;/&gt;&#39;).root)
+=&gt; #&lt;Foo:0x007ff64a10e8c8 @name=&quot;JimXYZ&quot;&gt;
 
-<span class="ruby-identifier">xml</span> = <span class="ruby-identifier">f</span>.<span class="ruby-identifier">save_to_xml</span> 
-<span class="ruby-identifier">xml</span>.<span class="ruby-identifier">write</span> <span class="ruby-identifier">$stdout</span>,<span class="ruby-value">2</span> 
-<span class="ruby-operator">&lt;</span><span class="ruby-identifier">foo</span> <span class="ruby-identifier">bar</span>=<span class="ruby-string">&#39;hi JimXYZ ho&#39;</span><span class="ruby-operator">/</span><span class="ruby-operator">&gt;</span>
-</pre>
+xml = f.save_to_xml 
+xml.write $stdout,2 
+&lt;foo bar=&#39;hi JimXYZ ho&#39;/&gt;</pre>
 
 <p>So there&#39;s a “Foo” class with a text_node that would by default
 (without the :reader and :writer proc) map the Ruby attribute “name” to the
@@ -1352,15 +1344,14 @@ the <a href="XML.html">XML</a> tree (stupid example, I know).</p>
 node, and in both cases you do /not/ call the default behaviour, then you
 should use the generic node type <code>node</code>, e.g.:</p>
 
-<pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">SomeClass</span>
-  <span class="ruby-identifier">include</span> <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">Mapping</span>
+<pre>class SomeClass
+  include XML::Mapping
 
-  <span class="ruby-operator">...</span>.
+  ....
 
-  <span class="ruby-identifier">node</span> :<span class="ruby-identifier">reader=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">proc</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">obj</span>,<span class="ruby-identifier">xml</span><span class="ruby-operator">|</span> <span class="ruby-operator">...</span>},
-       :<span class="ruby-identifier">writer=</span><span class="ruby-operator">&gt;</span><span class="ruby-identifier">proc</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">obj</span>,<span class="ruby-identifier">xml</span><span class="ruby-operator">|</span> <span class="ruby-operator">...</span>}
-<span class="ruby-keyword">end</span>
-</pre>
+  node :reader=&gt;proc{|obj,xml| ...},
+       :writer=&gt;proc{|obj,xml| ...}
+end</pre>
 
 <p>(since you&#39;re completely replacing both the reading and the writing
 functionality, you&#39;re effectively replacing all the functionality of
@@ -1387,7 +1378,7 @@ href="aref:definingnodes">below</a>, and it generally just means that you
 move the (sensibly parameterized) code from your readers/writers to your
 node types.</p>
 
-<h2 id="label-Multiple+Mappings+per+Class">Multiple Mappings per Class<span><a href="#label-Multiple+Mappings+per+Class">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="label-Multiple+Mappings+per+Class">Multiple Mappings per Class<span><a href="#label-Multiple+Mappings+per+Class">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>Sometimes you might want to represent the same Ruby object in multiple
 alternative ways in <a href="XML.html">XML</a>. For example, the name of a
@@ -1415,63 +1406,63 @@ which again defaults to <code>:_default</code>.</p>
 mapping named <code>:other</code>) for <code>Person</code> objects with a
 name, an age and an address:</p>
 
-<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;xml/mapping&#39;</span>
+<pre>require &#39;xml/mapping&#39;
 
-<span class="ruby-keyword">class</span> <span class="ruby-constant">Address</span>; <span class="ruby-keyword">end</span>
+class Address; end
 
-<span class="ruby-keyword">class</span> <span class="ruby-constant">Person</span>
-  <span class="ruby-identifier">include</span> <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">Mapping</span>
+class Person
+  include XML::Mapping
 
-  <span class="ruby-comment"># the default mapping. Stores the name and age in XML attributes,</span>
-  <span class="ruby-comment"># and the address in a sub-element &quot;address&quot;.</span>
+  # the default mapping. Stores the name and age in XML attributes,
+  # and the address in a sub-element &quot;address&quot;.
 
-  <span class="ruby-identifier">text_node</span> :<span class="ruby-identifier">name</span>, <span class="ruby-string">&quot;@name&quot;</span>
-  <span class="ruby-identifier">numeric_node</span> :<span class="ruby-identifier">age</span>, <span class="ruby-string">&quot;@age&quot;</span>
-  <span class="ruby-identifier">object_node</span> :<span class="ruby-identifier">address</span>, <span class="ruby-string">&quot;address&quot;</span>, :<span class="ruby-keyword">class</span>=<span class="ruby-operator">&gt;</span><span class="ruby-constant">Address</span>
+  text_node :name, &quot;@name&quot;
+  numeric_node :age, &quot;@age&quot;
+  object_node :address, &quot;address&quot;, :class=&gt;Address
 
-  <span class="ruby-identifier">use_mapping</span> :<span class="ruby-identifier">other</span>
+  use_mapping :other
 
-  <span class="ruby-comment"># the &quot;:other&quot; mapping. Non-default root element name; name and age</span>
-  <span class="ruby-comment"># stored in XML elements; address stored in the person&#39;s element</span>
-  <span class="ruby-comment"># itself</span>
+  # the &quot;:other&quot; mapping. Non-default root element name; name and age
+  # stored in XML elements; address stored in the person&#39;s element
+  # itself
 
-  <span class="ruby-identifier">root_element_name</span> <span class="ruby-string">&quot;individual&quot;</span>
-  <span class="ruby-identifier">text_node</span> :<span class="ruby-identifier">name</span>, <span class="ruby-string">&quot;name&quot;</span>
-  <span class="ruby-identifier">numeric_node</span> :<span class="ruby-identifier">age</span>, <span class="ruby-string">&quot;age&quot;</span>
-  <span class="ruby-identifier">object_node</span> :<span class="ruby-identifier">address</span>, <span class="ruby-string">&quot;.&quot;</span>, :<span class="ruby-keyword">class</span>=<span class="ruby-operator">&gt;</span><span class="ruby-constant">Address</span>
+  root_element_name &quot;individual&quot;
+  text_node :name, &quot;name&quot;
+  numeric_node :age, &quot;age&quot;
+  object_node :address, &quot;.&quot;, :class=&gt;Address
 
-  <span class="ruby-comment"># you could also specify the mapping on a per-node basis with the</span>
-  <span class="ruby-comment"># :mapping option, e.g.:</span>
-  <span class="ruby-comment">#</span>
-  <span class="ruby-comment"># numeric_node :age, &quot;age&quot;, :mapping=&gt;:other</span>
-<span class="ruby-keyword">end</span>
-
-
-<span class="ruby-keyword">class</span> <span class="ruby-constant">Address</span>
-  <span class="ruby-identifier">include</span> <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">Mapping</span>
-
-  <span class="ruby-comment"># the default mapping.</span>
-
-  <span class="ruby-identifier">text_node</span> :<span class="ruby-identifier">street</span>, <span class="ruby-string">&quot;street&quot;</span>
-  <span class="ruby-identifier">numeric_node</span> :<span class="ruby-identifier">number</span>, <span class="ruby-string">&quot;number&quot;</span>
-  <span class="ruby-identifier">text_node</span> :<span class="ruby-identifier">city</span>, <span class="ruby-string">&quot;city&quot;</span>
-  <span class="ruby-identifier">numeric_node</span> :<span class="ruby-identifier">zip</span>, <span class="ruby-string">&quot;zip&quot;</span>
-
-  <span class="ruby-identifier">use_mapping</span> :<span class="ruby-identifier">other</span>
-
-  <span class="ruby-comment"># the &quot;:other&quot; mapping.</span>
-
-  <span class="ruby-identifier">text_node</span> :<span class="ruby-identifier">street</span>, <span class="ruby-string">&quot;street-name&quot;</span>
-  <span class="ruby-identifier">numeric_node</span> :<span class="ruby-identifier">number</span>, <span class="ruby-string">&quot;street-name/@number&quot;</span>
-  <span class="ruby-identifier">text_node</span> :<span class="ruby-identifier">city</span>, <span class="ruby-string">&quot;city-name&quot;</span>
-  <span class="ruby-identifier">numeric_node</span> :<span class="ruby-identifier">zip</span>, <span class="ruby-string">&quot;city-name/@zip-code&quot;</span>
-<span class="ruby-keyword">end</span>
+  # you could also specify the mapping on a per-node basis with the
+  # :mapping option, e.g.:
+  #
+  # numeric_node :age, &quot;age&quot;, :mapping=&gt;:other
+end
 
 
-<span class="ruby-comment">### usage</span>
+class Address
+  include XML::Mapping
 
-<span class="ruby-comment">## XML representation of a person in the default mapping</span>
-<span class="ruby-identifier">xml</span> = <span class="ruby-constant">REXML</span><span class="ruby-operator">::</span><span class="ruby-constant">Document</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;
+  # the default mapping.
+
+  text_node :street, &quot;street&quot;
+  numeric_node :number, &quot;number&quot;
+  text_node :city, &quot;city&quot;
+  numeric_node :zip, &quot;zip&quot;
+
+  use_mapping :other
+
+  # the &quot;:other&quot; mapping.
+
+  text_node :street, &quot;street-name&quot;
+  numeric_node :number, &quot;street-name/@number&quot;
+  text_node :city, &quot;city-name&quot;
+  numeric_node :zip, &quot;city-name/@zip-code&quot;
+end
+
+
+### usage
+
+## XML representation of a person in the default mapping
+xml = REXML::Document.new(&#39;
 &lt;person name=&quot;Suzy&quot; age=&quot;28&quot;&gt;
   &lt;address&gt;
     &lt;street&gt;Abbey Road&lt;/street&gt;
@@ -1479,57 +1470,56 @@ name, an age and an address:</p>
     &lt;city&gt;London&lt;/city&gt;
     &lt;zip&gt;18827&lt;/zip&gt;
   &lt;/address&gt;
-&lt;/person&gt;&#39;</span>).<span class="ruby-identifier">root</span>
+&lt;/person&gt;&#39;).root
 
-<span class="ruby-comment">## load using the default mapping</span>
-<span class="ruby-identifier">p</span> = <span class="ruby-constant">Person</span>.<span class="ruby-identifier">load_from_xml</span> <span class="ruby-identifier">xml</span> 
-=<span class="ruby-operator">&gt;</span> <span class="ruby-comment">#&lt;Person:0x007fb015506640 @name=&quot;Suzy&quot;, @age=28, @address=#&lt;Address:0x007fb015505a38 @street=&quot;Abbey Road&quot;, @number=72, @city=&quot;London&quot;, @zip=18827&gt;&gt;</span>
+## load using the default mapping
+p = Person.load_from_xml xml 
+=&gt; #&lt;Person:0x007ff64a23e9c8 @name=&quot;Suzy&quot;, @age=28, @address=#&lt;Address:0x007ff64a23d4b0 @street=&quot;Abbey Road&quot;, @number=72, @city=&quot;London&quot;, @zip=18827&gt;&gt;
 
-<span class="ruby-comment">## save using the default mapping</span>
-<span class="ruby-identifier">xml2</span> = <span class="ruby-identifier">p</span>.<span class="ruby-identifier">save_to_xml</span>
-<span class="ruby-identifier">xml2</span>.<span class="ruby-identifier">write</span> <span class="ruby-identifier">$stdout</span>,<span class="ruby-value">2</span> 
-<span class="ruby-operator">&lt;</span><span class="ruby-identifier">person</span> <span class="ruby-identifier">name</span>=<span class="ruby-string">&#39;Suzy&#39;</span> <span class="ruby-identifier">age</span>=<span class="ruby-string">&#39;28&#39;</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-identifier">address</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">street</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-constant">Abbey</span> <span class="ruby-constant">Road</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/street&gt;
+## save using the default mapping
+xml2 = p.save_to_xml
+xml2.write $stdout,2 
+&lt;person name=&#39;Suzy&#39; age=&#39;28&#39;&gt;
+  &lt;address&gt;
+    &lt;street&gt;
+      Abbey Road
+    &lt;/street&gt;
     &lt;number&gt;
       72
-    &lt;/num</span><span class="ruby-identifier">ber</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-identifier">city</span><span class="ruby-operator">&gt;</span>
-      <span class="ruby-constant">London</span>
-    <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/city&gt;
+    &lt;/number&gt;
+    &lt;city&gt;
+      London
+    &lt;/city&gt;
     &lt;zip&gt;
       18827
-    &lt;/</span><span class="ruby-identifier">zip</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/address&gt;
-&lt;/</span><span class="ruby-identifier">person</span><span class="ruby-operator">&gt;</span>
-<span class="ruby-comment">## xml2 identical to xml</span>
+    &lt;/zip&gt;
+  &lt;/address&gt;
+&lt;/person&gt;
+## xml2 identical to xml
 
 
-<span class="ruby-comment">## now, save the same person to XML using the :other mapping...</span>
-<span class="ruby-identifier">other_xml</span> = <span class="ruby-identifier">p</span>.<span class="ruby-identifier">save_to_xml</span> :<span class="ruby-identifier">mapping=</span><span class="ruby-operator">&gt;</span>:<span class="ruby-identifier">other</span>
-<span class="ruby-identifier">other_xml</span>.<span class="ruby-identifier">write</span> <span class="ruby-identifier">$stdout</span>,<span class="ruby-value">2</span> 
-<span class="ruby-operator">&lt;</span><span class="ruby-identifier">individual</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-identifier">name</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-constant">Suzy</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/name&gt;
+## now, save the same person to XML using the :other mapping...
+other_xml = p.save_to_xml :mapping=&gt;:other
+other_xml.write $stdout,2 
+&lt;individual&gt;
+  &lt;name&gt;
+    Suzy
+  &lt;/name&gt;
   &lt;age&gt;
     28
-  &lt;/</span><span class="ruby-identifier">age</span><span class="ruby-operator">&gt;</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-identifier">street</span><span class="ruby-operator">-</span><span class="ruby-identifier">name</span> <span class="ruby-identifier">number</span>=<span class="ruby-string">&#39;72&#39;</span><span class="ruby-operator">&gt;</span>
-    <span class="ruby-constant">Abbey</span> <span class="ruby-constant">Road</span>
-  <span class="ruby-operator">&lt;</span><span class="ruby-regexp">/street-name&gt;
+  &lt;/age&gt;
+  &lt;street-name number=&#39;72&#39;&gt;
+    Abbey Road
+  &lt;/street-name&gt;
   &lt;city-name zip-code=&#39;18827&#39;&gt;
     London
-  &lt;/</span><span class="ruby-identifier">city</span><span class="ruby-operator">-</span><span class="ruby-identifier">name</span><span class="ruby-operator">&gt;</span>
-<span class="ruby-operator">&lt;</span><span class="ruby-node">/individual&gt;
+  &lt;/city-name&gt;
+&lt;/individual&gt;
 ## load it again using the :other mapping
 p2 = Person.load_from_xml other_xml, :mapping=&gt;:other 
-=&gt; #&lt;Person:0x007fb0154bad30 @name=&quot;Suzy&quot;, @age=28, @address=#&lt;Address:0x007fb0154b98e0 @street=&quot;Abbey Road&quot;, @number=72, @city=&quot;London&quot;, @zip=18827&gt;&gt;
+=&gt; #&lt;Person:0x007ff64a20c838 @name=&quot;Suzy&quot;, @age=28, @address=#&lt;Address:0x007ff64a2079a0 @street=&quot;Abbey Road&quot;, @number=72, @city=&quot;London&quot;, @zip=18827&gt;&gt;
 
-## p2 identical to p
-</span></pre>
+## p2 identical to p</pre>
 
 <p>In this example, each of the two mappings contains nodes that map the same
 set of Ruby attributes (name, age and address). This is probably what you
@@ -1549,7 +1539,7 @@ for the sub-object(s) using the option :sub_mapping, e.g.</p>
 <pre class="ruby"><span class="ruby-identifier">object_node</span> :<span class="ruby-identifier">address</span>, <span class="ruby-string">&quot;address&quot;</span>, :<span class="ruby-keyword">class</span>=<span class="ruby-operator">&gt;</span><span class="ruby-constant">Address</span>, :<span class="ruby-identifier">sub_mapping=</span><span class="ruby-operator">&gt;</span>:<span class="ruby-identifier">other</span>
 </pre>
 
-<h2 id="label-Defining+your+own+Node+Types">Defining your own Node Types<span><a href="#label-Defining+your+own+Node+Types">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="label-Defining+your+own+Node+Types">Defining your own Node Types<span><a href="#label-Defining+your+own+Node+Types">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>It&#39;s easy to write additional node types and register them with the
 xml-mapping library (the following node types come with xml-mapping:
@@ -1559,7 +1549,7 @@ xml-mapping library (the following node types come with xml-mapping:
 
 <p>I&#39;ll first show an example, then some more theoretical insight.</p>
 
-<h3 id="label-Example">Example<span><a href="#label-Example">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+<h3 id="label-Example">Example<span><a href="#label-Example">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
 <p>Let&#39;s say we want to extend the <code>Signature</code> class from the
 example to include the time at which the signature was created. We want the
@@ -1694,18 +1684,19 @@ will store the returned single attribute&#39;s value into the
 being read in. In our implementation, we apply the xpath expressions
 created during initialization to <em>xml</em> (e.g.
 <code>@y_path.first(xml)</code>). An expression
-<em>xpath_expr</em>.first(<em>xml</em>) returns (as a REXML element) the
-first sub-element of <em>xml</em> that matches <em>xpath_expr</em>, or
-raises <a href="XML/XXPathError.html">XML::XXPathError</a> if there was no
-such element. We apply REXML&#39;s <em>text</em> method to the returned
-element to get out the element&#39;s text, convert it to integer, and
-supply it to the constructor of the <code>Time</code> object to be
-returned. As a side note, if an XPath expression matches <a
-href="XML.html">XML</a> attributes, <a
-href="XML/XXPath.html">XML::XXPath</a> methods like <em>first</em> will
+<em>xpath_expr</em>.first(<em>xml</em>) returns (as a <a
+href="REXML.html">REXML</a> element) the first sub-element of <em>xml</em>
+that matches <em>xpath_expr</em>, or raises <a
+href="XML/XXPathError.html">XML::XXPathError</a> if there was no such
+element. We apply REXML&#39;s <em>text</em> method to the returned element
+to get out the element&#39;s text, convert it to integer, and supply it to
+the constructor of the <code>Time</code> object to be returned. As a side
+note, if an XPath expression matches <a href="XML.html">XML</a> attributes,
+<a href="XML/XXPath.html">XML::XXPath</a> methods like <em>first</em> will
 return <a
 href="XML/XXPath/Accessors/Attribute.html">XML::XXPath::Accessors::Attribute</a>
-nodes that behave similarly to REXML::Element nodes, including support for
+nodes that behave similarly to <a
+href="REXML/Element.html">REXML::Element</a> nodes, including support for
 messages like <em>name</em> and <em>text</em>, so this would&#39;ve worked
 also if our XPath expressions had referred to <a href="XML.html">XML</a>
 attributes, not elements. The <code>default_when_xpath_err</code> thing
@@ -1720,29 +1711,29 @@ and the default value is set if it was provided. So you should just wrap
 <code>default_when_xpath_err</code> around any applications of XPath
 expressions whose non-presence in the <a href="XML.html">XML</a> you want
 to be considered a non-presence of the attribute you&#39;re trying to
-extract. (XML::XXPath is designed to know knothing about XML::Mapping, so
-it doesn&#39;t raise <a
+extract. (XML::XXPath is designed to know knothing about <a
+href="XML/Mapping.html">XML::Mapping</a>, so it doesn&#39;t raise <a
 href="XML/Mapping/SingleAttributeNode/NoAttrValueSet.html">XML::Mapping::SingleAttributeNode::NoAttrValueSet</a>
 directly)</p>
 
 <p>The <code>set_attr_value</code> method is called whenever an instance of
 the mapping class the node belongs to (<code>Signature</code> in the
 example) is being stored into an <a href="XML.html">XML</a> tree. The
-<em>xml</em> parameter is the <a href="XML.html">XML</a> tree (a REXML
-element node; here this is again the tree rooted at the
-<code>&lt;Signature&gt;</code> element); <em>value</em> is the current
-value of the single attribute (in this example, the <code>signed_on</code>
-attribute of the <code>Signature</code> instance being stored).
-<em>xml</em> will most probably be “half-populated” by the time this method
-is called – the framework calls the <code>set_attr_value</code> methods of
-all nodes of a mapping class in the order of their definition, letting each
-node fill its “bit” into <em>xml</em>. The method implementation is
-expected to write <em>value</em> into (the correct sub-elements of)
-<em>xml</em>, or raise an exception to signal an error and abort the whole
-process. No default value handling is done here;
-<code>set_attr_value</code> won&#39;t be called at all if the attribute had
-been set to its default value. In our implementation we grab the year,
-month and day values from <em>value</em> (which must be a
+<em>xml</em> parameter is the <a href="XML.html">XML</a> tree (a <a
+href="REXML.html">REXML</a> element node; here this is again the tree
+rooted at the <code>&lt;Signature&gt;</code> element); <em>value</em> is
+the current value of the single attribute (in this example, the
+<code>signed_on</code> attribute of the <code>Signature</code> instance
+being stored). <em>xml</em> will most probably be “half-populated” by the
+time this method is called – the framework calls the
+<code>set_attr_value</code> methods of all nodes of a mapping class in the
+order of their definition, letting each node fill its “bit” into
+<em>xml</em>. The method implementation is expected to write <em>value</em>
+into (the correct sub-elements of) <em>xml</em>, or raise an exception to
+signal an error and abort the whole process. No default value handling is
+done here; <code>set_attr_value</code> won&#39;t be called at all if the
+attribute had been set to its default value. In our implementation we grab
+the year, month and day values from <em>value</em> (which must be a
 <code>Time</code>), and store it into the sub-elements of <em>xml</em>
 identified by XPath expressions <code>@y_path</code>, <code>@m_path</code>
 and <code>@d_path</code>, respectively. We do this by calling <a
@@ -1755,7 +1746,7 @@ at the end of <em>xml</em>&#39;s list of sub-nodes), and returned. See <a
 href="aref:xpath">below</a> for a more detailed documentation of the XPath
 interpreter.</p>
 
-<h3 id="label-Element+order+in+created+XML+documents">Element order in created <a href="XML.html">XML</a> documents<span><a href="#label-Element+order+in+created+XML+documents">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+<h3 id="label-Element+order+in+created+XML+documents">Element order in created <a href="XML.html">XML</a> documents<span><a href="#label-Element+order+in+created+XML+documents">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
 <p>As just said, <a href="XML/XXPath.html">XML::XXPath</a>, when used to
 create new <a href="XML.html">XML</a> nodes, generally appends those nodes
@@ -1780,15 +1771,15 @@ in the output <a href="XML.html">XML</a>.</p>
 description is self-contained, so some information from the previous
 section will be repeated.</p>
 
-<h3 id="label-Node+Types+Are+Ruby+Classes">Node Types Are Ruby Classes<span><a href="#label-Node+Types+Are+Ruby+Classes">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+<h3 id="label-Node+Types+Are+Ruby+Classes">Node Types Are Ruby Classes<span><a href="#label-Node+Types+Are+Ruby+Classes">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
 <p>A node type is implemented as a Ruby class derived from <a
 href="XML/Mapping/Node.html">XML::Mapping::Node</a> or one of its
 subclasses.</p>
 
 <p>The following node types (node classes) come with xml-mapping (they all
-live in the XML::Mapping namespace, which I&#39;ve left out here for
-brevity):</p>
+live in the <a href="XML/Mapping.html">XML::Mapping</a> namespace, which
+I&#39;ve left out here for brevity):</p>
 
 <pre>Node
  +-SingleAttributeNode
@@ -1827,22 +1818,23 @@ they&#39;re defined in the source file
 very long or complicated; you may consider reading it in addition to this
 text to gain a better understanding.</p>
 
-<h3 id="label-How+Node+Types+Work">How Node Types Work<span><a href="#label-How+Node+Types+Work">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+<h3 id="label-How+Node+Types+Work">How Node Types Work<span><a href="#label-How+Node+Types+Work">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
 <p>The xml-mapping core “operates” node types as follows:</p>
 
-<h4 id="label-Node+Initialization">Node Initialization<span><a href="#label-Node+Initialization">&para;</a> <a href="#documentation">&uarr;</a></span></h4>
+<h4 id="label-Node+Initialization">Node Initialization<span><a href="#label-Node+Initialization">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
 <p>As said above, when a node class is registered with xml-mapping by calling
 <code>XML::Mapping.add_node_class TheNodeClass</code>, xml-mapping
 automatically generates the node factory method for that type. The node
-factory method will effectively be defined as a class method of the
-XML::Mapping module, which is why one can call it from the body of a
-mapping class definition. The generated method will create a new instance
-of the node class (a <em>node</em> for short) by calling <em>new</em> on
-the node class. The list of parameters to <em>new</em> will consist of
-<em>the mapping class, followed by all arguments that were passed to the
-node factory method</em>. For example, when you have this node declaration:</p>
+factory method will effectively be defined as a class method of the <a
+href="XML/Mapping.html">XML::Mapping</a> module, which is why one can call
+it from the body of a mapping class definition. The generated method will
+create a new instance of the node class (a <em>node</em> for short) by
+calling <em>new</em> on the node class. The list of parameters to
+<em>new</em> will consist of <em>the mapping class, followed by all
+arguments that were passed to the node factory method</em>. For example,
+when you have this node declaration:</p>
 
 <pre class="ruby"><span class="ruby-keyword">class</span> <span class="ruby-constant">MyMappingClass</span>
   <span class="ruby-identifier">include</span> <span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">Mapping</span>
@@ -1863,15 +1855,14 @@ parameters it processes itself, process them, and return an array
 containing the remaining (still unprocessed) parameters. Thus, an
 implementation of <em>initialize</em> follows this pattern:</p>
 
-<pre class="ruby"><span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
-  <span class="ruby-identifier">myparam1</span>,<span class="ruby-identifier">myparam2</span>,<span class="ruby-operator">...</span>,<span class="ruby-identifier">myparamx</span>,<span class="ruby-operator">*</span><span class="ruby-identifier">args</span> = <span class="ruby-keyword">super</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
+<pre>def initialize(*args)
+  myparam1,myparam2,...,myparamx,*args = super(*args)
 
-  <span class="ruby-operator">...</span>. <span class="ruby-identifier">process</span> <span class="ruby-identifier">the</span> <span class="ruby-identifier">myparam1</span>,<span class="ruby-identifier">myparam2</span>,<span class="ruby-operator">...</span>,<span class="ruby-identifier">myparamx</span> <span class="ruby-operator">...</span>.
+  .... process the myparam1,myparam2,...,myparamx ....
 
-  <span class="ruby-comment"># return still unprocessed args</span>
-  <span class="ruby-identifier">args</span>
-<span class="ruby-keyword">end</span>
-</pre>
+  # return still unprocessed args
+  args
+end</pre>
 
 <p>(since the called superclass initializer is written the same way, the
 parameter array returned by it will already be stripped of all parameters
@@ -1893,7 +1884,7 @@ attribute of <em>self</em> to reference the mapping class.</p>
 node definition, and that instance lives in the mapping class the node was
 defined in.</p>
 
-<h4 id="label-Node+Operation+during+Marshalling+and+Unmarshalling">Node Operation during Marshalling and Unmarshalling<span><a href="#label-Node+Operation+during+Marshalling+and+Unmarshalling">&para;</a> <a href="#documentation">&uarr;</a></span></h4>
+<h4 id="label-Node+Operation+during+Marshalling+and+Unmarshalling">Node Operation during Marshalling and Unmarshalling<span><a href="#label-Node+Operation+during+Marshalling+and+Unmarshalling">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
 <p>When an instance of a mapping class is created or filled from an <a
 href="XML.html">XML</a> tree, xml-mapping will call <code>xml_to_obj</code>
@@ -1917,7 +1908,7 @@ expected to read whatever pieces of data it is responsible for from the
 instance and put it into the appropriate <a href="XML.html">XML</a>
 elements/XML attr etc. of the <a href="XML.html">XML</a> tree.</p>
 
-<h3 id="label-Basic+Node+Types+Overview">Basic Node Types Overview<span><a href="#label-Basic+Node+Types+Overview">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+<h3 id="label-Basic+Node+Types+Overview">Basic Node Types Overview<span><a href="#label-Basic+Node+Types+Overview">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
 <p>The following is an overview of how initialization and
 marshalling/unmarshalling is implemented in the node base classes (Node,
@@ -1925,7 +1916,7 @@ SingleAttributeNode, and SubObjectBaseNode).</p>
 
 <p>TODO: summary table: member var name; introduced in class; meaning</p>
 
-<h4 id="label-Node">Node<span><a href="#label-Node">&para;</a> <a href="#documentation">&uarr;</a></span></h4>
+<h4 id="label-Node">Node<span><a href="#label-Node">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
 <p>In <em>initialize</em>, the mapping class and the option arguments are
 stripped from the argument list. The mapping class is stored in @owner, the
@@ -1953,7 +1944,7 @@ overwritten on the node to delegate to the supplied :reader/:writer procs.</p>
 (<code>obj_to_xml</code>/<code>xml_to_obj</code>) are not implemented in
 <code>Node</code> (they just raise an exception).</p>
 
-<h4 id="label-SingleAttributeNode">SingleAttributeNode<span><a href="#label-SingleAttributeNode">&para;</a> <a href="#documentation">&uarr;</a></span></h4>
+<h4 id="label-SingleAttributeNode">SingleAttributeNode<span><a href="#label-SingleAttributeNode">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
 <p>In <em>initialize</em>, the attribute name is stripped from the argument
 list and stored in @attrname, and an attribute of that name is added to the
@@ -1967,9 +1958,10 @@ handles. Because of this, the
 SingleAttributeNode call two new methods introduced by SingleAttributeNode,
 which must be overwritten by subclasses:</p>
 
-<pre>extract_attr_value(xml)
+<pre class="ruby"><span class="ruby-identifier">extract_attr_value</span>(<span class="ruby-identifier">xml</span>)
 
-set_attr_value(xml, value)</pre>
+<span class="ruby-identifier">set_attr_value</span>(<span class="ruby-identifier">xml</span>, <span class="ruby-identifier">value</span>)
+</pre>
 
 <p><code>extract_attr_value(xml)</code> is called by <code>xml_to_obj</code>
 during unmarshalling. <em>xml</em> is the <a href="XML.html">XML</a> tree
@@ -1994,7 +1986,7 @@ if it wants to indicate that the data was not present in the <a
 href="XML.html">XML</a>. SingleAttributeNode will catch this exception and
 put the default value, if it was defined, into the attribute.</p>
 
-<h4 id="label-SubObjectBaseNode">SubObjectBaseNode<span><a href="#label-SubObjectBaseNode">&para;</a> <a href="#documentation">&uarr;</a></span></h4>
+<h4 id="label-SubObjectBaseNode">SubObjectBaseNode<span><a href="#label-SubObjectBaseNode">&para;</a> <a href="#top">&uarr;</a></span></h4>
 
 <p>The initializer will set up additional member variables @sub_mapping,
 @marshaller, and @unmarshaller.</p>
@@ -2011,7 +2003,7 @@ href="aref:subobjnodes">above</a>). The procs are there to be called from
 <code>extract_attr_value</code> or <code>set_attr_value</code> whenever the
 need arises.</p>
 
-<h2 id="label-XPath+Interpreter">XPath Interpreter<span><a href="#label-XPath+Interpreter">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="label-XPath+Interpreter">XPath Interpreter<span><a href="#label-XPath+Interpreter">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p><a href="XML/XXPath.html">XML::XXPath</a> is an XPath parser. It is used in
 xml-mapping node type definitions, but can just as well be utilized
@@ -2047,7 +2039,7 @@ href="XML.html">XML</a> document</p>
 the reference documentation and the <a
 href="user_manual_xxpath_md.html">user_manual_xxpath</a> file.</p>
 
-<h2 id="label-License">License<span><a href="#label-License">&para;</a> <a href="#documentation">&uarr;</a></span></h2>
+<h2 id="label-License">License<span><a href="#label-License">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
 <p>xml-mapping is licensed under the Apache License, version 2.0. See the
 LICENSE file for details.</p>
@@ -2057,7 +2049,7 @@ LICENSE file for details.</p>
 
 <footer id="validator-badges" role="contentinfo">
   <p><a href="http://validator.w3.org/check/referer">Validate</a>
-  <p>Generated by <a href="http://rdoc.rubyforge.org">RDoc</a> 4.1.0.
-  <p>Based on <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+  <p>Generated by <a href="http://docs.seattlerb.org/rdoc/">RDoc</a> 4.2.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
 </footer>
 

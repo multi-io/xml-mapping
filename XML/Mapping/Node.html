@@ -6,19 +6,16 @@
 
 <title>class XML::Mapping::Node - XML::Mapping -- Simple, extensible Ruby-to-XML (and back) mapper</title>
 
-<link href="../../fonts.css" rel="stylesheet">
-<link href="../../rdoc.css" rel="stylesheet">
-
 <script type="text/javascript">
   var rdoc_rel_prefix = "../../";
 </script>
 
 <script src="../../js/jquery.js"></script>
-<script src="../../js/navigation.js"></script>
-<script src="../../js/search_index.js"></script>
-<script src="../../js/search.js"></script>
-<script src="../../js/searcher.js"></script>
 <script src="../../js/darkfish.js"></script>
+
+<link href="../../css/fonts.css" rel="stylesheet">
+<link href="../../css/rdoc.css" rel="stylesheet">
+
 
 
 <body id="top" role="document" class="class">
@@ -73,7 +70,15 @@
 
   <ul class="link-list" role="directory">
     
+    <li ><a href="#method-c-default_obj_to_xml">::default_obj_to_xml</a>
+    
+    <li ><a href="#method-c-default_xml_to_obj">::default_xml_to_obj</a>
+    
     <li ><a href="#method-c-new">::new</a>
+    
+    <li ><a href="#method-c-obj_to_xml">::obj_to_xml</a>
+    
+    <li ><a href="#method-c-xml_to_obj">::xml_to_obj</a>
     
     <li ><a href="#method-i-is_present_in-3F">#is_present_in?</a>
     
@@ -97,7 +102,8 @@
   <section class="description">
     
 <p>Abstract base class for all node types. As mentioned in the documentation
-for XML::Mapping, node types must be registered using <a
+for <a href="../Mapping.html">XML::Mapping</a>, node types must be
+registered using <a
 href="../Mapping.html#method-c-add_node_class">XML::Mapping.add_node_class</a>,
 and a corresponding “node factory method” (e.g. “text_node”) will then be
 added as a class method to your mapping classes. The node factory method is
@@ -111,11 +117,12 @@ href="../../XML.html">XML</a> marshalling/unmarshalling for this node, for
 all instances of the mapping class. For this purpose, the marshalling and
 unmarshalling methods of a mapping class instance (fill_into_xml and
 fill_from_xml, respectively) will call <a
-href="Node.html#method-i-obj_to_xml">#obj_to_xml</a> resp. <a
-href="Node.html#method-i-xml_to_obj">#xml_to_obj</a> on all nodes of the
-mapping class, in the order of their definition, passing the REXML element
-the data is to be marshalled to/unmarshalled from as well as the object the
-data is to be read from/filled into.</p>
+href="Node.html#method-c-obj_to_xml">::obj_to_xml</a> resp. <a
+href="Node.html#method-c-xml_to_obj">::xml_to_obj</a> on all nodes of the
+mapping class, in the order of their definition, passing the <a
+href="../../REXML.html">REXML</a> element the data is to be marshalled
+to/unmarshalled from as well as the object the data is to be read
+from/filled into.</p>
 
 <p><a href="Node.html">Node</a> types that map some <a
 href="../../XML.html">XML</a> data to a single attribute of their mapping
@@ -144,6 +151,62 @@ href="SingleAttributeNode.html">SingleAttributeNode</a>.</p>
        </header>
 
     
+      <div id="method-c-default_obj_to_xml" class="method-detail method-alias">
+        
+        <div class="method-heading">
+          <span class="method-name">default_obj_to_xml</span><span
+            class="method-args">(obj,xml)</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+        </div>
+
+        
+
+        
+        <div class="aliases">
+          Alias for: <a href="Node.html#method-c-obj_to_xml">obj_to_xml</a>
+        </div>
+        
+      </div>
+
+    
+      <div id="method-c-default_xml_to_obj" class="method-detail method-alias">
+        
+        <div class="method-heading">
+          <span class="method-name">default_xml_to_obj</span><span
+            class="method-args">(obj,xml)</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+        </div>
+
+        
+
+        
+        <div class="aliases">
+          Alias for: <a href="Node.html#method-c-xml_to_obj">xml_to_obj</a>
+        </div>
+        
+      </div>
+
+    
       <div id="method-c-new" class="method-detail ">
         
         <div class="method-heading">
@@ -169,7 +232,7 @@ href="../../README_md.html">README</a> for details.</p>
 
           
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 538</span>
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 550</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">owner</span>,<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
   <span class="ruby-ivar">@owner</span> = <span class="ruby-identifier">owner</span>
   <span class="ruby-keyword">if</span> <span class="ruby-constant">Hash</span><span class="ruby-operator">===</span><span class="ruby-identifier">args</span>[<span class="ruby-value">-1</span>]
@@ -221,6 +284,88 @@ href="../../README_md.html">README</a> for details.</p>
       </div>
 
     
+      <div id="method-c-obj_to_xml" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">obj_to_xml</span><span
+            class="method-args">(obj,xml)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="obj_to_xml-source">
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 580</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">obj_to_xml</span>(<span class="ruby-identifier">obj</span>,<span class="ruby-identifier">xml</span>)
+  <span class="ruby-keyword">begin</span>
+    <span class="ruby-ivar">@options</span>[<span class="ruby-value">:writer</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">obj</span>,<span class="ruby-identifier">xml</span>,<span class="ruby-keyword">self</span>.<span class="ruby-identifier">method</span>(<span class="ruby-value">:default_obj_to_xml</span>))
+  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">ArgumentError</span> <span class="ruby-comment"># thrown if (see above)</span>
+    <span class="ruby-ivar">@options</span>[<span class="ruby-value">:writer</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">obj</span>,<span class="ruby-identifier">xml</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+        <div class="aliases">
+          Also aliased as: <a href="Node.html#method-c-default_obj_to_xml">default_obj_to_xml</a>
+        </div>
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-xml_to_obj" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">xml_to_obj</span><span
+            class="method-args">(obj,xml)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="xml_to_obj-source">
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 566</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">xml_to_obj</span>(<span class="ruby-identifier">obj</span>,<span class="ruby-identifier">xml</span>)
+  <span class="ruby-keyword">begin</span>
+    <span class="ruby-ivar">@options</span>[<span class="ruby-value">:reader</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">obj</span>,<span class="ruby-identifier">xml</span>,<span class="ruby-keyword">self</span>.<span class="ruby-identifier">method</span>(<span class="ruby-value">:default_xml_to_obj</span>))
+  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">ArgumentError</span>  <span class="ruby-comment"># thrown if @options[:reader] is a lambda (i.e. no Proc) with !=3 args (e.g. proc{...} in ruby1.8)</span>
+    <span class="ruby-ivar">@options</span>[<span class="ruby-value">:reader</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">obj</span>,<span class="ruby-identifier">xml</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+        <div class="aliases">
+          Also aliased as: <a href="Node.html#method-c-default_xml_to_obj">default_xml_to_obj</a>
+        </div>
+        
+
+        
+      </div>
+
+    
     </section>
   
      <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
@@ -253,7 +398,7 @@ href="ChoiceNode.html#method-i-obj_to_xml">XML::Mapping::ChoiceNode#obj_to_xml</
 
           
           <div class="method-source-code" id="is_present_in-3F-source">
-            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 617</span>
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 629</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">is_present_in?</span> <span class="ruby-identifier">obj</span>
   <span class="ruby-keyword">true</span>
 <span class="ruby-keyword">end</span></pre>
@@ -296,7 +441,7 @@ for here. Default implementation is empty.</p>
 
           
           <div class="method-source-code" id="obj_initializing-source">
-            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 610</span>
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 622</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">obj_initializing</span>(<span class="ruby-identifier">obj</span>,<span class="ruby-identifier">mapping</span>)
 <span class="ruby-keyword">end</span></pre>
           </div>
@@ -322,19 +467,22 @@ for here. Default implementation is empty.</p>
 
         <div class="method-description">
           
-          
+          <p>This is called by the <a href="../../XML.html">XML</a> unmarshalling
+machinery when the state of an instance of this node&#39;s @owner is to be
+stored into an <a href="../../XML.html">XML</a> tree. <em>obj</em> is the
+instance, <em>xml</em> is the tree (a <a
+href="../../REXML/Element.html">REXML::Element</a>). The node must extract
+“its” data from <em>obj</em> and store it to the corresponding parts
+(sub-elements, attributes etc.) of <em>xml</em> (using <a
+href="../XXPath.html">XML::XXPath</a> or any other means).</p>
           
           
 
           
           <div class="method-source-code" id="obj_to_xml-source">
-            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 568</span>
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 607</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">obj_to_xml</span>(<span class="ruby-identifier">obj</span>,<span class="ruby-identifier">xml</span>)
-  <span class="ruby-keyword">begin</span>
-    <span class="ruby-ivar">@options</span>[<span class="ruby-value">:writer</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">obj</span>,<span class="ruby-identifier">xml</span>,<span class="ruby-keyword">self</span>.<span class="ruby-identifier">method</span>(<span class="ruby-value">:default_obj_to_xml</span>))
-  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">ArgumentError</span> <span class="ruby-comment"># thrown if (see above)</span>
-    <span class="ruby-ivar">@options</span>[<span class="ruby-value">:writer</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">obj</span>,<span class="ruby-identifier">xml</span>)
-  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">raise</span> <span class="ruby-string">&quot;abstract method called&quot;</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -359,19 +507,22 @@ for here. Default implementation is empty.</p>
 
         <div class="method-description">
           
-          
+          <p>This is called by the <a href="../../XML.html">XML</a> unmarshalling
+machinery when the state of an instance of this node&#39;s @owner is to be
+read from an <a href="../../XML.html">XML</a> tree. <em>obj</em> is the
+instance, <em>xml</em> is the tree (a <a
+href="../../REXML/Element.html">REXML::Element</a>). The node must read
+“its” data from <em>xml</em> (using <a
+href="../XXPath.html">XML::XXPath</a> or any other means) and store it to
+the corresponding parts (attributes etc.) of <em>obj</em>&#39;s state.</p>
           
           
 
           
           <div class="method-source-code" id="xml_to_obj-source">
-            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 554</span>
+            <pre><span class="ruby-comment"># File lib/xml/mapping/base.rb, line 597</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">xml_to_obj</span>(<span class="ruby-identifier">obj</span>,<span class="ruby-identifier">xml</span>)
-  <span class="ruby-keyword">begin</span>
-    <span class="ruby-ivar">@options</span>[<span class="ruby-value">:reader</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">obj</span>,<span class="ruby-identifier">xml</span>,<span class="ruby-keyword">self</span>.<span class="ruby-identifier">method</span>(<span class="ruby-value">:default_xml_to_obj</span>))
-  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">ArgumentError</span>  <span class="ruby-comment"># thrown if @options[:reader] is a lambda (i.e. no Proc) with !=3 args (e.g. proc{...} in ruby1.8)</span>
-    <span class="ruby-ivar">@options</span>[<span class="ruby-value">:reader</span>].<span class="ruby-identifier">call</span>(<span class="ruby-identifier">obj</span>,<span class="ruby-identifier">xml</span>)
-  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">raise</span> <span class="ruby-string">&quot;abstract method called&quot;</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -391,7 +542,7 @@ for here. Default implementation is empty.</p>
 
 <footer id="validator-badges" role="contentinfo">
   <p><a href="http://validator.w3.org/check/referer">Validate</a>
-  <p>Generated by <a href="http://rdoc.rubyforge.org">RDoc</a> 4.1.0.
-  <p>Based on <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+  <p>Generated by <a href="http://docs.seattlerb.org/rdoc/">RDoc</a> 4.2.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
 </footer>
 

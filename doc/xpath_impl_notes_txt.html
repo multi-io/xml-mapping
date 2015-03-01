@@ -6,19 +6,16 @@
 
 <title>xpath_impl_notes - XML::Mapping -- Simple, extensible Ruby-to-XML (and back) mapper</title>
 
-<link href="../fonts.css" rel="stylesheet">
-<link href="../rdoc.css" rel="stylesheet">
-
 <script type="text/javascript">
   var rdoc_rel_prefix = "../";
 </script>
 
 <script src="../js/jquery.js"></script>
-<script src="../js/navigation.js"></script>
-<script src="../js/search_index.js"></script>
-<script src="../js/search.js"></script>
-<script src="../js/searcher.js"></script>
 <script src="../js/darkfish.js"></script>
+
+<link href="../css/fonts.css" rel="stylesheet">
+<link href="../css/rdoc.css" rel="stylesheet">
+
 
 
 <body id="top" role="document" class="file">
@@ -79,7 +76,7 @@
 
 <main role="main" aria-label="Page doc/xpath_impl_notes.txt">
 
-<h3 id="label-latest+design+%2812%2F2004%29">latest design (12/2004)<span><a href="#label-latest+design+%2812%2F2004%29">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+<h3 id="label-latest+design+-2812-2F2004-29">latest design (12/2004)<span><a href="#label-latest+design+-2812-2F2004-29">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
 <p>At the lowest level, the “Accessors” sub-module contains reader and creator
 functions that correspond to the various types of path elements
@@ -135,78 +132,76 @@ frontends to that.</p>
 
 <p>The implementations of the <code>@creator_procs</code> look like this:</p>
 
-<pre class="ruby"><span class="ruby-ivar">@creator_procs</span>[<span class="ruby-value">0</span>] =
-  <span class="ruby-identifier">proc</span>{<span class="ruby-operator">|</span><span class="ruby-identifier">node</span>,<span class="ruby-identifier">create_new</span><span class="ruby-operator">|</span> <span class="ruby-identifier">node</span>}
+<pre>@creator_procs[0] =
+  proc{|node,create_new| node}
 
-<span class="ruby-ivar">@creator_procs</span>[<span class="ruby-value">1</span>] =
-  <span class="ruby-identifier">proc</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">node</span>,<span class="ruby-identifier">create_new</span><span class="ruby-operator">|</span>
-    <span class="ruby-ivar">@creator_procs</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">call</span>(<span class="ruby-constant">Accessors</span>.<span class="ruby-identifier">create_subnode_by_</span><span class="ruby-operator">&lt;</span><span class="ruby-identifier">thingsx</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">node</span>,<span class="ruby-identifier">create_new</span>,<span class="ruby-operator">&lt;</span><span class="ruby-identifier">thingsx</span><span class="ruby-operator">&gt;</span>),
-                           <span class="ruby-identifier">create_new</span>)
+@creator_procs[1] =
+  proc {|node,create_new|
+    @creator_procs[0].call(Accessors.create_subnode_by_&lt;thingsx&gt;(node,create_new,&lt;thingsx&gt;),
+                           create_new)
   }
 
-<span class="ruby-ivar">@creator_procs</span>[<span class="ruby-value">2</span>] =
-  <span class="ruby-identifier">proc</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">node</span>,<span class="ruby-identifier">create_new</span><span class="ruby-operator">|</span>
-    <span class="ruby-ivar">@creator_procs</span>[<span class="ruby-value">1</span>].<span class="ruby-identifier">call</span>(<span class="ruby-constant">Accessors</span>.<span class="ruby-identifier">create_subnode_by_</span><span class="ruby-operator">&lt;</span><span class="ruby-identifier">thingsx</span><span class="ruby-operator">-</span><span class="ruby-value">1</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">node</span>,<span class="ruby-identifier">create_new</span>,<span class="ruby-operator">&lt;</span><span class="ruby-identifier">thingsx</span><span class="ruby-operator">-</span><span class="ruby-value">1</span><span class="ruby-operator">&gt;</span>),
-                           <span class="ruby-identifier">create_new</span>)
+@creator_procs[2] =
+  proc {|node,create_new|
+    @creator_procs[1].call(Accessors.create_subnode_by_&lt;thingsx-1&gt;(node,create_new,&lt;thingsx-1&gt;),
+                           create_new)
   }
 
-<span class="ruby-operator">...</span>
+...
 
-<span class="ruby-ivar">@creator_procs</span>[<span class="ruby-identifier">n</span>] =
-  <span class="ruby-identifier">proc</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">node</span>,<span class="ruby-identifier">create_new</span><span class="ruby-operator">|</span>
-    <span class="ruby-ivar">@creator_procs</span>[<span class="ruby-identifier">n</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>].<span class="ruby-identifier">call</span>(<span class="ruby-constant">Accessors</span>.<span class="ruby-identifier">create_subnode_by_</span><span class="ruby-operator">&lt;</span><span class="ruby-identifier">things</span>[<span class="ruby-identifier">x</span><span class="ruby-operator">+</span><span class="ruby-value">1</span><span class="ruby-operator">-</span><span class="ruby-identifier">n</span>]<span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">node</span>,<span class="ruby-identifier">create_new</span>,<span class="ruby-operator">&lt;</span><span class="ruby-identifier">things</span>[<span class="ruby-identifier">x</span><span class="ruby-operator">+</span><span class="ruby-value">1</span><span class="ruby-operator">-</span><span class="ruby-identifier">n</span>]<span class="ruby-operator">&gt;</span>),
-                             <span class="ruby-identifier">create_new</span>)
+@creator_procs[n] =
+  proc {|node,create_new|
+    @creator_procs[n-1].call(Accessors.create_subnode_by_&lt;things[x+1-n]&gt;(node,create_new,&lt;things[x+1-n]&gt;),
+                             create_new)
   }
 
-<span class="ruby-operator">...</span>
-<span class="ruby-ivar">@creator_procs</span>[<span class="ruby-identifier">x</span>] =
-  <span class="ruby-identifier">proc</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">node</span>,<span class="ruby-identifier">create_new</span><span class="ruby-operator">|</span>
-    <span class="ruby-ivar">@creator_procs</span>[<span class="ruby-identifier">x</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>].<span class="ruby-identifier">call</span>(<span class="ruby-constant">Accessors</span>.<span class="ruby-identifier">create_subnode_by_</span><span class="ruby-operator">&lt;</span><span class="ruby-identifier">things1</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">node</span>,<span class="ruby-identifier">create_new</span>,<span class="ruby-operator">&lt;</span><span class="ruby-identifier">things1</span><span class="ruby-operator">&gt;</span>),
-                             <span class="ruby-identifier">create_new</span>)
-  }
-</pre>
+...
+@creator_procs[x] =
+  proc {|node,create_new|
+    @creator_procs[x-1].call(Accessors.create_subnode_by_&lt;things1&gt;(node,create_new,&lt;things1&gt;),
+                             create_new)
+  }</pre>
 
 <p>..and the implementation of @reader_proc looks like this:</p>
 
-<pre class="ruby"><span class="ruby-ivar">@reader_proc</span> = <span class="ruby-identifier">rpx</span> <span class="ruby-identifier">where</span>
+<pre>@reader_proc = rpx where
 
-<span class="ruby-identifier">rp0</span> = <span class="ruby-identifier">proc</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">nodes</span><span class="ruby-operator">|</span> <span class="ruby-identifier">nodes</span>}
+rp0 = proc {|nodes| nodes}
 
-<span class="ruby-identifier">rp1</span> = <span class="ruby-identifier">proc</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">nodes</span><span class="ruby-operator">|</span>
-              <span class="ruby-identifier">next_nodes</span> = <span class="ruby-constant">Accessors</span>.<span class="ruby-identifier">subnodes_by_</span><span class="ruby-operator">&lt;</span><span class="ruby-identifier">thingsx</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">nodes</span>,<span class="ruby-operator">&lt;</span><span class="ruby-identifier">thingsx</span><span class="ruby-operator">&gt;</span>)
-              <span class="ruby-keyword">if</span> (<span class="ruby-identifier">next_nodes</span> <span class="ruby-operator">==</span> [])
-                <span class="ruby-identifier">throw</span> :<span class="ruby-identifier">not_found</span>, [<span class="ruby-identifier">nodes</span>,<span class="ruby-ivar">@creator_procs</span>[<span class="ruby-value">1</span>]]
-              <span class="ruby-keyword">else</span>
-                <span class="ruby-identifier">rp0</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">next_nodes</span>)
-              <span class="ruby-keyword">end</span>
+rp1 = proc {|nodes|
+              next_nodes = Accessors.subnodes_by_&lt;thingsx&gt;(nodes,&lt;thingsx&gt;)
+              if (next_nodes == [])
+                throw :not_found, [nodes,@creator_procs[1]]
+              else
+                rp0.call(next_nodes)
+              end
             }
 
-<span class="ruby-identifier">rp2</span> = <span class="ruby-identifier">proc</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">nodes</span><span class="ruby-operator">|</span>
-              <span class="ruby-identifier">next_nodes</span> = <span class="ruby-constant">Accessors</span>.<span class="ruby-identifier">subnodes_by_</span><span class="ruby-operator">&lt;</span><span class="ruby-identifier">thingsx</span><span class="ruby-operator">-</span><span class="ruby-value">1</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">nodes</span>,<span class="ruby-operator">&lt;</span><span class="ruby-identifier">thingsx</span><span class="ruby-operator">-</span><span class="ruby-value">1</span><span class="ruby-operator">&gt;</span>)
-              <span class="ruby-keyword">if</span> (<span class="ruby-identifier">next_nodes</span> <span class="ruby-operator">==</span> [])
-                <span class="ruby-identifier">throw</span> :<span class="ruby-identifier">not_found</span>, [<span class="ruby-identifier">nodes</span>,<span class="ruby-ivar">@creator_procs</span>[<span class="ruby-value">2</span>]]
-              <span class="ruby-keyword">else</span>
-                <span class="ruby-identifier">rp1</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">next_nodes</span>)
-              <span class="ruby-keyword">end</span>
+rp2 = proc {|nodes|
+              next_nodes = Accessors.subnodes_by_&lt;thingsx-1&gt;(nodes,&lt;thingsx-1&gt;)
+              if (next_nodes == [])
+                throw :not_found, [nodes,@creator_procs[2]]
+              else
+                rp1.call(next_nodes)
+              end
             }
-<span class="ruby-operator">...</span>
+...
 
-<span class="ruby-identifier">rpx</span> = <span class="ruby-identifier">proc</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">nodes</span><span class="ruby-operator">|</span>
-              <span class="ruby-identifier">next_nodes</span> = <span class="ruby-constant">Accessors</span>.<span class="ruby-identifier">subnodes_by_</span><span class="ruby-operator">&lt;</span><span class="ruby-identifier">things1</span><span class="ruby-operator">&gt;</span>(<span class="ruby-identifier">nodes</span>,<span class="ruby-operator">&lt;</span><span class="ruby-identifier">things1</span><span class="ruby-operator">&gt;</span>)
-              <span class="ruby-keyword">if</span> (<span class="ruby-identifier">next_nodes</span> <span class="ruby-operator">==</span> [])
-                <span class="ruby-identifier">throw</span> :<span class="ruby-identifier">not_found</span>, [<span class="ruby-identifier">nodes</span>,<span class="ruby-ivar">@creator_procs</span>[<span class="ruby-identifier">x</span>]]
-              <span class="ruby-keyword">else</span>
-                <span class="ruby-identifier">rpx</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">next_nodes</span>)
-              <span class="ruby-keyword">end</span>
-            }
-</pre>
+rpx = proc {|nodes|
+              next_nodes = Accessors.subnodes_by_&lt;things1&gt;(nodes,&lt;things1&gt;)
+              if (next_nodes == [])
+                throw :not_found, [nodes,@creator_procs[x]]
+              else
+                rpx-1.call(next_nodes)
+              end
+            }</pre>
 </main>
 
 
 
 <footer id="validator-badges" role="contentinfo">
   <p><a href="http://validator.w3.org/check/referer">Validate</a>
-  <p>Generated by <a href="http://rdoc.rubyforge.org">RDoc</a> 4.1.0.
-  <p>Based on <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+  <p>Generated by <a href="http://docs.seattlerb.org/rdoc/">RDoc</a> 4.2.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
 </footer>
 
