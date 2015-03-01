@@ -52,9 +52,8 @@ module XML
       def extract_attr_value(xml) # :nodoc:
         txt = default_when_xpath_err{ @path.first(xml).text }
 
-        if txt.nil? or txt.empty?
-          raise 'No default value for empty numeric value' if @options[:default_value].nil?
-          @options[:default_value]
+        if txt.nil?
+          raise NoAttrValueSet, "Attribute #{@attrname} not set (text missing)"
         else
           begin
             Integer(txt)

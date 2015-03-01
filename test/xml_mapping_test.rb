@@ -50,7 +50,7 @@ class XmlMappingTest < Test::Unit::TestCase
     require 'number'
     xml = REXML::Document.new(File.new(File.dirname(__FILE__) + "/fixtures/number.xml"))
 
-    assert_raise RuntimeError, 'No default value for empty numeric value' do
+    assert_raise(XML::MappingError.new('no value, and no default value: Attribute value not set (text missing)')) do
       Number.load_from_xml(xml.root, :mapping => :no_default)
     end
 
