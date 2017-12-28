@@ -152,7 +152,7 @@ begin
   # temporarily suppress warnings
   class <<Kernel
     alias_method :old_warn, :warn
-    def warn(msg)
+    def warn(*args)
     end
   end
   begin
