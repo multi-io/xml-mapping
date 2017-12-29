@@ -10,7 +10,6 @@ require 'rake/testtask'
 require 'rdoc/task'
 require 'rake/packagetask'
 require 'rubygems/package_task'
-require 'rake/contrib/sshpublisher'
 
 require File.dirname(__FILE__)+"/lib/xml/mapping/version"
 
