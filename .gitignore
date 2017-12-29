@@ -5,3 +5,4 @@ doc/api
 user_manual.md
 user_manual_xxpath.md
 pkg/
+.rbenv-gemsets
